@@ -2,17 +2,24 @@ package com.songoda.ultimatefishing.listeners;
 
 import com.songoda.lootables.loot.Drop;
 import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.ultimatefishing.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class FishingListeners implements Listener {
 
@@ -22,14 +29,22 @@ public class FishingListeners implements Listener {
         this.plugin = instance;
     }
 
+    private Map<UUID, Long> criticalCooldown = new HashMap<>();
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDeath(PlayerFishEvent event) {
         //Bukkit.broadcastMessage("fish " + event.getState().name());
+        Player player = event.getPlayer();
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
             Entity oldEntity = event.getCaught();
             oldEntity.remove();
 
             List<Drop> drops = plugin.getLootablesManager().getDrops(event.getPlayer());
+
+            if (event.getHook().hasMetadata("CRITICAL")) {
+                for (int i = 0; i < (Setting.CRITICAL_DROP_MULTI.getInt() - 1); i ++)
+                    drops.addAll(plugin.getLootablesManager().getDrops(event.getPlayer()));
+            }
 
             for (Drop drop : drops) {
 
@@ -37,7 +52,7 @@ public class FishingListeners implements Listener {
 
                     Item item = oldEntity.getWorld().dropItem(oldEntity.getLocation(), drop.getItemStack());
 
-                    Location owner = event.getPlayer().getLocation();
+                    Location owner = player.getLocation();
 
                     double d0 = owner.getX() - item.getLocation().getX();
                     double d1 = owner.getY() - item.getLocation().getY();
@@ -51,9 +66,17 @@ public class FishingListeners implements Listener {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                 }
             }
-            } else if (event.getState() == PlayerFishEvent.State.FISHING) {
-
+        } else if (event.getState() == PlayerFishEvent.State.FISHING) {
+            double ch = Double.parseDouble(Setting.CRITICAL_CHANCE.getString().replace("%", ""));
+            double rand = Math.random() * 100;
+            if (rand - ch < 0 || ch == 100) {
+                if (criticalCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < criticalCooldown.get(player.getUniqueId())) return;
+                criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Setting.CRITICAL_COOLDOWN.getLong() * 1000));
+                plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
+                player.playSound(player.getLocation(), Sound.ENTITY_SKELETON_SHOOT, 1f, .1f);
+                event.getHook().setMetadata("CRITICAL", new FixedMetadataValue(plugin, true));
             }
+        }
     }
 
 }

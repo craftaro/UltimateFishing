@@ -8,6 +8,16 @@ import java.util.stream.Collectors;
 
 public enum Setting {
 
+    CRITICAL_CHANCE("Main.Critical Cast Chance", "10%",
+            "When a player or monster is killed what should be",
+            "the chance that their head drops?"),
+
+    CRITICAL_COOLDOWN("Main.Critical Cast Cooldown", 30,
+            "The amount of time in seconds between critical casts."),
+
+    CRITICAL_DROP_MULTI("Main.Critical Drop Multiplier", 3,
+            "How many times look should a critical cast get you?"),
+
     LANGUGE_MODE("System.Language Mode", "en_US",
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");

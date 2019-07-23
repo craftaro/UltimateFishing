@@ -2,7 +2,11 @@ package com.songoda.ultimatefishing;
 
 import com.songoda.ultimatefishing.command.CommandManager;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
+import com.songoda.ultimatefishing.listeners.FurnaceListeners;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
+import com.songoda.ultimatefishing.rarity.Rarity;
+import com.songoda.ultimatefishing.rarity.RarityManager;
+import com.songoda.ultimatefishing.utils.ConfigWrapper;
 import com.songoda.ultimatefishing.utils.Methods;
 import com.songoda.ultimatefishing.utils.Metrics;
 import com.songoda.ultimatefishing.utils.locale.Locale;
@@ -14,6 +18,7 @@ import com.songoda.update.utils.ServerVersion;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,10 +26,13 @@ public class UltimateFishing extends JavaPlugin {
 
     private static UltimateFishing INSTANCE;
 
+    private ConfigWrapper rarityFile = new ConfigWrapper(this, "", "rarity.yml");
+
     private Locale locale;
     private SettingsManager settingsManager;
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
+    private RarityManager rarityManager;
 
     private ConsoleCommandSender console = Bukkit.getConsoleSender();
 
@@ -57,7 +65,7 @@ public class UltimateFishing extends JavaPlugin {
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
 
         // Setup Lootables
-        this.lootablesManager = new LootablesManager();
+        this.lootablesManager = new LootablesManager(this);
         this.lootablesManager.createDefaultLootables();
         this.getLootablesManager().getLootManager().loadLootables();
 
@@ -70,10 +78,14 @@ public class UltimateFishing extends JavaPlugin {
 
         // Setup Listeners
         pluginManager.registerEvents(new FishingListeners(this), this);
+        pluginManager.registerEvents(new FurnaceListeners(this), this);
 
 
         // Starting Metrics
         new Metrics(this);
+
+        //Apply default fish rarity.
+        runRarityDefaults();
     }
 
     public void reload() {
@@ -81,6 +93,44 @@ public class UltimateFishing extends JavaPlugin {
         this.locale.reloadMessages();
         this.settingsManager.reloadConfig();
         this.getLootablesManager().getLootManager().loadLootables();
+    }
+
+    /*
+     * Insert default fish sizes into config.
+     */
+    private void runRarityDefaults() {
+        if (!rarityFile.getConfig().contains("Rarity")) {
+            rarityFile.getConfig().set("Rarity.Common.Chance", 60);
+            rarityFile.getConfig().set("Rarity.Common.Color", "7");
+            rarityFile.getConfig().set("Rarity.Common.SizeMin", 50);
+            rarityFile.getConfig().set("Rarity.Common.SizeMax", 75);
+            rarityFile.getConfig().set("Rarity.Rare.Chance", 30);
+            rarityFile.getConfig().set("Rarity.Rare.Color", "c");
+            rarityFile.getConfig().set("Rarity.Rare.SizeMin", 75);
+            rarityFile.getConfig().set("Rarity.Rare.SizeMax", 100);
+            rarityFile.getConfig().set("Rarity.Epic.Chance", 10);
+            rarityFile.getConfig().set("Rarity.Epic.Color", "5");
+            rarityFile.getConfig().set("Rarity.Epic.SizeMin", 100);
+            rarityFile.getConfig().set("Rarity.Epic.SizeMax", 150);
+            rarityFile.saveConfig();
+        }
+
+        this.rarityManager = new RarityManager();
+
+        /*
+         * Register rarities into RarityManager from Configuration.
+         */
+        if (rarityFile.getConfig().contains("Rarity")) {
+            for (String keyName : rarityFile.getConfig().getConfigurationSection("Rarity").getKeys(false)) {
+                ConfigurationSection raritySection = rarityFile.getConfig().getConfigurationSection("Rarity." + keyName);
+
+                this.rarityManager.addRarity(new Rarity(keyName,
+                        raritySection.getString("Color"),
+                        raritySection.getDouble("Chance"),
+                        raritySection.getDouble("SizeMin"),
+                        raritySection.getDouble("SizeMax")));
+            }
+        }
     }
 
     public ServerVersion getServerVersion() {
@@ -113,5 +163,9 @@ public class UltimateFishing extends JavaPlugin {
 
     public SettingsManager getSettingsManager() {
         return settingsManager;
+    }
+
+    public RarityManager getRarityManager() {
+        return rarityManager;
     }
 }

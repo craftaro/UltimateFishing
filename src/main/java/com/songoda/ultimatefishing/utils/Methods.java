@@ -7,6 +7,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.DecimalFormat;
+
 public class Methods {
     public static ItemStack getGlass() {
         
@@ -50,5 +52,30 @@ public class Methods {
         if (cap)
             text = text.substring(0, 1).toUpperCase() + text.substring(1);
         return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    public static boolean isFish(ItemStack itemStack) {
+        switch (itemStack.getType()) {
+            case SALMON:
+            case COOKED_SALMON:
+            case COD:
+            case COOKED_COD:
+            case PUFFERFISH:
+                return true;
+        }
+        return false;
+    }
+
+
+    public static String formatDecimal(double decimal) {
+        return new DecimalFormat("###.#").format(decimal);
+    }
+
+    public static String convertToInvisibleString(String s) {
+        if (s == null || s.equals(""))
+            return "";
+        StringBuilder hidden = new StringBuilder();
+        for (char c : s.toCharArray()) hidden.append(ChatColor.COLOR_CHAR + "").append(c);
+        return hidden.toString();
     }
 }

@@ -32,7 +32,7 @@ public class FishingListeners implements Listener {
     private Map<UUID, Long> criticalCooldown = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onEntityDeath(PlayerFishEvent event) {
+    public void onFish(PlayerFishEvent event) {
         //Bukkit.broadcastMessage("fish " + event.getState().name());
         Player player = event.getPlayer();
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {

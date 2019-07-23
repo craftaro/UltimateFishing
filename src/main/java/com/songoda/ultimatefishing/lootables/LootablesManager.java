@@ -3,26 +3,34 @@ package com.songoda.ultimatefishing.lootables;
 import com.songoda.lootables.Lootables;
 import com.songoda.lootables.loot.*;
 import com.songoda.lootables.loot.objects.EnchantChance;
-import com.songoda.lootables.utils.Methods;
 import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.ultimatefishing.rarity.Rarity;
+import com.songoda.ultimatefishing.utils.Methods;
+import com.songoda.ultimatefishing.utils.settings.Setting;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class LootablesManager {
 
     private final Lootables instance;
 
+    private final UltimateFishing plugin;
+
     private final LootManager lootManager;
 
     private final String lootablesDir = UltimateFishing.getInstance().getDataFolder() + File.separator + "lootables";
 
-    public LootablesManager() {
+    public LootablesManager(UltimateFishing plugin) {
+        this.plugin = plugin;
         this.instance = new Lootables(lootablesDir);
         this.lootManager = new LootManager(instance);
     }
@@ -39,6 +47,41 @@ public class LootablesManager {
 
         for (Loot loot : lootable.getRegisteredLoot())
             toDrop.addAll(runLoot(player, loot, rerollChance, looting));
+
+        if (Setting.FISH_SIZE.getBoolean()) {
+            for (Drop drop : toDrop) {
+                if (drop.getItemStack() == null || !Methods.isFish(drop.getItemStack())) continue;
+                ItemStack itemStack = drop.getItemStack();
+                ItemMeta meta = itemStack.getItemMeta();
+                List<String> lore = new ArrayList<>();
+                double size = 0;
+                Rarity pickedRarity = null;
+
+                double rand = Math.random() * 100;
+
+                top:
+                while (true) {
+                    for (Rarity rarity : plugin.getRarityManager().getRarities()) {
+                        if (rand - rarity.getChance() < 0 || rarity.getChance() == 100) {
+
+                            size = rarity.getSizeMin() + (rarity.getSizeMax() - rarity.getSizeMin())
+                                    * new Random().nextDouble();
+                            pickedRarity = rarity;
+                            break top;
+                        }
+                    }
+                }
+
+                lore.add(Methods.convertToInvisibleString(size + ":")
+                        + Methods.formatText(Setting.FISH_SIZE_NAMETAG.getString()
+                        .replace("%color%", pickedRarity.getColor())
+                        .replace("%size%", Methods.formatDecimal(size))));
+                if (meta.hasLore())
+                    lore.addAll(meta.getLore());
+                meta.setLore(lore);
+                itemStack.setItemMeta(meta);
+            }
+        }
 
         return toDrop;
     }
@@ -91,7 +134,7 @@ public class LootablesManager {
                                 new LootBuilder()
                                         .setMaterial(Material.BOW)
                                         .setChance(0.7)
-                                        .addEnchants(new Methods.Tuple("RANDOM", 26))
+                                        .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
                                         .setDamageMin(10)
                                         .setDamageMax(100)
                                         .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
@@ -101,7 +144,7 @@ public class LootablesManager {
                                 new LootBuilder()
                                         .setMaterial(Material.ENCHANTED_BOOK)
                                         .setChance(0.7)
-                                        .addEnchants(new Methods.Tuple("RANDOM", 26))
+                                        .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
                                         .setDamageMin(10)
                                         .setDamageMax(100)
                                         .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
@@ -111,7 +154,7 @@ public class LootablesManager {
                                 new LootBuilder()
                                         .setMaterial(Material.FISHING_ROD)
                                         .setChance(0.7)
-                                        .addEnchants(new Methods.Tuple("RANDOM", 26))
+                                        .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
                                         .setDamageMin(10)
                                         .setDamageMax(100)
                                         .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),

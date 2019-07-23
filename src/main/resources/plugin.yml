@@ -1,0 +1,12 @@
+name: UltimateFishing
+description: UltimateFishing
+version: maven-version-number
+main: com.songoda.ultimatefishing.UltimateFishing
+author: songoda
+api-version: 1.13
+commands:
+  UltimateFishing:
+    description: I have no idea.
+    default: true
+    aliases: [uf]
+    usage: /<command> [reload]

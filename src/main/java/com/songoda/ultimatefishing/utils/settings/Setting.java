@@ -20,9 +20,6 @@ public enum Setting {
     FISH_SIZE("Main.Fish Size", true,
             "Should fish have custom sizes?"),
 
-    FISH_SIZE_NAMETAG("Main. Fish Size NameTag", "&%color%%size%cm",
-            "The name tag shown for fish sizing."),
-
     LANGUGE_MODE("System.Language Mode", "en_US",
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");

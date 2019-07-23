@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing;
 
 import com.songoda.ultimatefishing.command.CommandManager;
+import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
 import com.songoda.ultimatefishing.listeners.FurnaceListeners;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
@@ -79,7 +80,7 @@ public class UltimateFishing extends JavaPlugin {
         // Setup Listeners
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);
-
+        pluginManager.registerEvents(new EntityListeners(this), this);
 
         // Starting Metrics
         new Metrics(this);
@@ -93,6 +94,7 @@ public class UltimateFishing extends JavaPlugin {
         this.locale.reloadMessages();
         this.settingsManager.reloadConfig();
         this.getLootablesManager().getLootManager().loadLootables();
+        this.runRarityDefaults();
     }
 
     /*
@@ -100,18 +102,18 @@ public class UltimateFishing extends JavaPlugin {
      */
     private void runRarityDefaults() {
         if (!rarityFile.getConfig().contains("Rarity")) {
-            rarityFile.getConfig().set("Rarity.Common.Chance", 60);
-            rarityFile.getConfig().set("Rarity.Common.Color", "7");
-            rarityFile.getConfig().set("Rarity.Common.SizeMin", 50);
-            rarityFile.getConfig().set("Rarity.Common.SizeMax", 75);
-            rarityFile.getConfig().set("Rarity.Rare.Chance", 30);
-            rarityFile.getConfig().set("Rarity.Rare.Color", "c");
-            rarityFile.getConfig().set("Rarity.Rare.SizeMin", 75);
-            rarityFile.getConfig().set("Rarity.Rare.SizeMax", 100);
-            rarityFile.getConfig().set("Rarity.Epic.Chance", 10);
-            rarityFile.getConfig().set("Rarity.Epic.Color", "5");
-            rarityFile.getConfig().set("Rarity.Epic.SizeMin", 100);
-            rarityFile.getConfig().set("Rarity.Epic.SizeMax", 150);
+            rarityFile.getConfig().set("Rarity.Tiny.Chance", 15);
+            rarityFile.getConfig().set("Rarity.Tiny.Color", "9");
+            rarityFile.getConfig().set("Rarity.Tiny.Extra Health", -1);
+            rarityFile.getConfig().set("Rarity.Normal.Chance", 60);
+            rarityFile.getConfig().set("Rarity.Normal.Color", "7");
+            rarityFile.getConfig().set("Rarity.Normal.Extra Health", 2);
+            rarityFile.getConfig().set("Rarity.Large.Chance", 20);
+            rarityFile.getConfig().set("Rarity.Large.Color", "c");
+            rarityFile.getConfig().set("Rarity.Large.Extra Health", 1);
+            rarityFile.getConfig().set("Rarity.Huge.Chance", 5);
+            rarityFile.getConfig().set("Rarity.Huge.Color", "5");
+            rarityFile.getConfig().set("Rarity.hUGE.Extra Health", 2);
             rarityFile.saveConfig();
         }
 
@@ -127,8 +129,7 @@ public class UltimateFishing extends JavaPlugin {
                 this.rarityManager.addRarity(new Rarity(keyName,
                         raritySection.getString("Color"),
                         raritySection.getDouble("Chance"),
-                        raritySection.getDouble("SizeMin"),
-                        raritySection.getDouble("SizeMax")));
+                        raritySection.getInt("Extra Health")));
             }
         }
     }

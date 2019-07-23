@@ -54,28 +54,21 @@ public class LootablesManager {
                 ItemStack itemStack = drop.getItemStack();
                 ItemMeta meta = itemStack.getItemMeta();
                 List<String> lore = new ArrayList<>();
-                double size = 0;
-                Rarity pickedRarity = null;
+                Rarity pickedRarity;
 
-                double rand = Math.random() * 100;
 
                 top:
                 while (true) {
+                    double rand = Math.random() * 100;
                     for (Rarity rarity : plugin.getRarityManager().getRarities()) {
                         if (rand - rarity.getChance() < 0 || rarity.getChance() == 100) {
-
-                            size = rarity.getSizeMin() + (rarity.getSizeMax() - rarity.getSizeMin())
-                                    * new Random().nextDouble();
                             pickedRarity = rarity;
                             break top;
                         }
                     }
                 }
 
-                lore.add(Methods.convertToInvisibleString(size + ":")
-                        + Methods.formatText(Setting.FISH_SIZE_NAMETAG.getString()
-                        .replace("%color%", pickedRarity.getColor())
-                        .replace("%size%", Methods.formatDecimal(size))));
+                lore.add(Methods.formatText("&" + pickedRarity.getColor() + pickedRarity.getRarity()));
                 if (meta.hasLore())
                     lore.addAll(meta.getLore());
                 meta.setLore(lore);

@@ -7,15 +7,13 @@ public class Rarity {
 
     private final double chance;
 
-    private final double sizeMin;
-    private final double sizeMax;
+    private final int extrahealth;
 
-    public Rarity(String rarity, String color, double chance, double sizeMin, double sizeMax) {
+    public Rarity(String rarity, String color, double chance, int extrahealth) {
         this.rarity = rarity;
         this.color = color;
         this.chance = chance;
-        this.sizeMin = sizeMin;
-        this.sizeMax = sizeMax;
+        this.extrahealth = extrahealth;
     }
 
     public String getRarity() {
@@ -30,11 +28,7 @@ public class Rarity {
         return chance;
     }
 
-    public double getSizeMin() {
-        return sizeMin;
-    }
-
-    public double getSizeMax() {
-        return sizeMax;
+    public int getExtrahealth() {
+        return extrahealth;
     }
 }

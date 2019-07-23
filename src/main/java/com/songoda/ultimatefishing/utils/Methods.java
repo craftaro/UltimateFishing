@@ -61,6 +61,7 @@ public class Methods {
             case COD:
             case COOKED_COD:
             case PUFFERFISH:
+            case TROPICAL_FISH:
                 return true;
         }
         return false;

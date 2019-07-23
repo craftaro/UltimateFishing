@@ -42,7 +42,7 @@ public class FishingListeners implements Listener {
             List<Drop> drops = plugin.getLootablesManager().getDrops(event.getPlayer());
 
             if (event.getHook().hasMetadata("CRITICAL")) {
-                for (int i = 0; i < (Setting.CRITICAL_DROP_MULTI.getInt() - 1); i ++)
+                for (int i = 0; i < (Setting.CRITICAL_DROP_MULTI.getInt() - 1); i++)
                     drops.addAll(plugin.getLootablesManager().getDrops(event.getPlayer()));
             }
 
@@ -70,12 +70,16 @@ public class FishingListeners implements Listener {
             double ch = Double.parseDouble(Setting.CRITICAL_CHANCE.getString().replace("%", ""));
             double rand = Math.random() * 100;
             if (rand - ch < 0 || ch == 100) {
-                if (criticalCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < criticalCooldown.get(player.getUniqueId())) return;
+                if (criticalCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < criticalCooldown.get(player.getUniqueId()))
+                    return;
                 criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Setting.CRITICAL_COOLDOWN.getLong() * 1000));
                 plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
                 player.playSound(player.getLocation(), Sound.ENTITY_SKELETON_SHOOT, 1f, .1f);
                 event.getHook().setMetadata("CRITICAL", new FixedMetadataValue(plugin, true));
             }
+        } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
+            if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && event.getHook().hasMetadata("CRITICAL"))
+                event.getHook().removeMetadata("CRTICAL", plugin);
         }
     }
 

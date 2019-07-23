@@ -14,6 +14,9 @@ public enum Setting {
     CRITICAL_COOLDOWN("Main.Critical Cast Cooldown", 30,
             "The amount of time in seconds between critical casts."),
 
+    CRITICAL_CAST_EXPIRE("Main.Critical Cast Expire", false,
+            "Should the critical cast expire after a failed catch attempt?"),
+
     CRITICAL_DROP_MULTI("Main.Critical Drop Multiplier", 3,
             "How many times look should a critical cast get you?"),
 

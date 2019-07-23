@@ -1,6 +1,11 @@
 package com.songoda.ultimatefishing;
 
+import com.songoda.lootables.utils.ServerVersion;
 import com.songoda.ultimatefishing.command.CommandManager;
+import com.songoda.ultimatefishing.economy.Economy;
+import com.songoda.ultimatefishing.economy.PlayerPointsEconomy;
+import com.songoda.ultimatefishing.economy.ReserveEconomy;
+import com.songoda.ultimatefishing.economy.VaultEconomy;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
 import com.songoda.ultimatefishing.listeners.FurnaceListeners;
@@ -11,11 +16,11 @@ import com.songoda.ultimatefishing.utils.ConfigWrapper;
 import com.songoda.ultimatefishing.utils.Methods;
 import com.songoda.ultimatefishing.utils.Metrics;
 import com.songoda.ultimatefishing.utils.locale.Locale;
+import com.songoda.ultimatefishing.utils.settings.Setting;
 import com.songoda.ultimatefishing.utils.settings.SettingsManager;
 import com.songoda.ultimatefishing.utils.updateModules.LocaleModule;
 import com.songoda.update.Plugin;
 import com.songoda.update.SongodaUpdate;
-import com.songoda.update.utils.ServerVersion;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
@@ -30,6 +35,8 @@ public class UltimateFishing extends JavaPlugin {
     private ConfigWrapper rarityFile = new ConfigWrapper(this, "", "rarity.yml");
 
     private Locale locale;
+    private Economy economy;
+
     private SettingsManager settingsManager;
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
@@ -77,6 +84,14 @@ public class UltimateFishing extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
+        // Setup Economy
+        if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
+            this.economy = new VaultEconomy();
+        else if (Setting.RESERVE_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Reserve"))
+            this.economy = new ReserveEconomy();
+        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("PlayerPoints"))
+            this.economy = new PlayerPointsEconomy();
+
         // Setup Listeners
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);
@@ -104,16 +119,20 @@ public class UltimateFishing extends JavaPlugin {
         if (!rarityFile.getConfig().contains("Rarity")) {
             rarityFile.getConfig().set("Rarity.Tiny.Chance", 15);
             rarityFile.getConfig().set("Rarity.Tiny.Color", "9");
-            rarityFile.getConfig().set("Rarity.Tiny.Extra Health", -1);
-            rarityFile.getConfig().set("Rarity.Normal.Chance", 60);
+            rarityFile.getConfig().set("Rarity.Tiny.Extra Health", -2);
+            rarityFile.getConfig().set("Rarity.Tiny.Sell Price", 4.99);
+            rarityFile.getConfig().set("Rarity.Normal.Chance", 50);
             rarityFile.getConfig().set("Rarity.Normal.Color", "7");
-            rarityFile.getConfig().set("Rarity.Normal.Extra Health", 2);
-            rarityFile.getConfig().set("Rarity.Large.Chance", 20);
+            rarityFile.getConfig().set("Rarity.Normal.Extra Health", 0);
+            rarityFile.getConfig().set("Rarity.Normal.Sell Price", 19.99);
+            rarityFile.getConfig().set("Rarity.Large.Chance", 25);
             rarityFile.getConfig().set("Rarity.Large.Color", "c");
-            rarityFile.getConfig().set("Rarity.Large.Extra Health", 1);
-            rarityFile.getConfig().set("Rarity.Huge.Chance", 5);
+            rarityFile.getConfig().set("Rarity.Large.Extra Health", 2);
+            rarityFile.getConfig().set("Rarity.Large.Sell Price", 49.99);
+            rarityFile.getConfig().set("Rarity.Huge.Chance", 10);
             rarityFile.getConfig().set("Rarity.Huge.Color", "5");
-            rarityFile.getConfig().set("Rarity.hUGE.Extra Health", 2);
+            rarityFile.getConfig().set("Rarity.Huge.Extra Health", 4);
+            rarityFile.getConfig().set("Rarity.Huge.Sell Price", 99.99);
             rarityFile.saveConfig();
         }
 
@@ -129,7 +148,8 @@ public class UltimateFishing extends JavaPlugin {
                 this.rarityManager.addRarity(new Rarity(keyName,
                         raritySection.getString("Color"),
                         raritySection.getDouble("Chance"),
-                        raritySection.getInt("Extra Health")));
+                        raritySection.getInt("Extra Health"),
+                        raritySection.getDouble("Sell Price")));
             }
         }
     }
@@ -156,6 +176,10 @@ public class UltimateFishing extends JavaPlugin {
 
     public Locale getLocale() {
         return locale;
+    }
+
+    public Economy getEconomy() {
+        return economy;
     }
 
     public CommandManager getCommandManager() {

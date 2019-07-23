@@ -23,6 +23,7 @@ public class CommandManager implements CommandExecutor {
 
         AbstractCommand commandUltimateFishing = addCommand(new CommandUltimateFishing());
 
+        addCommand(new CommandSell(commandUltimateFishing));
         addCommand(new CommandSettings(commandUltimateFishing));
         addCommand(new CommandReload(commandUltimateFishing));
     }

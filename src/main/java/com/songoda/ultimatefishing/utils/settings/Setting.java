@@ -20,6 +20,19 @@ public enum Setting {
     FISH_SIZE("Main.Fish Size", true,
             "Should fish have custom sizes?"),
 
+    VAULT_ECONOMY("Economy.Use Vault Economy", true,
+            "Should Vault be used?"),
+
+    RESERVE_ECONOMY("Economy.Use Reserve Economy", true,
+            "Should Reserve be used?"),
+
+    PLAYER_POINTS_ECONOMY("Economy.Use Player Points Economy", false,
+            "Should PlayerPoints be used?"),
+
+    GLASS_TYPE_1("Interfaces.Glass Type 1", 7),
+    GLASS_TYPE_2("Interfaces.Glass Type 2", 11),
+    GLASS_TYPE_3("Interfaces.Glass Type 3", 3),
+
     LANGUGE_MODE("System.Language Mode", "en_US",
             "The enabled language file.",
             "More language files (if available) can be found in the plugins data folder.");

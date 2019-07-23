@@ -4,7 +4,7 @@ stages:
 variables:
   name: "UltimateFishing"
   path: "/builds/$CI_PROJECT_PATH"
-  version: "1_B4"
+  version: "1_B5"
 
 build:
   stage: build

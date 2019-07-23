@@ -1,7 +1,7 @@
 package com.songoda.ultimatefishing.utils;
 
+import com.songoda.lootables.utils.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.update.utils.ServerVersion;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.text.DecimalFormat;
 
 public class Methods {
+
     public static ItemStack getGlass() {
         
         UltimateFishing instance = UltimateFishing.getInstance();
@@ -65,6 +66,22 @@ public class Methods {
                 return true;
         }
         return false;
+    }
+
+    public static String formatTitle(String text) {
+        if (text == null || text.equals(""))
+            return "";
+        if (!UltimateFishing.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
+            if (text.length() > 31)
+                text = text.substring(0, 29) + "...";
+        }
+        text = formatText(text);
+        return text;
+    }
+
+    public static String formatEconomy(double amt) {
+        DecimalFormat formatter = new DecimalFormat(amt == Math.ceil(amt) ? "#,###" : "#,###.00");
+        return formatter.format(amt);
     }
 
 

@@ -2,7 +2,12 @@
 
 general.nametag.prefix = "&8[&6UltimateFishing&8]"
 
+#Interface Messages
+
+interface.sell.title = "Sell GUI"
+
 #Event Messages
 
 event.general.nopermission = "&cYou do not have permission to do that."
 event.general.critical = "&6Critical Cast!"
+event.sell.success = "&7You successfully sold your fish for a total of &6$%total%&7."

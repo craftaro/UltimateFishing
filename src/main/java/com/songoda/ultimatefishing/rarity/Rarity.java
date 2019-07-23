@@ -8,12 +8,14 @@ public class Rarity {
     private final double chance;
 
     private final int extrahealth;
+    private final double sellPrice;
 
-    public Rarity(String rarity, String color, double chance, int extrahealth) {
+    public Rarity(String rarity, String color, double chance, int extrahealth, double sellPrice) {
         this.rarity = rarity;
         this.color = color;
         this.chance = chance;
         this.extrahealth = extrahealth;
+        this.sellPrice = sellPrice;
     }
 
     public String getRarity() {
@@ -30,5 +32,9 @@ public class Rarity {
 
     public int getExtrahealth() {
         return extrahealth;
+    }
+
+    public double getSellPrice() {
+        return sellPrice;
     }
 }

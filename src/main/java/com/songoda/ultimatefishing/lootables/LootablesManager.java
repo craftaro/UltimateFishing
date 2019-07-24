@@ -44,6 +44,10 @@ public class LootablesManager {
                 ? player.getItemInHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS)
                 : 0;
 
+        int lure = player.getItemInHand().containsEnchantment(Enchantment.LURE)
+                ? player.getItemInHand().getEnchantmentLevel(Enchantment.LURE)
+                : 0;
+
         int rerollChance = looting / (looting + 1);
 
         for (Loot loot : lootable.getRegisteredLoot())
@@ -56,10 +60,9 @@ public class LootablesManager {
                 ItemMeta meta = itemStack.getItemMeta();
                 List<String> lore = new ArrayList<>();
 
-
                 List<Rarity> weightedList = new ArrayList<>();
                 for (Rarity rarity : plugin.getRarityManager().getRarities())
-                    for (int i = 0; i < rarity.getChance() * 30; i++)
+                    for (int i = 0; i < (rarity.getChance() + (rarity.getLureChance() * lure)) * 30; i++)
                         weightedList.add(rarity);
 
                 int choice = new Random().nextInt(weightedList.size());

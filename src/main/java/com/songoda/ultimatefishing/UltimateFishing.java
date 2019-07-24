@@ -121,19 +121,23 @@ public class UltimateFishing extends JavaPlugin {
             rarityFile.getConfig().set("Rarity.Tiny.Color", "9");
             rarityFile.getConfig().set("Rarity.Tiny.Extra Health", -2);
             rarityFile.getConfig().set("Rarity.Tiny.Sell Price", 4.99);
+            rarityFile.getConfig().set("Rarity.Tiny.Lure Chance Change", -5);
             rarityFile.getConfig().set("Rarity.Normal.Chance", 50);
             rarityFile.getConfig().set("Rarity.Normal.Color", "7");
             rarityFile.getConfig().set("Rarity.Normal.Extra Health", 0);
             rarityFile.getConfig().set("Rarity.Normal.Sell Price", 19.99);
+            rarityFile.getConfig().set("Rarity.Normal.Lure Chance Change", -8);
             rarityFile.getConfig().set("Rarity.Large.Chance", 25);
             rarityFile.getConfig().set("Rarity.Large.Color", "c");
             rarityFile.getConfig().set("Rarity.Large.Extra Health", 2);
             rarityFile.getConfig().set("Rarity.Large.Sell Price", 49.99);
+            rarityFile.getConfig().set("Rarity.Large.Lure Chance Change", 5);
             rarityFile.getConfig().set("Rarity.Huge.Chance", 10);
             rarityFile.getConfig().set("Rarity.Huge.Color", "5");
             rarityFile.getConfig().set("Rarity.Huge.Extra Health", 4);
             rarityFile.getConfig().set("Rarity.Huge.Sell Price", 99.99);
             rarityFile.getConfig().set("Rarity.Huge.Broadcast", true);
+            rarityFile.getConfig().set("Rarity.Huge.Lure Chance Change", 8);
             rarityFile.saveConfig();
         }
 
@@ -151,7 +155,8 @@ public class UltimateFishing extends JavaPlugin {
                         raritySection.getDouble("Chance"),
                         raritySection.getInt("Extra Health"),
                         raritySection.getDouble("Sell Price"),
-                        raritySection.getBoolean("Broadcast")));
+                        raritySection.getBoolean("Broadcast"),
+                        raritySection.getDouble("Lure Chance Change")));
             }
         }
     }

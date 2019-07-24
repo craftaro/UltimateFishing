@@ -34,7 +34,6 @@ public class FishingListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
-        //Bukkit.broadcastMessage("fish " + event.getState().name());
         Player player = event.getPlayer();
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
             Entity oldEntity = event.getCaught();
@@ -42,17 +41,14 @@ public class FishingListeners implements Listener {
 
             List<Drop> drops = plugin.getLootablesManager().getDrops(event.getPlayer());
 
-            if (event.getHook().hasMetadata("CRITICAL")) {
+            if (event.getPlayer().hasMetadata("CRITICAL")) {
                 for (int i = 0; i < (Setting.CRITICAL_DROP_MULTI.getInt() - 1); i++)
                     drops.addAll(plugin.getLootablesManager().getDrops(event.getPlayer()));
             }
 
             for (Drop drop : drops) {
-
                 if (drop.getItemStack() != null) {
-
                     Item item = oldEntity.getWorld().dropItem(oldEntity.getLocation(), drop.getItemStack());
-
                     Location owner = player.getLocation();
 
                     double d0 = owner.getX() - item.getLocation().getX();
@@ -79,11 +75,11 @@ public class FishingListeners implements Listener {
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
                     player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, .1f);
 
-                event.getHook().setMetadata("CRITICAL", new FixedMetadataValue(plugin, true));
+                event.getPlayer().setMetadata("CRITICAL", new FixedMetadataValue(plugin, true));
             }
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
-            if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && event.getHook().hasMetadata("CRITICAL"))
-                event.getHook().removeMetadata("CRTICAL", plugin);
+            if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && event.getPlayer().hasMetadata("CRITICAL"))
+                event.getPlayer().removeMetadata("CRITICAL", plugin);
         } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {
             if (Setting.BELL_ON_BITE.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
                 Sound sound = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Sound.BLOCK_NOTE_BLOCK_BELL : Sound.valueOf("BLOCK_NOTE_BELL");

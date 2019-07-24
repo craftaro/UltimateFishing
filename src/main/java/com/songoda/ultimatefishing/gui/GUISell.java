@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GUISell extends AbstractGUI {
 
@@ -85,30 +86,6 @@ public class GUISell extends AbstractGUI {
         double total = calculateTotal();
 
         createButton(49, Material.SUNFLOWER, "&7Sell for &a$" + Methods.formatEconomy(total));
-        registerClickable(49, ((player1, inventory1, cursor, slot, type) -> {
-            double totalNew = calculateTotal();
-            if (totalNew == 0)  {
-                plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
-
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1L, 1L);
-                return;
-            }
-            plugin.getEconomy().deposit(player, totalNew);
-
-            plugin.getLocale().getMessage("event.sell.success")
-                    .processPlaceholder("total", Methods.formatEconomy(totalNew))
-                    .sendPrefixedMessage(player);
-
-            for (ItemStack itemStack : inventory.getContents()) {
-                Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
-
-                if (rarity == null) continue;
-                inventory.remove(itemStack);
-            }
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1L, 1L);
-        }));
     }
 
     private double calculateTotal() {
@@ -128,6 +105,32 @@ public class GUISell extends AbstractGUI {
 
     @Override
     protected void registerClickables() {
+
+        registerClickable(49, ((player1, inventory1, cursor, slot, type) -> {
+            double totalNew = calculateTotal();
+            if (totalNew == 0)  {
+                plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
+
+                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1L, 1L);
+
+                return;
+            }
+            plugin.getEconomy().deposit(player, totalNew);
+
+            plugin.getLocale().getMessage("event.sell.success")
+                    .processPlaceholder("total", Methods.formatEconomy(totalNew))
+                    .sendPrefixedMessage(player);
+
+            for (ItemStack itemStack : inventory.getContents()) {
+                Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
+
+                if (rarity == null) continue;
+                inventory.remove(itemStack);
+            }
+            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1L, 1L);
+        }));
     }
 
     @Override

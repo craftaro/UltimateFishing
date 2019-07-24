@@ -74,7 +74,7 @@ public class FishingListeners implements Listener {
                     return;
                 criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Setting.CRITICAL_COOLDOWN.getLong() * 1000));
                 plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
-                player.playSound(player.getLocation(), Sound.ENTITY_SKELETON_SHOOT, 1f, .1f);
+                player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, .1f);
                 event.getHook().setMetadata("CRITICAL", new FixedMetadataValue(plugin, true));
             }
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {

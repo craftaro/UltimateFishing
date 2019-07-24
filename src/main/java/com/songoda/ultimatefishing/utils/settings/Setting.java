@@ -23,8 +23,8 @@ public enum Setting {
     BELL_ON_BITE("Main.Play Bell Sound On Bite", true,
             "Should a bell sound play on bite?"),
 
-    FISH_SIZE("Main.Fish Size", true,
-            "Should fish have custom sizes?"),
+    FISH_RARITY("Main.Fish Rarity", true,
+            "Should fish have rarity?"),
 
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),

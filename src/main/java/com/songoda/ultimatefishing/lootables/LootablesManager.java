@@ -48,7 +48,7 @@ public class LootablesManager {
         for (Loot loot : lootable.getRegisteredLoot())
             toDrop.addAll(runLoot(player, loot, rerollChance, looting));
 
-        if (Setting.FISH_SIZE.getBoolean()) {
+        if (Setting.FISH_RARITY.getBoolean()) {
             for (Drop drop : toDrop) {
                 if (drop.getItemStack() == null || !Methods.isFish(drop.getItemStack())) continue;
                 ItemStack itemStack = drop.getItemStack();
@@ -93,9 +93,7 @@ public class LootablesManager {
 
         // Add Normal.
 
-        LootBuilder loot = new LootBuilder()
-                .setChildDropCounMin(1)
-                .setChildDropCountMax(1);
+        LootBuilder loot = new LootBuilder();
 
         loot.addChildLoot(new LootBuilder()
                 .setMaterial(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.COD : Material.valueOf("RAW_FISH"))

@@ -131,9 +131,6 @@ public class GUISell extends AbstractGUI {
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1L, 1L);
 
-                for (int i : draggable) {
-                    returnItem(player, inventory.getItem(i));
-                }
                 player.closeInventory();
                 return;
             }
@@ -149,10 +146,7 @@ public class GUISell extends AbstractGUI {
 
                 Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
 
-                if (rarity == null) {
-                    returnItem(player, itemStack);
-                    continue;
-                }
+                if (rarity == null) continue;
                 inventory.remove(itemStack);
             }
             if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))

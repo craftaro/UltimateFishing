@@ -2,14 +2,27 @@ package com.songoda.ultimatefishing.utils;
 
 import com.songoda.lootables.utils.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.ultimatefishing.rarity.Rarity;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.text.DecimalFormat;
 
 public class Methods {
+
+    public static double calculateTotal(Inventory inventory) {
+        double total = 0;
+        for (ItemStack itemStack : inventory.getContents()) {
+            Rarity rarity = UltimateFishing.getInstance().getRarityManager().getRarity(itemStack);
+
+            if (rarity == null) continue;
+            total += rarity.getSellPrice() * itemStack.getAmount();
+        }
+        return total;
+    }
 
     public static ItemStack getGlass() {
         

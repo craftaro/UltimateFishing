@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -87,24 +88,13 @@ public class GUISell extends AbstractGUI {
 
         createButton(4, Material.BOOK, "&6&lSell Prices:", lore);
 
-        double total = calculateTotal();
+        double total = Methods.calculateTotal(inventory);
 
 
         createButton(49, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&7Sell for &a$" + Methods.formatEconomy(total));
 
         for (int i = 0; i < 54; i++)
             if (inventory.getItem(i) == null) draggable.add(i);
-    }
-
-    private double calculateTotal() {
-        double total = 0;
-        for (ItemStack itemStack : inventory.getContents()) {
-            Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
-
-            if (rarity == null) continue;
-            total += rarity.getSellPrice() * itemStack.getAmount();
-        }
-        return total;
     }
 
     private void runTask() {
@@ -124,7 +114,7 @@ public class GUISell extends AbstractGUI {
     protected void registerClickables() {
 
         registerClickable(49, ((player1, inventory1, cursor, slot, type) -> {
-            double totalNew = calculateTotal();
+            double totalNew = Methods.calculateTotal(inventory1);
             if (totalNew == 0) {
                 plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
 

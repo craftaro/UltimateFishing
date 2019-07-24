@@ -85,7 +85,7 @@ public class GUISell extends AbstractGUI {
 
         double total = calculateTotal();
 
-        createButton(49, Material.SUNFLOWER, "&7Sell for &a$" + Methods.formatEconomy(total));
+        createButton(49, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&7Sell for &a$" + Methods.formatEconomy(total));
     }
 
     private double calculateTotal() {

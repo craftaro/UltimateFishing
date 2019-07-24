@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.utils.settings;
 
 import com.songoda.ultimatefishing.UltimateFishing;
+import org.bukkit.entity.EntityType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,18 @@ public enum Setting {
 
     FISH_RARITY("Main.Fish Rarity", true,
             "Should fish have rarity?"),
+
+    AFK_CHALLENGES("AFK.Challenges", true,
+            "Should AFK challenges be enabled?"),
+
+    AFK_TRIGGER("AFK.Trigger Amount", 6,
+            "How many casts does a player have to make without moving",
+            "To trigger an AFK event. During which a random mob listed below",
+            "will be thrown at the player."),
+
+    AFK_MOB("AFK.Mob List", Arrays.asList("SKELETON", "ZOMBIE"),
+            "What mobs should be thrown the the AFK challenge is",
+            "Triggered."),
 
     VAULT_ECONOMY("Economy.Use Vault Economy", true,
             "Should Vault be used?"),

@@ -84,7 +84,7 @@ public class FishingListeners implements Listener {
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
             if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && event.getHook().hasMetadata("CRITICAL"))
                 event.getHook().removeMetadata("CRTICAL", plugin);
-        } else if (event.getState() == PlayerFishEvent.State.BITE) {
+        } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {
             if (Setting.BELL_ON_BITE.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
                 Sound sound = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Sound.BLOCK_NOTE_BLOCK_BELL : Sound.valueOf("BLOCK_NOTE_BELL");
                 player.playSound(player.getLocation(), sound, 1f, .1f);

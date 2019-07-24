@@ -20,6 +20,9 @@ public enum Setting {
     CRITICAL_DROP_MULTI("Main.Critical Drop Multiplier", 3,
             "How many times look should a critical cast get you?"),
 
+    BELL_ON_BITE("Main.Play Bell Sound On Bite", true,
+            "Should a bell sound play on bite?"),
+
     FISH_SIZE("Main.Fish Size", true,
             "Should fish have custom sizes?"),
 

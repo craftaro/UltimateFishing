@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.listeners;
 
 import com.songoda.lootables.loot.Drop;
+import com.songoda.lootables.utils.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.utils.settings.Setting;
 import org.bukkit.Bukkit;
@@ -74,12 +75,18 @@ public class FishingListeners implements Listener {
                     return;
                 criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Setting.CRITICAL_COOLDOWN.getLong() * 1000));
                 plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
-                player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, .1f);
+
+                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                    player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, .1f);
+
                 event.getHook().setMetadata("CRITICAL", new FixedMetadataValue(plugin, true));
             }
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT) {
             if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && event.getHook().hasMetadata("CRITICAL"))
                 event.getHook().removeMetadata("CRTICAL", plugin);
+        } else if (event.getState() == PlayerFishEvent.State.BITE) {
+            if (Setting.BELL_ON_BITE.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1f, .1f);
         }
     }
 

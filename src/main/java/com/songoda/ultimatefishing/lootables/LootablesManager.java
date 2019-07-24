@@ -17,7 +17,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class LootablesManager {
 
@@ -236,13 +235,6 @@ public class LootablesManager {
                                         .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, .5),
                                                 new EnchantChance(Enchantment.LUCK, 2, .4),
                                                 new EnchantChance(Enchantment.LUCK, 3, .3))
-                                        .build(),
-                                new LootBuilder()
-                                        .setMaterial(Material.POTION)
-                                        .setChance(1.2)
-                                        .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1.0),
-                                                new EnchantChance(Enchantment.LUCK, 2, .7),
-                                                new EnchantChance(Enchantment.LUCK, 3, .5))
                                         .build(),
                                 new LootBuilder()
                                         .setMaterial(Material.BONE)

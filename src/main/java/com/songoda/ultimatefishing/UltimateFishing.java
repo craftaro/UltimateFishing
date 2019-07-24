@@ -133,6 +133,7 @@ public class UltimateFishing extends JavaPlugin {
             rarityFile.getConfig().set("Rarity.Huge.Color", "5");
             rarityFile.getConfig().set("Rarity.Huge.Extra Health", 4);
             rarityFile.getConfig().set("Rarity.Huge.Sell Price", 99.99);
+            rarityFile.getConfig().set("Rarity.Huge.Broadcast", true);
             rarityFile.saveConfig();
         }
 
@@ -149,7 +150,8 @@ public class UltimateFishing extends JavaPlugin {
                         raritySection.getString("Color"),
                         raritySection.getDouble("Chance"),
                         raritySection.getInt("Extra Health"),
-                        raritySection.getDouble("Sell Price")));
+                        raritySection.getDouble("Sell Price"),
+                        raritySection.getBoolean("Broadcast")));
             }
         }
     }

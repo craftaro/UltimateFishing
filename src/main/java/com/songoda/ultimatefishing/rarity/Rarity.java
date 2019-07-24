@@ -9,13 +9,15 @@ public class Rarity {
 
     private final int extrahealth;
     private final double sellPrice;
+    private final boolean broadcast;
 
-    public Rarity(String rarity, String color, double chance, int extrahealth, double sellPrice) {
+    public Rarity(String rarity, String color, double chance, int extrahealth, double sellPrice, boolean broadcast) {
         this.rarity = rarity;
         this.color = color;
         this.chance = chance;
         this.extrahealth = extrahealth;
         this.sellPrice = sellPrice;
+        this.broadcast = broadcast;
     }
 
     public String getRarity() {
@@ -36,5 +38,9 @@ public class Rarity {
 
     public double getSellPrice() {
         return sellPrice;
+    }
+
+    public boolean isBroadcast() {
+        return broadcast;
     }
 }

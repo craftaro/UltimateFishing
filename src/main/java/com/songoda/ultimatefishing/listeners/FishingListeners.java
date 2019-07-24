@@ -3,6 +3,8 @@ package com.songoda.ultimatefishing.listeners;
 import com.songoda.lootables.loot.Drop;
 import com.songoda.lootables.utils.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.ultimatefishing.rarity.Rarity;
+import com.songoda.ultimatefishing.utils.Methods;
 import com.songoda.ultimatefishing.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -56,6 +58,14 @@ public class FishingListeners implements Listener {
                     double d2 = owner.getZ() - item.getLocation().getZ();
                     Vector vector = new Vector(d0 * 0.1D, d1 * 0.1D + Math.sqrt(Math.sqrt(d0 * d0 + d1 * d1 + d2 * d2)) * 0.08D, d2 * 0.1D);
 
+                    Rarity rarity = plugin.getRarityManager().getRarity(drop.getItemStack());
+                    if (rarity != null && rarity.isBroadcast()) {
+                        Bukkit.broadcastMessage(plugin.getLocale().getMessage("event.catch.broadcast")
+                        .processPlaceholder("username", player.getName())
+                        .processPlaceholder("rarity", "&" + rarity.getColor() + rarity.getRarity())
+                        .getPrefixedMessage());
+                    }
+
                     item.setVelocity(vector);
                 } else if (drop.getCommand() != null) {
                     String command = drop.getCommand();
@@ -78,7 +88,7 @@ public class FishingListeners implements Listener {
                 inCritical.add(player.getUniqueId());
             }
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT
-                || event.getState() == PlayerFishEvent.State.REEL_IN) {
+                || (plugin.isServerVersionAtLeast(ServerVersion.V1_13) && event.getState() == PlayerFishEvent.State.REEL_IN)) {
             if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && inCritical.contains(player.getUniqueId()))
                 inCritical.remove(player.getUniqueId());
         } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {

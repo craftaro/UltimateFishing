@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class LootablesManager {
 
@@ -54,21 +55,17 @@ public class LootablesManager {
                 ItemStack itemStack = drop.getItemStack();
                 ItemMeta meta = itemStack.getItemMeta();
                 List<String> lore = new ArrayList<>();
-                Rarity pickedRarity;
 
 
-                top:
-                while (true) {
-                    double rand = Math.random() * 100;
-                    for (Rarity rarity : plugin.getRarityManager().getRarities()) {
-                        if (rand - rarity.getChance() < 0 || rarity.getChance() == 100) {
-                            pickedRarity = rarity;
-                            break top;
-                        }
-                    }
-                }
+                List<Rarity> weightedList = new ArrayList<>();
+                for (Rarity rarity : plugin.getRarityManager().getRarities())
+                    for (int i = 0; i < rarity.getChance() * 30; i++)
+                        weightedList.add(rarity);
 
-                lore.add(Methods.formatText("&" + pickedRarity.getColor() + pickedRarity.getRarity()));
+                int choice = new Random().nextInt(weightedList.size());
+                Rarity rarity = weightedList.get(choice);
+
+                lore.add(Methods.formatText("&" + rarity.getColor() + rarity.getRarity()));
                 if (meta.hasLore())
                     lore.addAll(meta.getLore());
                 meta.setLore(lore);

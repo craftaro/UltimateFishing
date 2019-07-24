@@ -135,7 +135,7 @@ public class LootablesManager {
                                                 new EnchantChance(Enchantment.LUCK, 3, 1.6))
                                         .build(),
                                 new LootBuilder()
-                                        .setMaterial(Material.ENCHANTED_BOOK)
+                                        .setMaterial(Material.BOOK)
                                         .setChance(0.7)
                                         .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
                                         .setDamageMin(10)

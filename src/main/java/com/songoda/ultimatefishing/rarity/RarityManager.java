@@ -4,14 +4,11 @@ import com.songoda.ultimatefishing.utils.Methods;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class RarityManager {
 
-    private final Set<Rarity> registeredRarities = new HashSet<>();
+    private final List<Rarity> registeredRarities = new ArrayList<>();
 
     public boolean addRarity(Rarity rarity) {
         return this.registeredRarities.add(rarity);
@@ -31,7 +28,7 @@ public class RarityManager {
         return optionalRarity.orElse(null);
     }
 
-    public Set<Rarity> getRarities() {
-        return Collections.unmodifiableSet(registeredRarities);
+    public List<Rarity> getRarities() {
+        return new ArrayList<>(registeredRarities);
     }
 }

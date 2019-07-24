@@ -13,13 +13,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class GUISell extends AbstractGUI {
 
     private final UltimateFishing plugin;
 
     private int task;
+
+    private Set<Integer> draggable = new HashSet<>();
 
     public GUISell(UltimateFishing plugin, Player player) {
         super(player);
@@ -85,7 +89,11 @@ public class GUISell extends AbstractGUI {
 
         double total = calculateTotal();
 
+
         createButton(49, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&7Sell for &a$" + Methods.formatEconomy(total));
+
+        for (int i = 0; i < 54; i++)
+            if (inventory.getItem(i) == null) draggable.add(i);
     }
 
     private double calculateTotal() {
@@ -103,17 +111,30 @@ public class GUISell extends AbstractGUI {
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::constructGUI, 5L, 5L);
     }
 
+
+    private void returnItem(Player player, ItemStack itemStack) {
+        if (itemStack == null) return;
+        Map<Integer, ItemStack> overfilled = player.getInventory().addItem(itemStack);
+        for (ItemStack item2 : overfilled.values()) {
+            player.getWorld().dropItemNaturally(player.getLocation(), item2);
+        }
+    }
+
     @Override
     protected void registerClickables() {
 
         registerClickable(49, ((player1, inventory1, cursor, slot, type) -> {
             double totalNew = calculateTotal();
-            if (totalNew == 0)  {
+            if (totalNew == 0) {
                 plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
 
                 if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1L, 1L);
 
+                for (int i : draggable) {
+                    returnItem(player, inventory.getItem(i));
+                }
+                player.closeInventory();
                 return;
             }
             plugin.getEconomy().deposit(player, totalNew);
@@ -122,19 +143,31 @@ public class GUISell extends AbstractGUI {
                     .processPlaceholder("total", Methods.formatEconomy(totalNew))
                     .sendPrefixedMessage(player);
 
-            for (ItemStack itemStack : inventory.getContents()) {
+            for (int i : draggable) {
+                ItemStack itemStack = inventory.getItem(i);
+                if (itemStack == null) continue;
+
                 Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
 
-                if (rarity == null) continue;
+                if (rarity == null) {
+                    returnItem(player, itemStack);
+                    continue;
+                }
                 inventory.remove(itemStack);
             }
             if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1L, 1L);
+            player.closeInventory();
         }));
     }
 
     @Override
     protected void registerOnCloses() {
-        registerOnClose(((player1, inventory1) -> Bukkit.getScheduler().cancelTask(task)));
+        registerOnClose(((player1, inventory1) -> {
+            for (int i : draggable) {
+                returnItem(player, inventory.getItem(i));
+            }
+            Bukkit.getScheduler().cancelTask(task);
+        }));
     }
 }

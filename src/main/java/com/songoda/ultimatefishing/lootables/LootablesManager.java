@@ -61,10 +61,16 @@ public class LootablesManager {
                 List<String> lore = new ArrayList<>();
 
                 List<Rarity> weightedList = new ArrayList<>();
-                for (Rarity rarity : plugin.getRarityManager().getRarities())
-                    for (int i = 0; i < (rarity.getChance() + (rarity.getLureChance() * lure)) * 30; i++)
-                        weightedList.add(rarity);
 
+                List<Rarity> rarities = plugin.getRarityManager().getRarities(player);
+                if (rarities.isEmpty()) continue;
+                else if (rarities.size() == 1)
+                    weightedList = rarities;
+                else {
+                    for (Rarity rarity : plugin.getRarityManager().getRarities(player))
+                        for (int i = 0; i < (rarity.getChance() + (rarity.getLureChance() * lure)) * 30; i++)
+                            weightedList.add(rarity);
+                }
                 int choice = new Random().nextInt(weightedList.size());
                 Rarity rarity = weightedList.get(choice);
 

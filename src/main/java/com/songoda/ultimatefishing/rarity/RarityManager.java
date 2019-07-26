@@ -2,6 +2,7 @@ package com.songoda.ultimatefishing.rarity;
 
 import com.songoda.ultimatefishing.utils.Methods;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -30,5 +31,14 @@ public class RarityManager {
 
     public List<Rarity> getRarities() {
         return new ArrayList<>(registeredRarities);
+    }
+
+    public List<Rarity> getRarities(Player player) {
+        List<Rarity> registeredRarities = new ArrayList<>();
+        for (Rarity rarity : this.registeredRarities) {
+            if (player == null || player.hasPermission("ultimatefishing.fish." + rarity.getRarity()))
+                registeredRarities.add(rarity);
+        }
+        return registeredRarities;
     }
 }

@@ -6,7 +6,27 @@ author: songoda
 api-version: 1.13
 commands:
   UltimateFishing:
-    description: I have no idea.
+    description: Reloads the configuration file
     default: true
     aliases: [uf]
-    usage: /<command> [reload]
+    usage: /ultimatefishing reload
+permissions:
+  ultimatefishing.*:
+    description: Inherits all plugin permissions
+    children:
+      ultimatefishing.admin: true
+      ultimatefishing.sellall: true
+      ultimatefishing.sell: true
+      ultimatefishing.fish.*: true
+  ultimatefishing.admin:
+    description: Allows players to edit settings and reload files
+    default: op
+  ultimatefishing.sell:
+    description: Allows players to open the sell GUI
+    default: op
+  ultimatefishing.sellall:
+    description: Allows players to use the shortcut to sell all from the player's inventory.
+    default: op
+  ultimatefishing.fish.*:
+    description: Allows players to catch a certain fish rarity.
+    default: op

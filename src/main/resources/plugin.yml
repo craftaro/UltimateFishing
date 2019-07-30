@@ -18,6 +18,7 @@ permissions:
       ultimatefishing.sellall: true
       ultimatefishing.sell: true
       ultimatefishing.fish.*: true
+      utlimatefishing.use: true
   ultimatefishing.admin:
     description: Allows players to edit settings and reload files
     default: op
@@ -29,4 +30,7 @@ permissions:
     default: op
   ultimatefishing.fish.*:
     description: Allows players to catch a certain fish rarity.
+    default: op
+  ultimatefishing.use:
+    description: Allows players to catch ultimate fish.
     default: op

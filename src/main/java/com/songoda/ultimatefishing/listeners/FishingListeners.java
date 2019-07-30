@@ -37,6 +37,8 @@ public class FishingListeners implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("ultimatefishing.use")) return;
+
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
             Entity oldEntity = event.getCaught();
             oldEntity.remove();

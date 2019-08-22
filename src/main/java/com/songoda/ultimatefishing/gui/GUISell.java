@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.gui;
 
-import com.songoda.lootables.utils.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.library.economy.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.utils.Methods;
@@ -10,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class GUISell extends AbstractGUI {
         double total = Methods.calculateTotal(inventory);
 
 
-        createButton(49, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&7Sell for &a$" + Methods.formatEconomy(total));
+        createButton(49, ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&7Sell for &a$" + Methods.formatEconomy(total));
 
         for (int i = 0; i < 54; i++)
             if (inventory.getItem(i) == null) draggable.add(i);
@@ -118,13 +118,13 @@ public class GUISell extends AbstractGUI {
             if (totalNew == 0) {
                 plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
 
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1L, 1L);
 
                 player.closeInventory();
                 return;
             }
-            plugin.getEconomy().deposit(player, totalNew);
+            EconomyManager.deposit(player, totalNew);
 
             plugin.getLocale().getMessage("event.sell.success")
                     .processPlaceholder("total", Methods.formatEconomy(totalNew))
@@ -139,7 +139,7 @@ public class GUISell extends AbstractGUI {
                 if (rarity == null) continue;
                 inventory.remove(itemStack);
             }
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+            if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                 player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1L, 1L);
             player.closeInventory();
         }));

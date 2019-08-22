@@ -1,7 +1,6 @@
 package com.songoda.ultimatefishing.utils.gui;
 
-import com.songoda.lootables.utils.ServerVersion;
-import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.core.library.compatibility.ServerVersion;
 import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 
@@ -18,7 +17,7 @@ public class Range {
         this.max = max;
         this.clickType = clickType;
         this.bottom = bottom;
-        if (UltimateFishing.getInstance().isServerVersionAtLeast(ServerVersion.V1_9))
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
             onClickSound = Sound.UI_BUTTON_CLICK;
     }
 

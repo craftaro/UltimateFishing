@@ -1,11 +1,9 @@
 package com.songoda.ultimatefishing;
 
-import com.songoda.lootables.utils.ServerVersion;
-import com.songoda.ultimatefishing.command.CommandManager;
-import com.songoda.ultimatefishing.economy.Economy;
-import com.songoda.ultimatefishing.economy.PlayerPointsEconomy;
-import com.songoda.ultimatefishing.economy.ReserveEconomy;
-import com.songoda.ultimatefishing.economy.VaultEconomy;
+import com.songoda.core.SongodaCore;
+import com.songoda.core.library.commands.CommandManager;
+import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.ultimatefishing.command.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
 import com.songoda.ultimatefishing.listeners.FurnaceListeners;
@@ -16,12 +14,7 @@ import com.songoda.ultimatefishing.utils.ConfigWrapper;
 import com.songoda.ultimatefishing.utils.Methods;
 import com.songoda.ultimatefishing.utils.Metrics;
 import com.songoda.ultimatefishing.utils.locale.Locale;
-import com.songoda.ultimatefishing.utils.settings.Setting;
 import com.songoda.ultimatefishing.utils.settings.SettingsManager;
-import com.songoda.ultimatefishing.utils.updateModules.LocaleModule;
-import com.songoda.update.Plugin;
-import com.songoda.update.SongodaUpdate;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,7 +28,6 @@ public class UltimateFishing extends JavaPlugin {
     private ConfigWrapper rarityFile = new ConfigWrapper(this, "", "rarity.yml");
 
     private Locale locale;
-    private Economy economy;
 
     private SettingsManager settingsManager;
     private LootablesManager lootablesManager;
@@ -44,12 +36,11 @@ public class UltimateFishing extends JavaPlugin {
 
     private ConsoleCommandSender console = Bukkit.getConsoleSender();
 
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
-
     public static UltimateFishing getInstance() {
         return INSTANCE;
     }
 
+    @Override
     public void onDisable() {
         console.sendMessage(Methods.formatText("&a============================="));
         console.sendMessage(Methods.formatText("&7UltimateFishing " + this.getDescription().getVersion() + " by &5Songoda <3!"));
@@ -57,6 +48,7 @@ public class UltimateFishing extends JavaPlugin {
         console.sendMessage(Methods.formatText("&a============================="));
     }
 
+    @Override
     public void onEnable() {
         INSTANCE = this;
         console.sendMessage(Methods.formatText("&a============================="));
@@ -68,6 +60,13 @@ public class UltimateFishing extends JavaPlugin {
         this.settingsManager.setupConfig();
 
         this.commandManager = new CommandManager(this);
+        this.commandManager.addCommand(new CommandUltimateFishing(this))
+                .addSubCommands(
+                        new CommandSell(this),
+                        new CommandSellAll(this),
+                        new CommandSettings(this),
+                        new CommandReload(this)
+                );
 
         new Locale(this, "en_US");
         this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
@@ -78,19 +77,12 @@ public class UltimateFishing extends JavaPlugin {
         this.getLootablesManager().getLootManager().loadLootables();
 
         //Running Songoda Updater
-        Plugin plugin = new Plugin(this, 59);
-        plugin.addModule(new LocaleModule());
-        SongodaUpdate.load(plugin);
+        SongodaCore.registerPlugin(this, 59);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Setup Economy
-        if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
-            this.economy = new VaultEconomy();
-        else if (Setting.RESERVE_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Reserve"))
-            this.economy = new ReserveEconomy();
-        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("PlayerPoints"))
-            this.economy = new PlayerPointsEconomy();
+        // Load Economy
+        EconomyManager.load();
 
         // Setup Listeners
         pluginManager.registerEvents(new FishingListeners(this), this);
@@ -161,32 +153,12 @@ public class UltimateFishing extends JavaPlugin {
         }
     }
 
-    public ServerVersion getServerVersion() {
-        return serverVersion;
-    }
-
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
-    }
-
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
-    }
-
     public LootablesManager getLootablesManager() {
         return lootablesManager;
     }
 
     public Locale getLocale() {
         return locale;
-    }
-
-    public Economy getEconomy() {
-        return economy;
     }
 
     public CommandManager getCommandManager() {

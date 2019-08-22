@@ -1,7 +1,7 @@
 package com.songoda.ultimatefishing.listeners;
 
+import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
-import com.songoda.lootables.utils.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.utils.settings.Setting;
@@ -28,11 +28,11 @@ public class FishingListeners implements Listener {
         this.plugin = instance;
     }
 
-    private Map<UUID, Long> criticalCooldown = new HashMap<>();
+    private final Map<UUID, Long> criticalCooldown = new HashMap<>();
 
-    private List<UUID> inCritical = new ArrayList<>();
+    private final List<UUID> inCritical = new ArrayList<>();
 
-    private Map<UUID, AFKObject> afk = new HashMap<>();
+    private final Map<UUID, AFKObject> afk = new HashMap<>();
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
@@ -104,18 +104,18 @@ public class FishingListeners implements Listener {
                 criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Setting.CRITICAL_COOLDOWN.getLong() * 1000));
                 plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
 
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
                     player.playSound(player.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 1f, .1f);
 
                 inCritical.add(player.getUniqueId());
             }
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT
-                || (plugin.isServerVersionAtLeast(ServerVersion.V1_13) && event.getState() == PlayerFishEvent.State.REEL_IN)) {
+                || (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) && event.getState() == PlayerFishEvent.State.REEL_IN)) {
             if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && inCritical.contains(player.getUniqueId()))
                 inCritical.remove(player.getUniqueId());
-        } else if (plugin.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {
-            if (Setting.BELL_ON_BITE.getBoolean() && plugin.isServerVersionAtLeast(ServerVersion.V1_12)) {
-                Sound sound = plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Sound.BLOCK_NOTE_BLOCK_BELL : Sound.valueOf("BLOCK_NOTE_BELL");
+        } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {
+            if (Setting.BELL_ON_BITE.getBoolean() && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
+                Sound sound = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Sound.BLOCK_NOTE_BLOCK_BELL : Sound.valueOf("BLOCK_NOTE_BELL");
                 player.playSound(player.getLocation(), sound, 1f, .1f);
             }
         }

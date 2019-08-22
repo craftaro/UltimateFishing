@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.utils;
 
-import com.songoda.lootables.utils.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import org.bukkit.ChatColor;
@@ -42,10 +42,10 @@ public class Methods {
         int randomNum = 1 + (int) (Math.random() * 6);
         ItemStack glass;
         if (rainbow) {
-            glass = new ItemStack(UltimateFishing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
+            glass = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ?
                     Material.LEGACY_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) randomNum);
         } else {
-            glass = new ItemStack(UltimateFishing.getInstance().isServerVersionAtLeast(ServerVersion.V1_13) ?
+            glass = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ?
                     Material.LEGACY_STAINED_GLASS_PANE : Material.valueOf("STAINED_GLASS_PANE"), 1, (short) type);
         }
         ItemMeta glassmeta = glass.getItemMeta();
@@ -97,7 +97,7 @@ public class Methods {
     public static String formatTitle(String text) {
         if (text == null || text.equals(""))
             return "";
-        if (!UltimateFishing.getInstance().isServerVersionAtLeast(ServerVersion.V1_9)) {
+        if (!ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
             if (text.length() > 31)
                 text = text.substring(0, 29) + "...";
         }

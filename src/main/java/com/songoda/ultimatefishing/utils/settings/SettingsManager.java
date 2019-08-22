@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.utils.settings;
 
-import com.songoda.lootables.utils.ServerVersion;
+import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.utils.Methods;
 import org.bukkit.Bukkit;
@@ -119,7 +119,7 @@ public class SettingsManager implements Listener {
 
         int slot = 10;
         for (String key : plugin.getConfig().getDefaultSection().getKeys(false)) {
-            ItemStack item = new ItemStack(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LEGACY_WOOL : Material.valueOf("WOOL"), 1, (byte) (slot - 9));
+            ItemStack item = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LEGACY_WOOL : Material.valueOf("WOOL"), 1, (byte) (slot - 9));
             ItemMeta meta = item.getItemMeta();
             meta.setLore(Collections.singletonList(Methods.formatText("&6Click To Edit This Category.")));
             meta.setDisplayName(Methods.formatText("&f&l" + key));
@@ -150,13 +150,13 @@ public class SettingsManager implements Listener {
                 item.setType(Material.PAPER);
                 lore.add(Methods.formatText("&7" + config.getString(fKey)));
             } else if (config.isInt(fKey)) {
-                item.setType(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
+                item.setType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
                 lore.add(Methods.formatText("&7" + config.getInt(fKey)));
             } else if (config.isLong(fKey)) {
-                item.setType(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
+                item.setType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
                 lore.add(Methods.formatText("&7" + config.getLong(fKey)));
             } else if (config.isDouble(fKey)) {
-                item.setType(plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
+                item.setType(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.CLOCK : Material.valueOf("WATCH"));
                 lore.add(Methods.formatText("&7" + config.getDouble(fKey)));
             }
 

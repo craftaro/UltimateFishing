@@ -49,7 +49,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>com.songoda.core</pattern>
-                                    <shadedPattern>${project.groupId}.ultimateclaims.core</shadedPattern>
+                                    <shadedPattern>${project.groupId}.ultimatefishing.core</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

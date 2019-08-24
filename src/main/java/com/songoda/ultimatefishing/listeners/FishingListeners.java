@@ -4,7 +4,6 @@ import com.songoda.core.library.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
-import com.songoda.ultimatefishing.utils.settings.Setting;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -43,14 +42,14 @@ public class FishingListeners implements Listener {
             Entity oldEntity = event.getCaught();
             oldEntity.remove();
 
-            if (Setting.AFK_CHALLENGES.getBoolean()) {
+            if (plugin.getMainConfig().getSetting("AFK.Challenges").getBoolean()) {
                 if (afk.containsKey(player.getUniqueId())) {
                     AFKObject afkObject = afk.get(player.getUniqueId());
 
                     if (afkObject.isSameLocation(player.getLocation())) {
                         afkObject.advanceAmount();
-                        if (afkObject.getAmount() >= Setting.AFK_TRIGGER.getInt()) {
-                            List<String> types = Setting.AFK_MOB.getStringList();
+                        if (afkObject.getAmount() >= plugin.getMainConfig().getSetting("AFK.Trigger Amount").getInt()) {
+                            List<String> types = plugin.getMainConfig().getSetting("AFK.Mob List").getStringList();
                             Collections.shuffle(types);
 
                             Entity entity = oldEntity.getWorld().spawnEntity(oldEntity.getLocation(), EntityType.valueOf(types.get(0)));
@@ -70,7 +69,7 @@ public class FishingListeners implements Listener {
             List<Drop> drops = plugin.getLootablesManager().getDrops(event.getPlayer());
 
             if (inCritical.contains(player.getUniqueId())) {
-                for (int i = 0; i < (Setting.CRITICAL_DROP_MULTI.getInt() - 1); i++)
+                for (int i = 0; i < (plugin.getMainConfig().getSetting("Main.Critical Drop Multiplier").getInt() - 1); i++)
                     drops.addAll(plugin.getLootablesManager().getDrops(event.getPlayer()));
             }
             inCritical.remove(player.getUniqueId());
@@ -96,12 +95,12 @@ public class FishingListeners implements Listener {
                 }
             }
         } else if (event.getState() == PlayerFishEvent.State.FISHING) {
-            double ch = Double.parseDouble(Setting.CRITICAL_CHANCE.getString().replace("%", ""));
+            double ch = Double.parseDouble(plugin.getMainConfig().getSetting("Main.Critical Cast Chance").getString().replace("%", ""));
             double rand = Math.random() * 100;
             if (rand - ch < 0 || ch == 100) {
                 if (criticalCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < criticalCooldown.get(player.getUniqueId()))
                     return;
-                criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Setting.CRITICAL_COOLDOWN.getLong() * 1000));
+                criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (plugin.getMainConfig().getSetting("Main.Critical Cast Cooldown").getLong() * 1000));
                 plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
 
                 if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9))
@@ -111,10 +110,10 @@ public class FishingListeners implements Listener {
             }
         } else if (event.getState() == PlayerFishEvent.State.FAILED_ATTEMPT
                 || (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) && event.getState() == PlayerFishEvent.State.REEL_IN)) {
-            if (Setting.CRITICAL_CAST_EXPIRE.getBoolean() && inCritical.contains(player.getUniqueId()))
+            if (plugin.getMainConfig().getSetting("Main.Critical Cast Expire").getBoolean() && inCritical.contains(player.getUniqueId()))
                 inCritical.remove(player.getUniqueId());
         } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {
-            if (Setting.BELL_ON_BITE.getBoolean() && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
+            if (plugin.getMainConfig().getSetting("Main.Play Bell Sound On Bite").getBoolean() && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_12)) {
                 Sound sound = ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Sound.BLOCK_NOTE_BLOCK_BELL : Sound.valueOf("BLOCK_NOTE_BELL");
                 player.playSound(player.getLocation(), sound, 1f, .1f);
             }

@@ -3,6 +3,8 @@ package com.songoda.ultimatefishing;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.library.commands.CommandManager;
 import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.library.settings.Config;
+import com.songoda.core.library.settings.Section;
 import com.songoda.ultimatefishing.command.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
@@ -10,14 +12,12 @@ import com.songoda.ultimatefishing.listeners.FurnaceListeners;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
-import com.songoda.ultimatefishing.utils.ConfigWrapper;
 import com.songoda.ultimatefishing.utils.Methods;
 import com.songoda.ultimatefishing.utils.Metrics;
 import com.songoda.ultimatefishing.utils.locale.Locale;
 import com.songoda.ultimatefishing.utils.settings.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +25,7 @@ public class UltimateFishing extends JavaPlugin {
 
     private static UltimateFishing INSTANCE;
 
-    private ConfigWrapper rarityFile = new ConfigWrapper(this, "", "rarity.yml");
+    private Config rarityConfig = new Config(this, "rarity.yml");
 
     private Locale locale;
 
@@ -93,7 +93,7 @@ public class UltimateFishing extends JavaPlugin {
         new Metrics(this);
 
         //Apply default fish rarity.
-        runRarityDefaults();
+        setupRarity();
     }
 
     public void reload() {
@@ -101,54 +101,64 @@ public class UltimateFishing extends JavaPlugin {
         this.locale.reloadMessages();
         this.settingsManager.reloadConfig();
         this.getLootablesManager().getLootManager().loadLootables();
-        this.runRarityDefaults();
+        this.setupRarity();
     }
 
     /*
      * Insert default fish sizes into config.
      */
-    private void runRarityDefaults() {
-        if (!rarityFile.getConfig().contains("Rarity")) {
-            rarityFile.getConfig().set("Rarity.Tiny.Chance", 15);
-            rarityFile.getConfig().set("Rarity.Tiny.Color", "9");
-            rarityFile.getConfig().set("Rarity.Tiny.Extra Health", -2);
-            rarityFile.getConfig().set("Rarity.Tiny.Sell Price", 4.99);
-            rarityFile.getConfig().set("Rarity.Tiny.Lure Chance Change", -5);
-            rarityFile.getConfig().set("Rarity.Normal.Chance", 50);
-            rarityFile.getConfig().set("Rarity.Normal.Color", "7");
-            rarityFile.getConfig().set("Rarity.Normal.Extra Health", 0);
-            rarityFile.getConfig().set("Rarity.Normal.Sell Price", 19.99);
-            rarityFile.getConfig().set("Rarity.Normal.Lure Chance Change", -8);
-            rarityFile.getConfig().set("Rarity.Large.Chance", 25);
-            rarityFile.getConfig().set("Rarity.Large.Color", "c");
-            rarityFile.getConfig().set("Rarity.Large.Extra Health", 2);
-            rarityFile.getConfig().set("Rarity.Large.Sell Price", 49.99);
-            rarityFile.getConfig().set("Rarity.Large.Lure Chance Change", 5);
-            rarityFile.getConfig().set("Rarity.Huge.Chance", 10);
-            rarityFile.getConfig().set("Rarity.Huge.Color", "5");
-            rarityFile.getConfig().set("Rarity.Huge.Extra Health", 4);
-            rarityFile.getConfig().set("Rarity.Huge.Sell Price", 99.99);
-            rarityFile.getConfig().set("Rarity.Huge.Broadcast", true);
-            rarityFile.getConfig().set("Rarity.Huge.Lure Chance Change", 8);
-            rarityFile.saveConfig();
-        }
+    private void setupRarity() {
+        this.rarityConfig.reload();
+
+        rarityConfig.addCategory("Rarity", "The different levels of fish rarity",
+                "You can rename, replace and add new fish as you wish.")
+                .addDefaultSetting("Tiny.Chance", 15,
+                        "The chance that a caught fish will be tiny.")
+                .addDefaultSetting("Tiny.Color", "9",
+                        "The color used for the name tag.")
+                .addDefaultSetting("Tiny.Extra Health", -2,
+                        "The amount of health on top of the initial health that the caught",
+                        "fish grants.")
+                .addDefaultSetting("Tiny.Sell Price", 4.99,
+                        "The price tiny fish will sell for.")
+                .addDefaultSetting("Tiny.Lure Chance Change", -5,
+                        "The effect the lure fishing enchantment would have on the chance.",
+                        "This is multiplied per enchantment level.")
+                .addDefaultSetting("Normal.Chance", 50)
+                .addDefaultSetting("Normal.Color", "7")
+                .addDefaultSetting("Normal.Extra Health", 0)
+                .addDefaultSetting("Normal.Sell Price", 19.99)
+                .addDefaultSetting("Normal.Lure Chance Change", -8)
+                .addDefaultSetting("Large.Chance", 25)
+                .addDefaultSetting("Large.Color", "c")
+                .addDefaultSetting("Large.Extra Health", 2)
+                .addDefaultSetting("Large.Sell Price", 49.99)
+                .addDefaultSetting("Large.Lure Chance Change", 5)
+                .addDefaultSetting("Huge.Chance", 10)
+                .addDefaultSetting("Huge.Color", "5")
+                .addDefaultSetting("Huge.Extra Health", 4)
+                .addDefaultSetting("Huge.Sell Price", 99.99)
+                .addDefaultSetting("Huge.Broadcast", true,
+                        "Should we broadcast a message to all players when a huge fish",
+                        "is caught?")
+                .addDefaultSetting("Huge.Lure Chance Change", 8);
+
+        this.rarityConfig.categorySpacing(false).commentSpacing(false).setup();
 
         this.rarityManager = new RarityManager();
 
         /*
          * Register rarities into RarityManager from Configuration.
          */
-        if (rarityFile.getConfig().contains("Rarity")) {
-            for (String keyName : rarityFile.getConfig().getConfigurationSection("Rarity").getKeys(false)) {
-                ConfigurationSection raritySection = rarityFile.getConfig().getConfigurationSection("Rarity." + keyName);
-
-                this.rarityManager.addRarity(new Rarity(keyName,
-                        raritySection.getString("Color"),
-                        raritySection.getDouble("Chance"),
-                        raritySection.getInt("Extra Health"),
-                        raritySection.getDouble("Sell Price"),
-                        raritySection.getBoolean("Broadcast"),
-                        raritySection.getDouble("Lure Chance Change")));
+        if (rarityConfig.hasCategory("Rarity")) {
+            for (Section section : rarityConfig.getCategory("Rarity").getSection()) {
+                this.rarityManager.addRarity(new Rarity(section.getKey(),
+                        section.narrow("Color").getString(),
+                        section.narrow("Chance").getDouble(),
+                        section.narrow("Extra Health").getInt(),
+                        section.narrow("Sell Price").getDouble(),
+                        section.narrow("Broadcast").getBoolean(),
+                        section.narrow("Lure Chance Change").getDouble()));
             }
         }
     }

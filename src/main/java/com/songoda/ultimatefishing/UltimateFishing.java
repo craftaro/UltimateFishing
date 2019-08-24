@@ -3,6 +3,7 @@ package com.songoda.ultimatefishing;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.library.commands.CommandManager;
 import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.library.economy.economies.Economy;
 import com.songoda.core.library.locale.Locale;
 import com.songoda.core.library.settings.Config;
 import com.songoda.core.library.settings.Section;
@@ -22,6 +23,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class UltimateFishing extends JavaPlugin {
 
@@ -59,38 +61,13 @@ public class UltimateFishing extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
         console.sendMessage(Methods.formatText("&a============================="));
 
-        config.addCategory("Main")
-                .addDefaultSetting("Critical Cast Chance", "10%",
-                        "What should the chance be for a cast to become critical?")
-                .addDefaultSetting("Critical Cast Cooldown", 30,
-                        "The amount of time in seconds between critical casts.")
-                .addDefaultSetting("Critical Cast Expire", false,
-                        "Should the critical cast expire after a failed catch attempt?")
-                .addDefaultSetting("Critical Drop Multiplier", 3,
-                        "How many times look should a critical cast get you?")
-                .addDefaultSetting("Play Bell Sound On Bite", true,
-                        "Should a bell sound play on bite?")
-                .addDefaultSetting("Fish Rarity", true,
-                        "Should fish have rarity?")
-                .getConfig().addCategory("AFK")
-                .addDefaultSetting("Challenges", true,
-                        "Should AFK challenges be enabled?")
-                .addDefaultSetting("Trigger Amount", 6,
-                        "How many casts does a player have to make without moving",
-                        "To trigger an AFK event. During which a random mob listed below",
-                        "will be thrown at the player.")
-                .addDefaultSetting("Mob List", Arrays.asList("SKELETON", "ZOMBIE"),
-                        "What mobs should be thrown the the AFK challenge is",
-                        "Triggered.")
-                .getConfig().addCategory("Interfaces")
-                .addDefaultSetting("Glass Type 1", 7)
-                .addDefaultSetting("Glass Type 2", 11)
-                .addDefaultSetting("Glass Type 3", 3)
-                .getConfig().addCategory("System")
-                .addDefaultSetting("Language Mode", "en_US",
-                        "The enabled language file.",
-                        "More language files (if available) can be found in the plugins data folder.")
-                .getConfig().allowUserExpansion(false).setup();
+        // Load Economy
+        EconomyManager.load();
+
+        // Setup Config
+        setupConfig();
+
+        EconomyManager.setPreferredEconomy(config.getSetting("Main.Economy").getString());
 
         this.settingsManager = new SettingsManager(config);
 
@@ -117,9 +94,6 @@ public class UltimateFishing extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
-        // Load Economy
-        EconomyManager.load();
-
         // Setup Listeners
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);
@@ -138,6 +112,45 @@ public class UltimateFishing extends JavaPlugin {
         this.config.reload();
         this.getLootablesManager().getLootManager().loadLootables();
         this.setupRarity();
+    }
+
+    private void setupConfig() {
+        config.addCategory("Main")
+                .addDefaultSetting("Critical Cast Chance", "10%",
+                        "What should the chance be for a cast to become critical?")
+                .addDefaultSetting("Critical Cast Cooldown", 30,
+                        "The amount of time in seconds between critical casts.")
+                .addDefaultSetting("Critical Cast Expire", false,
+                        "Should the critical cast expire after a failed catch attempt?")
+                .addDefaultSetting("Critical Drop Multiplier", 3,
+                        "How many times look should a critical cast get you?")
+                .addDefaultSetting("Play Bell Sound On Bite", true,
+                        "Should a bell sound play on bite?")
+                .addDefaultSetting("Fish Rarity", true,
+                        "Should fish have rarity?")
+                .addDefaultSetting("Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
+                        "Which economy plugin should be used?",
+                        "You can choose from \"" + EconomyManager.getRegisteredEconomies().stream().map(Economy::getName)
+                                .collect(Collectors.joining(", ")) + "\".")
+                .getConfig().addCategory("AFK")
+                .addDefaultSetting("Challenges", true,
+                        "Should AFK challenges be enabled?")
+                .addDefaultSetting("Trigger Amount", 6,
+                        "How many casts does a player have to make without moving",
+                        "To trigger an AFK event. During which a random mob listed below",
+                        "will be thrown at the player.")
+                .addDefaultSetting("Mob List", Arrays.asList("SKELETON", "ZOMBIE"),
+                        "What mobs should be thrown the the AFK challenge is",
+                        "Triggered.")
+                .getConfig().addCategory("Interfaces")
+                .addDefaultSetting("Glass Type 1", 7)
+                .addDefaultSetting("Glass Type 2", 11)
+                .addDefaultSetting("Glass Type 3", 3)
+                .getConfig().addCategory("System")
+                .addDefaultSetting("Language Mode", "en_US",
+                        "The enabled language file.",
+                        "More language files (if available) can be found in the plugins data folder.")
+                .getConfig().allowUserExpansion(false).setup();
     }
 
     /*

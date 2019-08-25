@@ -155,7 +155,7 @@ public class UltimateFishing extends JavaPlugin {
     private void setupRarity() {
         this.rarityConfig.reload();
 
-        rarityConfig.addCategory("Rarity", "The different levels of fish rarity",
+        rarityConfig.addCategory("Rarity", "The different levels of fish rarity.",
                 "You can rename, replace and add new fish as you wish.")
                 .addDefaultSetting("Tiny.Chance", 15,
                         "The chance that a caught fish will be tiny.")

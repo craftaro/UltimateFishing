@@ -1,41 +1,41 @@
-package com.songoda.ultimatefishing.command.commands;
+package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.library.settings.editor.ConfigSelectionGUI;
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.ultimatefishing.gui.GUISell;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class CommandSell extends AbstractCommand {
+public class CommandSettings extends AbstractCommand {
 
     final UltimateFishing instance;
 
-    public CommandSell(UltimateFishing instance) {
-        super(true, "sell");
+    public CommandSettings(UltimateFishing instance) {
+        super(true, "settings");
         this.instance = instance;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        new GUISell(instance, (Player)sender);
+        new ConfigSelectionGUI(instance, (Player) sender, instance.getMainConfig(), instance.getRarityConfig());
         return ReturnType.SUCCESS;
     }
 
     @Override
     public String getPermissionNode() {
-        return "ultimatefishing.sell";
+        return "ultimatefishing.admin";
     }
 
     @Override
     public String getSyntax() {
-        return "/uf sell";
+        return "/uf settings";
     }
 
     @Override
     public String getDescription() {
-        return "Open the sell GUI.";
+        return "Edit the UltimateFishing Settings.";
     }
 
     @Override

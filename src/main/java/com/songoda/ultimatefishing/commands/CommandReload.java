@@ -1,24 +1,24 @@
-package com.songoda.ultimatefishing.command.commands;
+package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.ultimatefishing.UltimateFishing;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class CommandSettings extends AbstractCommand {
+public class CommandReload extends AbstractCommand {
 
     final UltimateFishing instance;
 
-    public CommandSettings(UltimateFishing instance) {
-        super(true, "settings");
+    public CommandReload(UltimateFishing instance) {
+        super(false, "reload");
         this.instance = instance;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        instance.getSettingsManager().openSettingsManager((Player) sender);
+        instance.reload();
+        instance.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 
@@ -29,12 +29,12 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/uf settings";
+        return "/uf reload";
     }
 
     @Override
     public String getDescription() {
-        return "Edit the UltimateFishing Settings.";
+        return "Reload the Configuration and Language files.";
     }
 
     @Override

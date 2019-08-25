@@ -7,8 +7,7 @@ import com.songoda.core.library.economy.economies.Economy;
 import com.songoda.core.library.locale.Locale;
 import com.songoda.core.library.settings.Config;
 import com.songoda.core.library.settings.Section;
-import com.songoda.core.library.settings.SettingsManager;
-import com.songoda.ultimatefishing.command.commands.*;
+import com.songoda.ultimatefishing.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
 import com.songoda.ultimatefishing.listeners.FurnaceListeners;
@@ -34,7 +33,6 @@ public class UltimateFishing extends JavaPlugin {
 
     private Locale locale;
 
-    private SettingsManager settingsManager;
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
@@ -68,8 +66,6 @@ public class UltimateFishing extends JavaPlugin {
         setupConfig();
 
         EconomyManager.setPreferredEconomy(config.getSetting("Main.Economy").getString());
-
-        this.settingsManager = new SettingsManager(config);
 
         this.commandManager = new CommandManager(this);
         this.commandManager.addCommand(new CommandUltimateFishing(this))
@@ -227,8 +223,8 @@ public class UltimateFishing extends JavaPlugin {
         return config;
     }
 
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
+    public Config getRarityConfig() {
+        return rarityConfig;
     }
 
     public RarityManager getRarityManager() {

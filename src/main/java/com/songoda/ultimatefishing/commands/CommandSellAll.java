@@ -1,4 +1,4 @@
-package com.songoda.ultimatefishing.command.commands;
+package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.library.commands.AbstractCommand;
 import com.songoda.core.library.economy.EconomyManager;

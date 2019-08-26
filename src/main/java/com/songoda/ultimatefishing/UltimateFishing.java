@@ -3,9 +3,10 @@ package com.songoda.ultimatefishing;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.locale.Locale;
 import com.songoda.core.settings.Config;
 import com.songoda.core.settings.Section;
-import com.songoda.ultimatefishing.command.commands.*;
+import com.songoda.ultimatefishing.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
 import com.songoda.ultimatefishing.listeners.FurnaceListeners;
@@ -14,22 +15,23 @@ import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
 import com.songoda.ultimatefishing.utils.Methods;
 import com.songoda.ultimatefishing.utils.Metrics;
-import com.songoda.ultimatefishing.utils.locale.Locale;
-import com.songoda.ultimatefishing.utils.settings.SettingsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class UltimateFishing extends JavaPlugin {
 
     private static UltimateFishing INSTANCE;
 
     private Config rarityConfig = new Config(this, "rarity.yml");
+    private Config config = new Config(this, "config.yml");
 
     private Locale locale;
 
-    private SettingsManager settingsManager;
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
@@ -56,8 +58,13 @@ public class UltimateFishing extends JavaPlugin {
         console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
         console.sendMessage(Methods.formatText("&a============================="));
 
-        this.settingsManager = new SettingsManager(this);
-        this.settingsManager.setupConfig();
+        // Load Economy
+        EconomyManager.load();
+
+        // Setup Config
+        setupConfig();
+
+        EconomyManager.getManager().setPreferredHook(config.getSetting("Main.Economy").getString());
 
         this.commandManager = new CommandManager(this);
         this.commandManager.addCommand(new CommandUltimateFishing(this))
@@ -68,8 +75,9 @@ public class UltimateFishing extends JavaPlugin {
                         new CommandReload(this)
                 );
 
+
         new Locale(this, "en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
+        this.locale = Locale.getLocale(this.config.getSetting("System.Language Mode").getString());
 
         // Setup Lootables
         this.lootablesManager = new LootablesManager(this);
@@ -80,9 +88,6 @@ public class UltimateFishing extends JavaPlugin {
         SongodaCore.registerPlugin(this, 59);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-
-        // Load Economy
-        EconomyManager.load();
 
         // Setup Listeners
         pluginManager.registerEvents(new FishingListeners(this), this);
@@ -97,11 +102,50 @@ public class UltimateFishing extends JavaPlugin {
     }
 
     public void reload() {
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
+        this.locale = Locale.getLocale(this.config.getSetting("System.Language Mode").getString());
         this.locale.reloadMessages();
-        this.settingsManager.reloadConfig();
+        this.config.reload();
         this.getLootablesManager().getLootManager().loadLootables();
         this.setupRarity();
+    }
+
+    private void setupConfig() {
+        config.addCategory("Main")
+                .addDefaultSetting("Critical Cast Chance", "10%",
+                        "What should the chance be for a cast to become critical?")
+                .addDefaultSetting("Critical Cast Cooldown", 30,
+                        "The amount of time in seconds between critical casts.")
+                .addDefaultSetting("Critical Cast Expire", false,
+                        "Should the critical cast expire after a failed catch attempt?")
+                .addDefaultSetting("Critical Drop Multiplier", 3,
+                        "How many times look should a critical cast get you?")
+                .addDefaultSetting("Play Bell Sound On Bite", true,
+                        "Should a bell sound play on bite?")
+                .addDefaultSetting("Fish Rarity", true,
+                        "Should fish have rarity?")
+                .addDefaultSetting("Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
+                        "Which economy plugin should be used?",
+                        "You can choose from \"" + EconomyManager.getManager().getRegisteredPlugins().stream()
+                                .collect(Collectors.joining(", ")) + "\".")
+                .getConfig().addCategory("AFK")
+                .addDefaultSetting("Challenges", true,
+                        "Should AFK challenges be enabled?")
+                .addDefaultSetting("Trigger Amount", 6,
+                        "How many casts does a player have to make without moving",
+                        "To trigger an AFK event. During which a random mob listed below",
+                        "will be thrown at the player.")
+                .addDefaultSetting("Mob List", Arrays.asList("SKELETON", "ZOMBIE"),
+                        "What mobs should be thrown the the AFK challenge is",
+                        "Triggered.")
+                .getConfig().addCategory("Interfaces")
+                .addDefaultSetting("Glass Type 1", 7)
+                .addDefaultSetting("Glass Type 2", 11)
+                .addDefaultSetting("Glass Type 3", 3)
+                .getConfig().addCategory("System")
+                .addDefaultSetting("Language Mode", "en_US",
+                        "The enabled language file.",
+                        "More language files (if available) can be found in the plugins data folder.")
+                .getConfig().allowUserExpansion(false).setup();
     }
 
     /*
@@ -110,7 +154,7 @@ public class UltimateFishing extends JavaPlugin {
     private void setupRarity() {
         this.rarityConfig.reload();
 
-        rarityConfig.addCategory("Rarity", "The different levels of fish rarity",
+        rarityConfig.addCategory("Rarity", "The different levels of fish rarity.",
                 "You can rename, replace and add new fish as you wish.")
                 .addDefaultSetting("Tiny.Chance", 15,
                         "The chance that a caught fish will be tiny.")
@@ -141,9 +185,8 @@ public class UltimateFishing extends JavaPlugin {
                 .addDefaultSetting("Huge.Broadcast", true,
                         "Should we broadcast a message to all players when a huge fish",
                         "is caught?")
-                .addDefaultSetting("Huge.Lure Chance Change", 8);
-
-        this.rarityConfig.categorySpacing(false).commentSpacing(false).setup();
+                .addDefaultSetting("Huge.Lure Chance Change", 8)
+                .getConfig().showNullCategoryComments(false).categorySpacing(false).commentSpacing(false).setup();
 
         this.rarityManager = new RarityManager();
 
@@ -175,8 +218,12 @@ public class UltimateFishing extends JavaPlugin {
         return commandManager;
     }
 
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
+    public Config getMainConfig() {
+        return config;
+    }
+
+    public Config getRarityConfig() {
+        return rarityConfig;
     }
 
     public RarityManager getRarityManager() {

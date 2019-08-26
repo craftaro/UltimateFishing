@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.listeners;
 
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;

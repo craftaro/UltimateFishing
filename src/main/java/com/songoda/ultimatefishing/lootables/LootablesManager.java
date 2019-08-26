@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.lootables;
 
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.lootables.Lootables;
 import com.songoda.lootables.loot.*;
 import com.songoda.lootables.loot.objects.EnchantChance;

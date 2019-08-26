@@ -1,10 +1,10 @@
 package com.songoda.ultimatefishing;
 
 import com.songoda.core.SongodaCore;
-import com.songoda.core.library.commands.CommandManager;
-import com.songoda.core.library.economy.EconomyManager;
-import com.songoda.core.library.settings.Config;
-import com.songoda.core.library.settings.Section;
+import com.songoda.core.commands.CommandManager;
+import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.settings.Config;
+import com.songoda.core.settings.Section;
 import com.songoda.ultimatefishing.command.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;

@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.utils;
 
-import com.songoda.core.library.compatibility.ServerVersion;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import org.bukkit.ChatColor;

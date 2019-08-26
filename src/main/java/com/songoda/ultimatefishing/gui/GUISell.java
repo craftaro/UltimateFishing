@@ -1,7 +1,7 @@
 package com.songoda.ultimatefishing.gui;
 
-import com.songoda.core.library.compatibility.ServerVersion;
-import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.compatibility.ServerVersion;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.utils.Methods;

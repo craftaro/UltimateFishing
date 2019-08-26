@@ -1,7 +1,7 @@
 package com.songoda.ultimatefishing.command.commands;
 
-import com.songoda.core.library.commands.AbstractCommand;
-import com.songoda.core.library.economy.EconomyManager;
+import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.gui.GUISell;
 import com.songoda.ultimatefishing.rarity.Rarity;

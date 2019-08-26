@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.command.commands;
 
-import com.songoda.core.library.commands.AbstractCommand;
+import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.gui.GUISell;
 import org.bukkit.command.CommandSender;

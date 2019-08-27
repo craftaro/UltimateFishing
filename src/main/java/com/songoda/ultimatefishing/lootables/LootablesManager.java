@@ -6,7 +6,8 @@ import com.songoda.lootables.loot.*;
 import com.songoda.lootables.loot.objects.EnchantChance;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
-import com.songoda.ultimatefishing.utils.Methods;
+import com.songoda.ultimatefishing.utils.FishUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
@@ -54,7 +55,7 @@ public class LootablesManager {
 
         if (plugin.getMainConfig().getSetting("Main.Fish Rarity").getBoolean()) {
             for (Drop drop : toDrop) {
-                if (drop.getItemStack() == null || !Methods.isFish(drop.getItemStack())) continue;
+                if (drop.getItemStack() == null || !FishUtils.isFish(drop.getItemStack())) continue;
                 ItemStack itemStack = drop.getItemStack();
                 ItemMeta meta = itemStack.getItemMeta();
                 List<String> lore = new ArrayList<>();
@@ -73,7 +74,7 @@ public class LootablesManager {
                 int choice = new Random().nextInt(weightedList.size());
                 Rarity rarity = weightedList.get(choice);
 
-                lore.add(Methods.formatText("&" + rarity.getColor() + rarity.getRarity()));
+                lore.add(ChatColor.translateAlternateColorCodes('&', "&" + rarity.getColor() + rarity.getRarity()));
                 if (meta.hasLore())
                     lore.addAll(meta.getLore());
                 meta.setLore(lore);

@@ -1,7 +1,7 @@
 package com.songoda.ultimatefishing.listeners;
 
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.ultimatefishing.utils.Methods;
+import com.songoda.ultimatefishing.utils.FishUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,12 +16,11 @@ public class FurnaceListeners implements Listener {
         this.plugin = instance;
     }
 
-
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBurn(FurnaceSmeltEvent event) {
         ItemStack source = event.getSource();
         ItemStack result = event.getResult();
-        if (!Methods.isFish(source)
+        if (!FishUtils.isFish(source)
                 || !source.hasItemMeta()
                 || !source.getItemMeta().hasLore()) return;
 

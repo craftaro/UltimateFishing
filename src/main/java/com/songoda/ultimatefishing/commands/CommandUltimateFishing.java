@@ -2,8 +2,8 @@ package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.ultimatefishing.utils.Methods;
 import java.util.List;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class CommandUltimateFishing extends AbstractCommand {
@@ -23,7 +23,7 @@ public class CommandUltimateFishing extends AbstractCommand {
 
         for (AbstractCommand command : instance.getCommandManager().getAllCommands()) {
             if (command.getPermissionNode() == null || sender.hasPermission(command.getPermissionNode())) {
-                sender.sendMessage(Methods.formatText("&8 - &a" + command.getSyntax() + "&7 - " + command.getDescription()));
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&8 - &a" + command.getSyntax() + "&7 - " + command.getDescription()));
             }
         }
         sender.sendMessage("");

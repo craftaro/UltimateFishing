@@ -1,9 +1,9 @@
 package com.songoda.ultimatefishing;
 
 import com.songoda.core.SongodaCore;
+import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.hooks.EconomyManager;
-import com.songoda.core.locale.Locale;
 import com.songoda.core.settings.Config;
 import com.songoda.core.settings.Section;
 import com.songoda.ultimatefishing.commands.*;
@@ -13,51 +13,36 @@ import com.songoda.ultimatefishing.listeners.FurnaceListeners;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
-import com.songoda.ultimatefishing.utils.Methods;
-import com.songoda.ultimatefishing.utils.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-public class UltimateFishing extends JavaPlugin {
+public class UltimateFishing extends SongodaPlugin {
 
     private static UltimateFishing INSTANCE;
 
     private Config rarityConfig = new Config(this, "rarity.yml");
     private Config config = new Config(this, "config.yml");
 
-    private Locale locale;
-
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
-
-    private ConsoleCommandSender console = Bukkit.getConsoleSender();
 
     public static UltimateFishing getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public void onDisable() {
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateFishing " + this.getDescription().getVersion() + " by &5Songoda <3!"));
-        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(Methods.formatText("&a============================="));
+    public void onPluginLoad() {
+        INSTANCE = this;
     }
 
     @Override
-    public void onEnable() {
-        INSTANCE = this;
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateFishing " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
-        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
-        console.sendMessage(Methods.formatText("&a============================="));
-
+    public void onPluginEnable() {
         // Load Economy
         EconomyManager.load();
 
@@ -75,9 +60,7 @@ public class UltimateFishing extends JavaPlugin {
                         new CommandReload(this)
                 );
 
-
-        new Locale(this, "en_US");
-        this.locale = Locale.getLocale(this.config.getSetting("System.Language Mode").getString());
+		this.setLocale(this.config.getSetting("System.Language Mode").getString(), false);
 
         // Setup Lootables
         this.lootablesManager = new LootablesManager(this);
@@ -94,16 +77,16 @@ public class UltimateFishing extends JavaPlugin {
         pluginManager.registerEvents(new FurnaceListeners(this), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
 
-        // Starting Metrics
-        new Metrics(this);
-
         //Apply default fish rarity.
         setupRarity();
     }
 
+    @Override
+    public void onPluginDisable() {
+    }
+
     public void reload() {
-        this.locale = Locale.getLocale(this.config.getSetting("System.Language Mode").getString());
-        this.locale.reloadMessages();
+        this.setLocale(this.config.getSetting("System.Language Mode").getString(), true);
         this.config.reload();
         this.getLootablesManager().getLootManager().loadLootables();
         this.setupRarity();
@@ -210,10 +193,6 @@ public class UltimateFishing extends JavaPlugin {
         return lootablesManager;
     }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
     public CommandManager getCommandManager() {
         return commandManager;
     }
@@ -228,5 +207,16 @@ public class UltimateFishing extends JavaPlugin {
 
     public RarityManager getRarityManager() {
         return rarityManager;
+    }
+
+    public static double calculateTotalValue(Inventory inventory) {
+        double total = 0;
+        for (ItemStack itemStack : inventory.getContents()) {
+            Rarity rarity = INSTANCE.rarityManager.getRarity(itemStack);
+
+            if (rarity == null) continue;
+            total += rarity.getSellPrice() * itemStack.getAmount();
+        }
+        return total;
     }
 }

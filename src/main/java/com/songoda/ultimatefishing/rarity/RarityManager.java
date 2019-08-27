@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.rarity;
 
-import com.songoda.ultimatefishing.utils.Methods;
+import com.songoda.ultimatefishing.utils.FishUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +17,7 @@ public class RarityManager {
 
     public Rarity getRarity(ItemStack item) {
         if (item == null
-                || !Methods.isFish(item)
+                || !FishUtils.isFish(item)
                 || !item.hasItemMeta()
                 || !item.getItemMeta().hasLore()) return null;
 

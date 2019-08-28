@@ -3,6 +3,7 @@ package com.songoda.ultimatefishing;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
+import com.songoda.core.compatibility.LegacyMaterials;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.settings.Config;
 import com.songoda.core.settings.Section;
@@ -68,7 +69,7 @@ public class UltimateFishing extends SongodaPlugin {
         this.getLootablesManager().getLootManager().loadLootables();
 
         //Running Songoda Updater
-        SongodaCore.registerPlugin(this, 59);
+        SongodaCore.registerPlugin(this, 59, LegacyMaterials.FISHING_ROD);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 

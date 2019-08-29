@@ -44,6 +44,9 @@ public class UltimateFishing extends SongodaPlugin {
 
     @Override
     public void onPluginEnable() {
+        // Run Songoda Updater
+        SongodaCore.registerPlugin(this, 59, LegacyMaterials.FISHING_ROD);
+
         // Load Economy
         EconomyManager.load();
 
@@ -68,12 +71,8 @@ public class UltimateFishing extends SongodaPlugin {
         this.lootablesManager.createDefaultLootables();
         this.getLootablesManager().getLootManager().loadLootables();
 
-        //Running Songoda Updater
-        SongodaCore.registerPlugin(this, 59, LegacyMaterials.FISHING_ROD);
-
-        PluginManager pluginManager = Bukkit.getPluginManager();
-
         // Setup Listeners
+        PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
@@ -86,7 +85,8 @@ public class UltimateFishing extends SongodaPlugin {
     public void onPluginDisable() {
     }
 
-    public void reload() {
+    @Override
+    public void onConfigReload() {
         this.setLocale(this.config.getSetting("System.Language Mode").getString(), true);
         this.config.reload();
         this.getLootablesManager().getLootManager().loadLootables();

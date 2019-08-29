@@ -2,7 +2,7 @@ package com.songoda.ultimatefishing.gui;
 
 import com.songoda.core.compatibility.CompatibleSounds;
 import com.songoda.core.compatibility.LegacyMaterials;
-import com.songoda.core.gui.GUI;
+import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public final class GUISell extends GUI {
+public final class GUISell extends Gui {
 
     private final UltimateFishing plugin;
     private final Player player;
@@ -72,8 +72,8 @@ public final class GUISell extends GUI {
                 ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(0))),
                 (slot) -> sellAll());
         
-        setOnOpen((playr, gui) -> runTask());
-        setOnClose((playr, gui) -> onClose());
+        setOnOpen((event) -> runTask());
+        setOnClose((event) -> onClose());
     }
 
     private void runTask() {

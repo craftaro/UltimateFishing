@@ -17,7 +17,7 @@ public class CommandReload extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        instance.reload();
+        instance.onConfigReload();
         instance.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }

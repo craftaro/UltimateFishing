@@ -4,6 +4,7 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.settings.Config;
 import com.songoda.core.settings.Section;
@@ -29,6 +30,7 @@ public class UltimateFishing extends SongodaPlugin {
     private Config rarityConfig = new Config(this, "rarity.yml");
     private Config config = new Config(this, "config.yml");
 
+    private GuiManager guiManager = new GuiManager(this);
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
@@ -208,6 +210,10 @@ public class UltimateFishing extends SongodaPlugin {
 
     public RarityManager getRarityManager() {
         return rarityManager;
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
     }
 
     public static double calculateTotalValue(Inventory inventory) {

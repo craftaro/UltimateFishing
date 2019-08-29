@@ -18,12 +18,10 @@ import org.bukkit.inventory.ItemStack;
 public final class GUISell extends Gui {
 
     private final UltimateFishing plugin;
-    private final Player player;
     private int task;
 
-    public GUISell(UltimateFishing plugin, Player player) {
+    public GUISell(UltimateFishing plugin) {
         this.plugin = plugin;
-        this.player = player;
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
 
@@ -35,6 +33,10 @@ public final class GUISell extends Gui {
         setDefaultItem(glass3);
 
         // decorate corners
+        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
+        GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
+        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
+        /*
         setItem(0, 0, glass2);
         setItem(1, 0, glass2);
         setItem(0, 1, glass2);
@@ -50,7 +52,7 @@ public final class GUISell extends Gui {
         setItem(5, 8, glass2);
         setItem(4, 8, glass2);
         setItem(5, 7, glass2);
-
+*/
         // open up the center area
         for (int row = 1; row < 5; ++row) {
             for (int col = 1; col < 8; ++col) {
@@ -70,10 +72,10 @@ public final class GUISell extends Gui {
 
         setButton(5, 4, GuiUtils.createButtonItem(LegacyMaterials.SUNFLOWER,
                 ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(0))),
-                (slot) -> sellAll());
+                (event) -> sellAll(event.player));
         
         setOnOpen((event) -> runTask());
-        setOnClose((event) -> onClose());
+        setOnClose((event) -> onClose(event.player));
     }
 
     private void runTask() {
@@ -85,7 +87,7 @@ public final class GUISell extends Gui {
         updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(totalSale)));
     }
 
-    private void sellAll() {
+    private void sellAll(Player player) {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
 
         if (totalSale <= 0) {
@@ -123,7 +125,7 @@ public final class GUISell extends Gui {
             overfilled.values().forEach(item2 -> player.getWorld().dropItemNaturally(player.getLocation(), item2));
     }
 
-    private void onClose() {
+    private void onClose(Player player) {
         // stop updating the inventory
         Bukkit.getScheduler().cancelTask(task);
         // return any items that were left in the gui

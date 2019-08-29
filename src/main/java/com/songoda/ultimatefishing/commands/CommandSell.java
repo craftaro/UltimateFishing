@@ -19,7 +19,7 @@ public class CommandSell extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        new GUISell(instance, (Player)sender);
+        instance.getGuiManager().showGUI((Player) sender, new GUISell(instance));
         return ReturnType.SUCCESS;
     }
 

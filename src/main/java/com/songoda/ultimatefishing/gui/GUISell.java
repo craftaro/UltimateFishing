@@ -6,7 +6,7 @@ import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.ultimatefishing.utils.TempUtils;
+import com.songoda.ultimatefishing.settings.Settings;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
@@ -25,9 +25,8 @@ public final class GUISell extends Gui {
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
 
-        //TODO: change this to use a modern name, then use LegacyMaterials to load
-        ItemStack glass2 = GuiUtils.getBorderItem(TempUtils.getGlassPane(plugin.getConfig().getInt("Interfaces.Glass Type 2")));
-        ItemStack glass3 = GuiUtils.getBorderItem(TempUtils.getGlassPane(plugin.getConfig().getInt("Interfaces.Glass Type 3")));
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
         // edges will be type 3
         setDefaultItem(glass3);
@@ -36,23 +35,7 @@ public final class GUISell extends Gui {
         GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
         GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
-        /*
-        setItem(0, 0, glass2);
-        setItem(1, 0, glass2);
-        setItem(0, 1, glass2);
 
-        setItem(0, 8, glass2);
-        setItem(1, 8, glass2);
-        setItem(0, 7, glass2);
-
-        setItem(5, 0, glass2);
-        setItem(4, 0, glass2);
-        setItem(5, 1, glass2);
-
-        setItem(5, 8, glass2);
-        setItem(4, 8, glass2);
-        setItem(5, 7, glass2);
-*/
         // open up the center area
         for (int row = 1; row < 5; ++row) {
             for (int col = 1; col < 8; ++col) {

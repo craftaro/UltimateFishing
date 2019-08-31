@@ -6,6 +6,7 @@ import com.songoda.lootables.loot.*;
 import com.songoda.lootables.loot.objects.EnchantChance;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
+import com.songoda.ultimatefishing.settings.Settings;
 import com.songoda.ultimatefishing.utils.FishUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -53,7 +54,7 @@ public class LootablesManager {
         for (Loot loot : lootable.getRegisteredLoot())
             toDrop.addAll(runLoot(player, loot, rerollChance, looting));
 
-        if (plugin.getMainConfig().getSetting("Main.Fish Rarity").getBoolean()) {
+        if (Settings.FISH_RARITY.getBoolean()) {
             for (Drop drop : toDrop) {
                 if (drop.getItemStack() == null || !FishUtils.isFish(drop.getItemStack())) continue;
                 ItemStack itemStack = drop.getItemStack();

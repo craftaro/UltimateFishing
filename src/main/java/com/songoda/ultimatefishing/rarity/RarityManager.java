@@ -1,11 +1,13 @@
 package com.songoda.ultimatefishing.rarity;
 
 import com.songoda.ultimatefishing.utils.FishUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.*;
 
 public class RarityManager {
 
@@ -30,7 +32,7 @@ public class RarityManager {
     }
 
     public List<Rarity> getRarities() {
-        return new ArrayList<>(registeredRarities);
+        return Collections.unmodifiableList(registeredRarities);
     }
 
     public List<Rarity> getRarities(Player player) {

@@ -46,8 +46,7 @@ public class Settings {
             "will be thrown at the player.");
 
     public static final ConfigSetting AFK_MOB = new ConfigSetting(config, "AFK.Mob List", Arrays.asList("SKELETON", "ZOMBIE"),
-            "What mobs should be thrown the the AFK challenge is",
-            "Triggered.");
+            "What mobs should be thrown when the AFK challenge is Triggered.");
 
     public static final ConfigSetting LANGUGE_MODE = new ConfigSetting(config, "System.Language Mode", "en_US",
             "The enabled language file.",

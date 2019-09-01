@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class Settings {
 
-    static final Config config = UltimateFishing.getInstance().getConfig().getConfig();
+    static final Config config = UltimateFishing.getInstance().getConfig().getCoreConfig();
 
     public static final ConfigSetting CRITICAL_CHANCE = new ConfigSetting(config, "Main.Critical Cast Chance", "10%",
             "What should the chance be for a cast to become critical?");
@@ -35,7 +35,7 @@ public class Settings {
 
     public static final ConfigSetting ECONOMY_PLUGIN = new ConfigSetting(config, "Main.Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
-            "You can choose from \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining(", ")) + "\".");
+            "Supported plugins you have installed: \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");
 
     public static final ConfigSetting AFK_CHALLENGES = new ConfigSetting(config, "AFK.Challenges", true,
             "Should AFK challenges be enabled?");
@@ -68,13 +68,13 @@ public class Settings {
         // convert glass pane settings
         int color;
         if ((color = GLASS_TYPE_1.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_1.getKey(), LegacyMaterials.getGlassPaneColor(color));
+            config.set(GLASS_TYPE_1.getKey(), LegacyMaterials.getGlassPaneColor(color).name());
         }
         if ((color = GLASS_TYPE_2.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_2.getKey(), LegacyMaterials.getGlassPaneColor(color));
+            config.set(GLASS_TYPE_2.getKey(), LegacyMaterials.getGlassPaneColor(color).name());
         }
         if ((color = GLASS_TYPE_3.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_3.getKey(), LegacyMaterials.getGlassPaneColor(color));
+            config.set(GLASS_TYPE_3.getKey(), LegacyMaterials.getGlassPaneColor(color).name());
         }
 
         // convert economy settings

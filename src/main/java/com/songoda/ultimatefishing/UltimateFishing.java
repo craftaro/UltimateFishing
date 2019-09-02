@@ -74,6 +74,7 @@ public class UltimateFishing extends SongodaPlugin {
         this.getLootablesManager().getLootManager().loadLootables();
 
         // Setup Listeners
+        guiManager.init();
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);

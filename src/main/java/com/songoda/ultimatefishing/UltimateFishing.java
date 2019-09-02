@@ -1,203 +1,190 @@
 package com.songoda.ultimatefishing;
 
-import com.songoda.lootables.utils.ServerVersion;
-import com.songoda.ultimatefishing.command.CommandManager;
-import com.songoda.ultimatefishing.economy.Economy;
-import com.songoda.ultimatefishing.economy.PlayerPointsEconomy;
-import com.songoda.ultimatefishing.economy.ReserveEconomy;
-import com.songoda.ultimatefishing.economy.VaultEconomy;
+import com.songoda.core.SongodaCore;
+import com.songoda.core.SongodaPlugin;
+import com.songoda.core.commands.CommandManager;
+import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.configuration.Config;
+import com.songoda.core.configuration.ConfigSection;
+import com.songoda.ultimatefishing.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
 import com.songoda.ultimatefishing.listeners.FurnaceListeners;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
-import com.songoda.ultimatefishing.utils.ConfigWrapper;
-import com.songoda.ultimatefishing.utils.Methods;
-import com.songoda.ultimatefishing.utils.Metrics;
-import com.songoda.ultimatefishing.utils.locale.Locale;
-import com.songoda.ultimatefishing.utils.settings.Setting;
-import com.songoda.ultimatefishing.utils.settings.SettingsManager;
-import com.songoda.ultimatefishing.utils.updateModules.LocaleModule;
-import com.songoda.update.Plugin;
-import com.songoda.update.SongodaUpdate;
-import org.apache.commons.lang.ArrayUtils;
+import com.songoda.ultimatefishing.settings.Settings;
 import org.bukkit.Bukkit;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
+import java.util.Arrays;
+import java.util.List;
 
-public class UltimateFishing extends JavaPlugin {
+public class UltimateFishing extends SongodaPlugin {
 
     private static UltimateFishing INSTANCE;
 
-    private ConfigWrapper rarityFile = new ConfigWrapper(this, "", "rarity.yml");
+    private final Config rarityConfig = new Config(this, "rarity.yml");
 
-    private Locale locale;
-    private Economy economy;
-
-    private SettingsManager settingsManager;
+    private GuiManager guiManager = new GuiManager(this);
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
-
-    private ConsoleCommandSender console = Bukkit.getConsoleSender();
-
-    private ServerVersion serverVersion = ServerVersion.fromPackageName(Bukkit.getServer().getClass().getPackage().getName());
 
     public static UltimateFishing getInstance() {
         return INSTANCE;
     }
 
-    public void onDisable() {
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateFishing " + this.getDescription().getVersion() + " by &5Songoda <3!"));
-        console.sendMessage(Methods.formatText("&7Action: &cDisabling&7..."));
-        console.sendMessage(Methods.formatText("&a============================="));
+    @Override
+    public void onPluginLoad() {
+        INSTANCE = this;
     }
 
-    public void onEnable() {
-        INSTANCE = this;
-        console.sendMessage(Methods.formatText("&a============================="));
-        console.sendMessage(Methods.formatText("&7UltimateFishing " + this.getDescription().getVersion() + " by &5Songoda <3&7!"));
-        console.sendMessage(Methods.formatText("&7Action: &aEnabling&7..."));
-        console.sendMessage(Methods.formatText("&a============================="));
+    @Override
+    public void onPluginEnable() {
+        // Run Songoda Updater
+        SongodaCore.registerPlugin(this, 59, LegacyMaterials.COD);
 
-        this.settingsManager = new SettingsManager(this);
-        this.settingsManager.setupConfig();
+        // Load Economy
+        EconomyManager.load();
 
+        // Setup Config
+        Settings.setupConfig();
+		this.setLocale(Settings.LANGUGE_MODE.getString(), false);
+
+        // Set economy preference
+        EconomyManager.getManager().setPreferredHook(Settings.ECONOMY_PLUGIN.getString());
+
+        // Register commands
         this.commandManager = new CommandManager(this);
-
-        new Locale(this, "en_US");
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
+        this.commandManager.addCommand(new CommandUltimateFishing(this))
+                .addSubCommands(
+                        new CommandSell(this),
+                        new CommandSellAll(this),
+                        new CommandSettings(this),
+                        new CommandReload(this)
+                );
 
         // Setup Lootables
         this.lootablesManager = new LootablesManager(this);
         this.lootablesManager.createDefaultLootables();
         this.getLootablesManager().getLootManager().loadLootables();
 
-        //Running Songoda Updater
-        Plugin plugin = new Plugin(this, 59);
-        plugin.addModule(new LocaleModule());
-        SongodaUpdate.load(plugin);
-
-        PluginManager pluginManager = Bukkit.getPluginManager();
-
-        // Setup Economy
-        if (Setting.VAULT_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Vault"))
-            this.economy = new VaultEconomy();
-        else if (Setting.RESERVE_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("Reserve"))
-            this.economy = new ReserveEconomy();
-        else if (Setting.PLAYER_POINTS_ECONOMY.getBoolean() && pluginManager.isPluginEnabled("PlayerPoints"))
-            this.economy = new PlayerPointsEconomy();
-
         // Setup Listeners
+        PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
 
-        // Starting Metrics
-        new Metrics(this);
-
         //Apply default fish rarity.
-        runRarityDefaults();
+        setupRarity();
+        loadRarities();
     }
 
-    public void reload() {
-        this.locale = Locale.getLocale(getConfig().getString("System.Language Mode"));
-        this.locale.reloadMessages();
-        this.settingsManager.reloadConfig();
+    @Override
+    public void onPluginDisable() {
+    }
+
+    @Override
+    public void onConfigReload() {
+		this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.getLootablesManager().getLootManager().loadLootables();
-        this.runRarityDefaults();
+        this.loadRarities();
     }
 
     /*
      * Insert default fish sizes into config.
      */
-    private void runRarityDefaults() {
-        if (!rarityFile.getConfig().contains("Rarity")) {
-            rarityFile.getConfig().set("Rarity.Tiny.Chance", 15);
-            rarityFile.getConfig().set("Rarity.Tiny.Color", "9");
-            rarityFile.getConfig().set("Rarity.Tiny.Extra Health", -2);
-            rarityFile.getConfig().set("Rarity.Tiny.Sell Price", 4.99);
-            rarityFile.getConfig().set("Rarity.Tiny.Lure Chance Change", -5);
-            rarityFile.getConfig().set("Rarity.Normal.Chance", 50);
-            rarityFile.getConfig().set("Rarity.Normal.Color", "7");
-            rarityFile.getConfig().set("Rarity.Normal.Extra Health", 0);
-            rarityFile.getConfig().set("Rarity.Normal.Sell Price", 19.99);
-            rarityFile.getConfig().set("Rarity.Normal.Lure Chance Change", -8);
-            rarityFile.getConfig().set("Rarity.Large.Chance", 25);
-            rarityFile.getConfig().set("Rarity.Large.Color", "c");
-            rarityFile.getConfig().set("Rarity.Large.Extra Health", 2);
-            rarityFile.getConfig().set("Rarity.Large.Sell Price", 49.99);
-            rarityFile.getConfig().set("Rarity.Large.Lure Chance Change", 5);
-            rarityFile.getConfig().set("Rarity.Huge.Chance", 10);
-            rarityFile.getConfig().set("Rarity.Huge.Color", "5");
-            rarityFile.getConfig().set("Rarity.Huge.Extra Health", 4);
-            rarityFile.getConfig().set("Rarity.Huge.Sell Price", 99.99);
-            rarityFile.getConfig().set("Rarity.Huge.Broadcast", true);
-            rarityFile.getConfig().set("Rarity.Huge.Lure Chance Change", 8);
-            rarityFile.saveConfig();
-        }
+    private void setupRarity() {
+        rarityConfig.createDefaultSection("Rarity", 
+                "The different levels of fish rarity.",
+                "You can rename, replace and add new fish as you wish.")
+                .setDefault("Tiny.Chance", 15,
+                        "The chance that a caught fish will be tiny.")
+                .setDefault("Tiny.Color", "9",
+                        "The color used for the name tag.")
+                .setDefault("Tiny.Extra Health", -2,
+                        "The amount of health on top of the initial health that the caught",
+                        "fish grants.")
+                .setDefault("Tiny.Sell Price", 4.99,
+                        "The price tiny fish will sell for.")
+                .setDefault("Tiny.Lure Chance Change", -5,
+                        "The effect the lure fishing enchantment would have on the chance.",
+                        "This is multiplied per enchantment level.")
+                .setDefault("Normal.Chance", 50)
+                .setDefault("Normal.Color", "7")
+                .setDefault("Normal.Extra Health", 0)
+                .setDefault("Normal.Sell Price", 19.99)
+                .setDefault("Normal.Lure Chance Change", -8)
+                .setDefault("Large.Chance", 25)
+                .setDefault("Large.Color", "c")
+                .setDefault("Large.Extra Health", 2)
+                .setDefault("Large.Sell Price", 49.99)
+                .setDefault("Large.Lure Chance Change", 5)
+                .setDefault("Huge.Chance", 10)
+                .setDefault("Huge.Color", "5")
+                .setDefault("Huge.Extra Health", 4)
+                .setDefault("Huge.Sell Price", 99.99)
+                .setDefault("Huge.Broadcast", true,
+                        "Should we broadcast a message to all players when a huge fish",
+                        "is caught?")
+                .setDefault("Huge.Lure Chance Change", 8);
+        rarityConfig.setRootNodeSpacing(1).setCommentSpacing(0);
+    }
 
+    private void loadRarities() {
+        this.rarityConfig.load();
         this.rarityManager = new RarityManager();
 
         /*
          * Register rarities into RarityManager from Configuration.
          */
-        if (rarityFile.getConfig().contains("Rarity")) {
-            for (String keyName : rarityFile.getConfig().getConfigurationSection("Rarity").getKeys(false)) {
-                ConfigurationSection raritySection = rarityFile.getConfig().getConfigurationSection("Rarity." + keyName);
-
-                this.rarityManager.addRarity(new Rarity(keyName,
-                        raritySection.getString("Color"),
-                        raritySection.getDouble("Chance"),
-                        raritySection.getInt("Extra Health"),
-                        raritySection.getDouble("Sell Price"),
-                        raritySection.getBoolean("Broadcast"),
-                        raritySection.getDouble("Lure Chance Change")));
+        if (rarityConfig.isConfigurationSection("Rarity")) {
+            for (ConfigSection section : rarityConfig.getSections("Rarity")) {
+                rarityManager.addRarity(new Rarity(
+                        section.getNodeKey(),
+                        section.getString("Color"),
+                        section.getDouble("Chance"),
+                        section.getInt("Extra Health"),
+                        section.getDouble("Sell Price"),
+                        section.getBoolean("Broadcast"),
+                        section.getDouble("Lure Chance Change")));
             }
         }
-    }
-
-    public ServerVersion getServerVersion() {
-        return serverVersion;
-    }
-
-    public boolean isServerVersion(ServerVersion version) {
-        return serverVersion == version;
-    }
-
-    public boolean isServerVersion(ServerVersion... versions) {
-        return ArrayUtils.contains(versions, serverVersion);
-    }
-
-    public boolean isServerVersionAtLeast(ServerVersion version) {
-        return serverVersion.ordinal() >= version.ordinal();
     }
 
     public LootablesManager getLootablesManager() {
         return lootablesManager;
     }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public Economy getEconomy() {
-        return economy;
-    }
-
     public CommandManager getCommandManager() {
         return commandManager;
     }
 
-    public SettingsManager getSettingsManager() {
-        return settingsManager;
+    @Override
+    public List<Config> getExtraConfig() {
+        return Arrays.asList(rarityConfig);
     }
 
     public RarityManager getRarityManager() {
         return rarityManager;
+    }
+
+    public GuiManager getGuiManager() {
+        return guiManager;
+    }
+
+    public static double calculateTotalValue(Inventory inventory) {
+        double total = 0;
+        for (ItemStack itemStack : inventory.getContents()) {
+            Rarity rarity = INSTANCE.rarityManager.getRarity(itemStack);
+
+            if (rarity == null) continue;
+            total += rarity.getSellPrice() * itemStack.getAmount();
+        }
+        return total;
     }
 }

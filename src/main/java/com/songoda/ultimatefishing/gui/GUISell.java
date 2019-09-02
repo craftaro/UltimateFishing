@@ -1,157 +1,124 @@
 package com.songoda.ultimatefishing.gui;
 
-import com.songoda.lootables.utils.ServerVersion;
+import com.songoda.core.compatibility.CompatibleSounds;
+import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.gui.Gui;
+import com.songoda.core.gui.GuiUtils;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.ultimatefishing.rarity.Rarity;
-import com.songoda.ultimatefishing.utils.Methods;
-import com.songoda.ultimatefishing.utils.gui.AbstractGUI;
-import com.songoda.ultimatefishing.utils.gui.Range;
+import com.songoda.ultimatefishing.settings.Settings;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-public class GUISell extends AbstractGUI {
+public final class GUISell extends Gui {
 
     private final UltimateFishing plugin;
-
     private int task;
 
-    private Set<Integer> draggable = new HashSet<>();
-
-    public GUISell(UltimateFishing plugin, Player player) {
-        super(player);
+    public GUISell(UltimateFishing plugin) {
         this.plugin = plugin;
+        setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
+        setRows(6);
 
-        init(plugin.getLocale().getMessage("interface.sell.title").getMessage(), 54);
-        runTask();
-    }
+        ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
+        ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
 
-    @Override
-    protected void constructGUI() {
-        resetClickables();
-        registerClickables();
+        // edges will be type 3
+        setDefaultItem(glass3);
 
-        inventory.setItem(0, Methods.getBackgroundGlass(true));
-        inventory.setItem(1, Methods.getBackgroundGlass(true));
-        inventory.setItem(2, Methods.getBackgroundGlass(false));
-        inventory.setItem(3, Methods.getBackgroundGlass(false));
-        inventory.setItem(5, Methods.getBackgroundGlass(false));
-        inventory.setItem(6, Methods.getBackgroundGlass(false));
-        inventory.setItem(7, Methods.getBackgroundGlass(true));
-        inventory.setItem(8, Methods.getBackgroundGlass(true));
+        // decorate corners
+        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
+        GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
+        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
-        inventory.setItem(9, Methods.getBackgroundGlass(true));
+        // open up the center area
+        for (int row = 1; row < 5; ++row) {
+            for (int col = 1; col < 8; ++col) {
+                setItem(row, col, AIR);
+                setUnlocked(row, col);
+            }
+        }
 
-        addDraggable(new Range(10, 16, null, false), true);
+        // set up prices info (icon only)
+        // TODO: need to add this line to language file
+        setItem(0, 4, GuiUtils.createButtonItem(LegacyMaterials.BOOK,
+                ChatColor.translateAlternateColorCodes('&', "&6&lSell Prices:"),
+                plugin.getRarityManager().getRarities().stream()
+                        .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + EconomyManager.formatEconomy(r.getSellPrice())))
+                        .collect(Collectors.toList())
+        ));
 
-        inventory.setItem(17, Methods.getBackgroundGlass(true));
-
-        inventory.setItem(18, Methods.getBackgroundGlass(false));
-
-        addDraggable(new Range(19, 25, null, false), true);
-
-        inventory.setItem(26, Methods.getBackgroundGlass(false));
-
-        inventory.setItem(27, Methods.getBackgroundGlass(false));
-
-        addDraggable(new Range(28, 34, null, false), true);
-
-        inventory.setItem(35, Methods.getBackgroundGlass(false));
-
-        inventory.setItem(36, Methods.getBackgroundGlass(true));
-
-        addDraggable(new Range(37, 43, null, false), true);
-
-        inventory.setItem(44, Methods.getBackgroundGlass(true));
-
-        inventory.setItem(45, Methods.getBackgroundGlass(true));
-        inventory.setItem(46, Methods.getBackgroundGlass(true));
-        inventory.setItem(47, Methods.getBackgroundGlass(false));
-        inventory.setItem(48, Methods.getBackgroundGlass(false));
-        inventory.setItem(50, Methods.getBackgroundGlass(false));
-        inventory.setItem(51, Methods.getBackgroundGlass(false));
-        inventory.setItem(52, Methods.getBackgroundGlass(true));
-        inventory.setItem(53, Methods.getBackgroundGlass(true));
-
-        ArrayList<String> lore = new ArrayList<>();
-        for (Rarity rarity : plugin.getRarityManager().getRarities())
-            lore.add("&l&" + rarity.getColor() + rarity.getRarity() + " &7 - &a$" + Methods.formatEconomy(rarity.getSellPrice()));
-
-
-        createButton(4, Material.BOOK, "&6&lSell Prices:", lore);
-
-        double total = Methods.calculateTotal(inventory);
-
-
-        createButton(49, plugin.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SUNFLOWER : Material.valueOf("DOUBLE_PLANT"), "&7Sell for &a$" + Methods.formatEconomy(total));
-
-        for (int i = 0; i < 54; i++)
-            if (inventory.getItem(i) == null) draggable.add(i);
+        setButton(5, 4, GuiUtils.createButtonItem(LegacyMaterials.SUNFLOWER,
+                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(0))),
+                (event) -> sellAll(event.player));
+        
+        setOnOpen((event) -> runTask());
+        setOnClose((event) -> onClose(event.player));
     }
 
     private void runTask() {
-        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::constructGUI, 5L, 5L);
+        task = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this::updateSell, 7L, 7L);
+    }
+    
+    private void updateSell() {
+        double totalSale = UltimateFishing.calculateTotalValue(inventory);
+        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(totalSale)));
     }
 
+    private void sellAll(Player player) {
+        double totalSale = UltimateFishing.calculateTotalValue(inventory);
+
+        if (totalSale <= 0) {
+            plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
+
+            player.playSound(player.getLocation(), CompatibleSounds.ENTITY_VILLAGER_NO.getSound(), 1L, 1L);
+
+            player.closeInventory();
+            return;
+        }
+
+        EconomyManager.deposit(player, totalSale);
+
+        // clear items from gui
+        for (int row = 1; row < 5; ++row) {
+            for (int col = 1; col < 8; ++col) {
+                ItemStack itemStack = inventory.getItem(col + row * 9);
+                if(itemStack != null && plugin.getRarityManager().getRarity(itemStack) != null) {
+                    inventory.setItem(col + row * 9, null);
+                }
+            }
+        }
+        plugin.getLocale().getMessage("event.sell.success")
+                .processPlaceholder("total", EconomyManager.formatEconomy(totalSale))
+                .sendPrefixedMessage(player);
+        player.playSound(player.getLocation(), CompatibleSounds.ENTITY_VILLAGER_YES.getSound(), 1L, 1L);
+        
+        player.closeInventory();
+    }
 
     private void returnItem(Player player, ItemStack itemStack) {
         if (itemStack == null) return;
         Map<Integer, ItemStack> overfilled = player.getInventory().addItem(itemStack);
-        for (ItemStack item2 : overfilled.values()) {
-            player.getWorld().dropItemNaturally(player.getLocation(), item2);
+        if(!overfilled.isEmpty())
+            overfilled.values().forEach(item2 -> player.getWorld().dropItemNaturally(player.getLocation(), item2));
+    }
+
+    private void onClose(Player player) {
+        // stop updating the inventory
+        Bukkit.getScheduler().cancelTask(task);
+        // return any items that were left in the gui
+        for (int row = 1; row < 5; ++row) {
+            for (int col = 1; col < 8; ++col) {
+                ItemStack itemStack = inventory.getItem(col + row * 9);
+                if(itemStack != null && itemStack.getType() != Material.AIR) {
+                    returnItem(player, itemStack);
+                }
+            }
         }
-    }
-
-    @Override
-    protected void registerClickables() {
-
-        registerClickable(49, ((player1, inventory1, cursor, slot, type) -> {
-            double totalNew = Methods.calculateTotal(inventory1);
-            if (totalNew == 0) {
-                plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
-
-                if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
-                    player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1L, 1L);
-
-                player.closeInventory();
-                return;
-            }
-            plugin.getEconomy().deposit(player, totalNew);
-
-            plugin.getLocale().getMessage("event.sell.success")
-                    .processPlaceholder("total", Methods.formatEconomy(totalNew))
-                    .sendPrefixedMessage(player);
-
-            for (int i : draggable) {
-                ItemStack itemStack = inventory.getItem(i);
-                if (itemStack == null) continue;
-
-                Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
-
-                if (rarity == null) continue;
-                inventory.remove(itemStack);
-            }
-            if (plugin.isServerVersionAtLeast(ServerVersion.V1_9))
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1L, 1L);
-            player.closeInventory();
-        }));
-    }
-
-    @Override
-    protected void registerOnCloses() {
-        registerOnClose(((player1, inventory1) -> {
-            for (int i : draggable) {
-                returnItem(player, inventory.getItem(i));
-            }
-            Bukkit.getScheduler().cancelTask(task);
-        }));
     }
 }

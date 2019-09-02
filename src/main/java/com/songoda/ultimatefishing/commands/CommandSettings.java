@@ -2,7 +2,6 @@ package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.configuration.editor.PluginConfigGui;
-import com.songoda.core.settingsv1.editor.ConfigSelectionGUI;
 import com.songoda.ultimatefishing.UltimateFishing;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

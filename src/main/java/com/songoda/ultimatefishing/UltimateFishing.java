@@ -134,6 +134,7 @@ public class UltimateFishing extends SongodaPlugin {
                         "is caught?")
                 .setDefault("Huge.Lure Chance Change", 8);
         rarityConfig.setRootNodeSpacing(1).setCommentSpacing(0);
+        rarityConfig.saveChanges();
     }
 
     private void loadRarities() {

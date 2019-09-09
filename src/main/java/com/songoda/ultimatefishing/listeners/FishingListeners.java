@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.listeners;
 
-import com.songoda.core.compatibility.CompatibleSounds;
+import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
 import com.songoda.ultimatefishing.UltimateFishing;
@@ -109,7 +109,7 @@ public class FishingListeners implements Listener {
                 criticalCooldown.put(player.getUniqueId(), System.currentTimeMillis() + (Settings.CRITICAL_COOLDOWN.getLong() * 1000));
                 plugin.getLocale().getMessage("event.general.critical").sendPrefixedMessage(player);
 
-                player.playSound(player.getLocation(), CompatibleSounds.ITEM_ARMOR_EQUIP_CHAIN.getSound(), 1f, .1f);
+                player.playSound(player.getLocation(), CompatibleSound.ITEM_ARMOR_EQUIP_CHAIN.getSound(), 1f, .1f);
 
                 inCritical.add(player.getUniqueId());
             }
@@ -119,7 +119,7 @@ public class FishingListeners implements Listener {
                 inCritical.remove(player.getUniqueId());
         } else if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9) && event.getState() == PlayerFishEvent.State.BITE) {
             if (Settings.BELL_ON_BITE.getBoolean()) {
-                player.playSound(player.getLocation(), CompatibleSounds.BLOCK_NOTE_BLOCK_BELL.getSound(), 1f, .1f);
+                player.playSound(player.getLocation(), CompatibleSound.BLOCK_NOTE_BLOCK_BELL.getSound(), 1f, .1f);
             }
         }
     }

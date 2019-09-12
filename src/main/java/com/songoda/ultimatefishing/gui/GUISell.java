@@ -24,6 +24,8 @@ public final class GUISell extends Gui {
         this.plugin = plugin;
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
+        setAcceptsItems(true);
+
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());

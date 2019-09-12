@@ -3,7 +3,7 @@ package com.songoda.ultimatefishing;
 import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.configuration.Config;
@@ -46,7 +46,7 @@ public class UltimateFishing extends SongodaPlugin {
     @Override
     public void onPluginEnable() {
         // Run Songoda Updater
-        SongodaCore.registerPlugin(this, 59, LegacyMaterials.COD);
+        SongodaCore.registerPlugin(this, 59, CompatibleMaterial.COD);
 
         // Load Economy
         EconomyManager.load();
@@ -138,6 +138,7 @@ public class UltimateFishing extends SongodaPlugin {
 
     private void loadRarities() {
         this.rarityConfig.load();
+        rarityConfig.saveChanges();
         this.rarityManager = new RarityManager();
 
         /*

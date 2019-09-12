@@ -51,6 +51,10 @@
                                     <pattern>com.songoda.core</pattern>
                                     <shadedPattern>${project.groupId}.ultimatefishing.core</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.songoda.lootables</pattern>
+                                    <shadedPattern>${project.groupId}.ultimatefishing.lootables</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -78,7 +82,7 @@
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>Lootables</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>

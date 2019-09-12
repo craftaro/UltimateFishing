@@ -11,6 +11,7 @@ import com.songoda.ultimatefishing.utils.FishUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -86,11 +87,11 @@ public class LootablesManager {
         return toDrop;
     }
 
-    private List<Drop> runLoot(LivingEntity entity, Loot loot, int rerollChance, int looting) {
+    private List<Drop> runLoot(Player player, Loot loot, int rerollChance, int looting) {
         return lootManager.runLoot(null,
                 false,
-                entity.getKiller() != null ? entity.getKiller().getItemInHand() : null,
-                entity.getKiller() == null ? null : entity.getKiller().getType(),
+                player.getItemInHand(),
+                EntityType.PLAYER,
                 loot,
                 rerollChance,
                 looting);

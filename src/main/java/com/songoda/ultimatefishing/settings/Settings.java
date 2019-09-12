@@ -1,6 +1,6 @@
 package com.songoda.ultimatefishing.settings;
 
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.configuration.ConfigSetting;
 import com.songoda.core.hooks.EconomyManager;
@@ -67,13 +67,13 @@ public class Settings {
         // convert glass pane settings
         int color;
         if ((color = GLASS_TYPE_1.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_1.getKey(), LegacyMaterials.getGlassPaneColor(color).name());
+            config.set(GLASS_TYPE_1.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
         }
         if ((color = GLASS_TYPE_2.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_2.getKey(), LegacyMaterials.getGlassPaneColor(color).name());
+            config.set(GLASS_TYPE_2.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
         }
         if ((color = GLASS_TYPE_3.getInt(-1)) != -1) {
-            config.set(GLASS_TYPE_3.getKey(), LegacyMaterials.getGlassPaneColor(color).name());
+            config.set(GLASS_TYPE_3.getKey(), CompatibleMaterial.getGlassPaneColor(color).name());
         }
 
         // convert economy settings

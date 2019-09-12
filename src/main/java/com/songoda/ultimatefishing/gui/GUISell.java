@@ -1,7 +1,7 @@
 package com.songoda.ultimatefishing.gui;
 
-import com.songoda.core.compatibility.CompatibleSounds;
-import com.songoda.core.compatibility.LegacyMaterials;
+import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
@@ -24,6 +24,8 @@ public final class GUISell extends Gui {
         this.plugin = plugin;
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
+        setAcceptsItems(true);
+
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -46,15 +48,15 @@ public final class GUISell extends Gui {
 
         // set up prices info (icon only)
         // TODO: need to add this line to language file
-        setItem(0, 4, GuiUtils.createButtonItem(LegacyMaterials.BOOK,
+        setItem(0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
                 ChatColor.translateAlternateColorCodes('&', "&6&lSell Prices:"),
                 plugin.getRarityManager().getRarities().stream()
                         .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + EconomyManager.formatEconomy(r.getSellPrice())))
                         .collect(Collectors.toList())
         ));
 
-        setButton(5, 4, GuiUtils.createButtonItem(LegacyMaterials.SUNFLOWER,
-                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(0))),
+        setButton(5, 4, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER,
+                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a" + EconomyManager.formatEconomy(0))),
                 (event) -> sellAll(event.player));
         
         setOnOpen((event) -> runTask());
@@ -67,7 +69,7 @@ public final class GUISell extends Gui {
     
     private void updateSell() {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
-        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(totalSale)));
+        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a" + EconomyManager.formatEconomy(totalSale)));
     }
 
     private void sellAll(Player player) {
@@ -76,7 +78,7 @@ public final class GUISell extends Gui {
         if (totalSale <= 0) {
             plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
 
-            player.playSound(player.getLocation(), CompatibleSounds.ENTITY_VILLAGER_NO.getSound(), 1L, 1L);
+            player.playSound(player.getLocation(), CompatibleSound.ENTITY_VILLAGER_NO.getSound(), 1L, 1L);
 
             player.closeInventory();
             return;
@@ -96,7 +98,7 @@ public final class GUISell extends Gui {
         plugin.getLocale().getMessage("event.sell.success")
                 .processPlaceholder("total", EconomyManager.formatEconomy(totalSale))
                 .sendPrefixedMessage(player);
-        player.playSound(player.getLocation(), CompatibleSounds.ENTITY_VILLAGER_YES.getSound(), 1L, 1L);
+        player.playSound(player.getLocation(), CompatibleSound.ENTITY_VILLAGER_YES.getSound(), 1L, 1L);
         
         player.closeInventory();
     }

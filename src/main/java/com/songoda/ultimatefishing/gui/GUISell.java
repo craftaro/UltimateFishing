@@ -56,7 +56,7 @@ public final class GUISell extends Gui {
         ));
 
         setButton(5, 4, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER,
-                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(0))),
+                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a" + EconomyManager.formatEconomy(0))),
                 (event) -> sellAll(event.player));
         
         setOnOpen((event) -> runTask());
@@ -69,7 +69,7 @@ public final class GUISell extends Gui {
     
     private void updateSell() {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
-        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(totalSale)));
+        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a" + EconomyManager.formatEconomy(totalSale)));
     }
 
     private void sellAll(Player player) {

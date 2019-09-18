@@ -37,6 +37,7 @@ public final class GUISell extends Gui {
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
         // open up the center area
+        setAcceptsItems(true);
         for (int row = 1; row < 5; ++row) {
             for (int col = 1; col < 8; ++col) {
                 setItem(row, col, AIR);

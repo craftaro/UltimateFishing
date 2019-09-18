@@ -24,6 +24,8 @@ public final class GUISell extends Gui {
         this.plugin = plugin;
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
+        setAcceptsItems(true);
+
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -55,7 +57,7 @@ public final class GUISell extends Gui {
         ));
 
         setButton(5, 4, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER,
-                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(0))),
+                ChatColor.translateAlternateColorCodes('&', "&7Sell for &a" + EconomyManager.formatEconomy(0))),
                 (event) -> sellAll(event.player));
         
         setOnOpen((event) -> runTask());
@@ -68,7 +70,7 @@ public final class GUISell extends Gui {
     
     private void updateSell() {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
-        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a$" + EconomyManager.formatEconomy(totalSale)));
+        updateItem(5, 4, ChatColor.translateAlternateColorCodes('&', "&7Sell for &a" + EconomyManager.formatEconomy(totalSale)));
     }
 
     private void sellAll(Player player) {

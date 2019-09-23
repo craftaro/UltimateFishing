@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.gui.GUISell;
 import org.bukkit.command.CommandSender;
@@ -11,15 +12,17 @@ import java.util.List;
 public class CommandSell extends AbstractCommand {
 
     final UltimateFishing instance;
+    final GuiManager guiManager;
 
-    public CommandSell(UltimateFishing instance) {
+    public CommandSell(UltimateFishing instance, GuiManager guiManager) {
         super(true, "sell");
         this.instance = instance;
+        this.guiManager = guiManager;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        instance.getGuiManager().showGUI((Player) sender, new GUISell(instance));
+        guiManager.showGUI((Player) sender, new GUISell(instance));
         return ReturnType.SUCCESS;
     }
 

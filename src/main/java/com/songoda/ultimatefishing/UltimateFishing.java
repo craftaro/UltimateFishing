@@ -29,7 +29,7 @@ public class UltimateFishing extends SongodaPlugin {
 
     private final Config rarityConfig = new Config(this, "rarity.yml");
 
-    private GuiManager guiManager = new GuiManager(this);
+    private final GuiManager guiManager = new GuiManager(this);
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
@@ -62,9 +62,9 @@ public class UltimateFishing extends SongodaPlugin {
         this.commandManager = new CommandManager(this);
         this.commandManager.addCommand(new CommandUltimateFishing(this))
                 .addSubCommands(
-                        new CommandSell(this),
+                        new CommandSell(this, guiManager),
                         new CommandSellAll(this),
-                        new CommandSettings(this),
+                        new CommandSettings(this, guiManager),
                         new CommandReload(this)
                 );
 
@@ -80,8 +80,6 @@ public class UltimateFishing extends SongodaPlugin {
         pluginManager.registerEvents(new FurnaceListeners(this), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
 
-        //Apply default fish rarity.
-        setupRarity();
         loadRarities();
     }
 
@@ -137,7 +135,9 @@ public class UltimateFishing extends SongodaPlugin {
     }
 
     private void loadRarities() {
-        this.rarityConfig.load();
+        //Apply default fish rarity.
+        setupRarity();
+        rarityConfig.load();
         rarityConfig.saveChanges();
         this.rarityManager = new RarityManager();
 
@@ -173,10 +173,6 @@ public class UltimateFishing extends SongodaPlugin {
 
     public RarityManager getRarityManager() {
         return rarityManager;
-    }
-
-    public GuiManager getGuiManager() {
-        return guiManager;
     }
 
     public static double calculateTotalValue(Inventory inventory) {

@@ -24,8 +24,6 @@ public final class GUISell extends Gui {
         this.plugin = plugin;
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
-        setAcceptsItems(true);
-
 
         ItemStack glass2 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_2.getMaterial());
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial());
@@ -39,6 +37,7 @@ public final class GUISell extends Gui {
         GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
 
         // open up the center area
+        setAcceptsItems(true);
         for (int row = 1; row < 5; ++row) {
             for (int col = 1; col < 8; ++col) {
                 setItem(row, col, AIR);

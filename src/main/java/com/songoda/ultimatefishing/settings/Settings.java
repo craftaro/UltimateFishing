@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  */
 public class Settings {
 
-    static final Config config = UltimateFishing.getInstance().getConfig().getCoreConfig();
+    static final Config config = UltimateFishing.getInstance().getCoreConfig();
 
     public static final ConfigSetting CRITICAL_CHANCE = new ConfigSetting(config, "Main.Critical Cast Chance", "10%",
             "What should the chance be for a cast to become critical?");

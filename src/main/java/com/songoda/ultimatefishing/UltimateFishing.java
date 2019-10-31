@@ -4,10 +4,10 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.gui.GuiManager;
-import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.configuration.ConfigSection;
+import com.songoda.core.gui.GuiManager;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.commands.*;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
 import com.songoda.ultimatefishing.listeners.FishingListeners;
@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class UltimateFishing extends SongodaPlugin {
 
         // Setup Config
         Settings.setupConfig();
-		this.setLocale(Settings.LANGUGE_MODE.getString(), false);
+        this.setLocale(Settings.LANGUGE_MODE.getString(), false);
 
         // Set economy preference
         EconomyManager.getManager().setPreferredHook(Settings.ECONOMY_PLUGIN.getString());
@@ -89,7 +90,7 @@ public class UltimateFishing extends SongodaPlugin {
 
     @Override
     public void onConfigReload() {
-		this.setLocale(Settings.LANGUGE_MODE.getString(), true);
+        this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.getLootablesManager().getLootManager().loadLootables();
         this.loadRarities();
     }
@@ -98,46 +99,48 @@ public class UltimateFishing extends SongodaPlugin {
      * Insert default fish sizes into config.
      */
     private void setupRarity() {
-        rarityConfig.createDefaultSection("Rarity", 
-                "The different levels of fish rarity.",
-                "You can rename, replace and add new fish as you wish.")
-                .setDefault("Tiny.Chance", 15,
-                        "The chance that a caught fish will be tiny.")
-                .setDefault("Tiny.Color", "9",
-                        "The color used for the name tag.")
-                .setDefault("Tiny.Extra Health", -2,
-                        "The amount of health on top of the initial health that the caught",
-                        "fish grants.")
-                .setDefault("Tiny.Sell Price", 4.99,
-                        "The price tiny fish will sell for.")
-                .setDefault("Tiny.Lure Chance Change", -5,
-                        "The effect the lure fishing enchantment would have on the chance.",
-                        "This is multiplied per enchantment level.")
-                .setDefault("Normal.Chance", 50)
-                .setDefault("Normal.Color", "7")
-                .setDefault("Normal.Extra Health", 0)
-                .setDefault("Normal.Sell Price", 19.99)
-                .setDefault("Normal.Lure Chance Change", -8)
-                .setDefault("Large.Chance", 25)
-                .setDefault("Large.Color", "c")
-                .setDefault("Large.Extra Health", 2)
-                .setDefault("Large.Sell Price", 49.99)
-                .setDefault("Large.Lure Chance Change", 5)
-                .setDefault("Huge.Chance", 10)
-                .setDefault("Huge.Color", "5")
-                .setDefault("Huge.Extra Health", 4)
-                .setDefault("Huge.Sell Price", 99.99)
-                .setDefault("Huge.Broadcast", true,
-                        "Should we broadcast a message to all players when a huge fish",
-                        "is caught?")
-                .setDefault("Huge.Lure Chance Change", 8);
+        if (!rarityConfig.contains("Rarity")) {
+            rarityConfig.createDefaultSection("Rarity",
+                    "The different levels of fish rarity.",
+                    "You can rename, replace and add new fish as you wish.")
+                    .setDefault("Tiny.Chance", 15,
+                            "The chance that a caught fish will be tiny.")
+                    .setDefault("Tiny.Color", "9",
+                            "The color used for the name tag.")
+                    .setDefault("Tiny.Extra Health", -2,
+                            "The amount of health on top of the initial health that the caught",
+                            "fish grants.")
+                    .setDefault("Tiny.Sell Price", 4.99,
+                            "The price tiny fish will sell for.")
+                    .setDefault("Tiny.Lure Chance Change", -5,
+                            "The effect the lure fishing enchantment would have on the chance.",
+                            "This is multiplied per enchantment level.")
+                    .setDefault("Normal.Chance", 50)
+                    .setDefault("Normal.Color", "7")
+                    .setDefault("Normal.Extra Health", 0)
+                    .setDefault("Normal.Sell Price", 19.99)
+                    .setDefault("Normal.Lure Chance Change", -8)
+                    .setDefault("Large.Chance", 25)
+                    .setDefault("Large.Color", "c")
+                    .setDefault("Large.Extra Health", 2)
+                    .setDefault("Large.Sell Price", 49.99)
+                    .setDefault("Large.Lure Chance Change", 5)
+                    .setDefault("Huge.Chance", 10)
+                    .setDefault("Huge.Color", "5")
+                    .setDefault("Huge.Extra Health", 4)
+                    .setDefault("Huge.Sell Price", 99.99)
+                    .setDefault("Huge.Broadcast", true,
+                            "Should we broadcast a message to all players when a huge fish",
+                            "is caught?")
+                    .setDefault("Huge.Lure Chance Change", 8);
+        }
         rarityConfig.setRootNodeSpacing(1).setCommentSpacing(0);
     }
 
     private void loadRarities() {
         //Apply default fish rarity.
-        setupRarity();
         rarityConfig.load();
+        setupRarity();
         rarityConfig.saveChanges();
         this.rarityManager = new RarityManager();
 

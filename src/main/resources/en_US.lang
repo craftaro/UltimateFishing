@@ -1,15 +1,23 @@
-#General Messages
+# General Messages
 
-general.nametag.prefix = "&8[&6UltimateFishing&8]"
+general:
+  nametag:
+    prefix: '&8[&6UltimateFishing&8]'
 
-#Interface Messages
+# Interface Messages
 
-interface.sell.title = "Sell GUI"
+interface:
+  sell:
+    title: Sell GUI
 
-#Event Messages
+# Event Messages
 
-event.general.nopermission = "&cYou do not have permission to do that."
-event.general.critical = "&6Critical Cast!"
-event.sell.success = "&7You successfully sold your fish for a total of &6$%total%&7."
-event.sell.fail = "&cNothing in the interface is sellable..."
-event.catch.broadcast = "&6%username% &7just caught a &6%rarity% &7fish!"
+event:
+  general:
+    nopermission: '&cYou do not have permission to do that.'
+    critical: '&6Critical Cast!'
+  sell:
+    success: '&7You successfully sold your fish for a total of &6$%total%&7.'
+    fail: '&cNothing in the interface is sellable...'
+  catch:
+    broadcast: '&6%username% &7just caught a &6%rarity% &7fish!'

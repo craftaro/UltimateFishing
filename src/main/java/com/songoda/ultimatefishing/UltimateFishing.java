@@ -4,6 +4,7 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.configuration.ConfigSection;
 import com.songoda.core.gui.GuiManager;
@@ -16,6 +17,7 @@ import com.songoda.ultimatefishing.lootables.LootablesManager;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
 import com.songoda.ultimatefishing.settings.Settings;
+import com.songoda.ultimatefishing.tasks.BaitParticleTask;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +34,8 @@ public class UltimateFishing extends SongodaPlugin {
 
     private final Config rarityConfig = new Config(this, "rarity.yml");
     private final Config baitConfig = new Config(this, "bait.yml");
+
+    private BaitParticleTask baitParticleTask;
 
     private final GuiManager guiManager = new GuiManager(this);
     private LootablesManager lootablesManager;
@@ -87,6 +91,9 @@ public class UltimateFishing extends SongodaPlugin {
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
+
+        // Start tasks
+            this.baitParticleTask = BaitParticleTask.startTask(this);
 
         loadRarities();
         loadBaits();
@@ -239,6 +246,10 @@ public class UltimateFishing extends SongodaPlugin {
                         section.getDouble("Bonus Chance")));
             }
         }
+    }
+
+    public BaitParticleTask getBaitParticleTask() {
+        return baitParticleTask;
     }
 
     public LootablesManager getLootablesManager() {

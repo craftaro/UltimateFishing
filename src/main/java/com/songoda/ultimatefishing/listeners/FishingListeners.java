@@ -106,6 +106,12 @@ public class FishingListeners implements Listener {
                 }
             }
         } else if (event.getState() == PlayerFishEvent.State.FISHING) {
+            ItemStack rod = player.getItemInHand();
+            if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
+                Bait bait = plugin.getBaitManager().getBait(rod);
+                plugin.getBaitParticleTask().addBait(bait, event.getHook());
+            }
+
             double ch = Double.parseDouble(Settings.CRITICAL_CHANCE.getString().replace("%", ""));
             double rand = Math.random() * 100;
             if (rand - ch < 0 || ch == 100) {

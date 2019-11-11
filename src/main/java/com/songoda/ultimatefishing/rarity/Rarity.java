@@ -7,16 +7,16 @@ public class Rarity {
 
     private final double chance;
 
-    private final int extrahealth;
+    private final int extraHealth;
     private final double sellPrice;
     private final boolean broadcast;
     private final double lureChance;
 
-    public Rarity(String rarity, String color, double chance, int extrahealth, double sellPrice, boolean broadcast, double lureChance) {
+    public Rarity(String rarity, String color, double chance, int extraHealth, double sellPrice, boolean broadcast, double lureChance) {
         this.rarity = rarity;
         this.color = color;
         this.chance = chance;
-        this.extrahealth = extrahealth;
+        this.extraHealth = extraHealth;
         this.sellPrice = sellPrice;
         this.broadcast = broadcast;
         this.lureChance = lureChance;
@@ -34,8 +34,8 @@ public class Rarity {
         return chance;
     }
 
-    public int getExtrahealth() {
-        return extrahealth;
+    public int getExtraHealth() {
+        return extraHealth;
     }
 
     public double getSellPrice() {

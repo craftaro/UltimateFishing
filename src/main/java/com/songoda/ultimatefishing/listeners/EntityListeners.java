@@ -26,6 +26,6 @@ public class EntityListeners implements Listener {
 
         if (rarity == null || FishUtils.isRaw(event.getEntity().getItemInHand())) return;
 
-        event.setFoodLevel(event.getFoodLevel() + rarity.getExtrahealth());
+        event.setFoodLevel(event.getFoodLevel() + rarity.getExtraHealth());
     }
 }

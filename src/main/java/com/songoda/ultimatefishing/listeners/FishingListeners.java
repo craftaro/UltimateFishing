@@ -4,6 +4,7 @@ import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
 import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.ultimatefishing.bait.Bait;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.settings.Settings;
 import org.bukkit.Bukkit;
@@ -16,14 +17,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class FishingListeners implements Listener {
 
@@ -71,12 +68,20 @@ public class FishingListeners implements Listener {
                     afk.put(player.getUniqueId(), new AFKObject(player.getLocation()));
                 }
             }
+            Bait bait = null;
 
-            List<Drop> drops = plugin.getLootablesManager().getDrops(event.getPlayer());
+            ItemStack rod = player.getItemInHand();
+            if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
+                bait = plugin.getBaitManager().getBait(rod);
+                bait.use(rod);
+            }
+
+
+            List<Drop> drops = plugin.getLootablesManager().getDrops(player, bait);
 
             if (inCritical.contains(player.getUniqueId())) {
                 for (int i = 0; i < (Settings.CRITICAL_DROP_MULTI.getInt() - 1); i++)
-                    drops.addAll(plugin.getLootablesManager().getDrops(event.getPlayer()));
+                    drops.addAll(plugin.getLootablesManager().getDrops(player, bait));
             }
             inCritical.remove(player.getUniqueId());
 

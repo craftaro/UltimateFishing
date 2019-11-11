@@ -43,4 +43,13 @@ public class RarityManager {
         }
         return registeredRarities;
     }
+
+    public boolean isRarity(String target) {
+        return registeredRarities.stream().anyMatch(rarity -> rarity.getRarity().equalsIgnoreCase(target));
+    }
+
+    public Rarity getRarity(String target) {
+        return registeredRarities.stream().filter(rarity -> rarity.getRarity().equalsIgnoreCase(target))
+                .findFirst().orElse(null);
+    }
 }

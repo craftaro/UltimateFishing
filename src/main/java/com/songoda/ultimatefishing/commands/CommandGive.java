@@ -1,15 +1,12 @@
 package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.commands.AbstractCommand;
-import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.bait.Bait;
-import com.songoda.ultimatefishing.gui.GUISell;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +44,15 @@ public class CommandGive extends AbstractCommand {
             return ReturnType.FAILURE;
         }
 
+        if (sender != player)
+            instance.getLocale().newMessage("&7You gave &6" + player.getName() + " " + args[2] + " &" + bait.getColor() + bait.getBait() + "&7.")
+                    .sendPrefixedMessage(sender);
+
+        instance.getLocale().getMessage("event.bait.given")
+                .processPlaceholder("amount", args[2])
+                .processPlaceholder("bait", "&" + bait.getColor() + bait.getBait())
+                .sendPrefixedMessage(sender);
+
         player.getPlayer().getInventory().addItem(bait.asItemStack(Integer.parseInt(args[2])));
 
         return ReturnType.SUCCESS;
@@ -71,10 +77,12 @@ public class CommandGive extends AbstractCommand {
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
             return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
-        } if (args.length == 2) {
+        }
+        if (args.length == 2) {
             return instance.getBaitManager().getBaits().stream().map(b ->
                     b.getBait().replace(" ", "_")).collect(Collectors.toList());
-        } if (args.length == 3) {
+        }
+        if (args.length == 3) {
             return Arrays.asList("1", "2", "3");
         }
         return null;

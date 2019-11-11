@@ -4,6 +4,14 @@ general:
   nametag:
     prefix: '&8[&6UltimateFishing&8]'
 
+# Object Messages
+
+object:
+  bait:
+    name: '%bait% &7(bait)'
+    lore: '&7Use this on a fishing rod.'
+    baited: '&7Baited: %bait% &7%uses%/%max%'
+
 # Interface Messages
 
 interface:

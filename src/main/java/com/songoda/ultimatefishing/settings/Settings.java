@@ -33,6 +33,9 @@ public class Settings {
     public static final ConfigSetting FISH_RARITY = new ConfigSetting(config, "Main.Fish Rarity", true,
             "Should fish have rarity?");
 
+    public static final ConfigSetting STACKABLE_BAITS = new ConfigSetting(config, "Main.Stackable Baits", true,
+            "Should bait stack?");
+
     public static final ConfigSetting ECONOMY_PLUGIN = new ConfigSetting(config, "Main.Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",
             "Supported plugins you have installed: \"" + EconomyManager.getManager().getRegisteredPlugins().stream().collect(Collectors.joining("\", \"")) + "\".");

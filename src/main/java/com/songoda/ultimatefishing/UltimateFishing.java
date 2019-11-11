@@ -8,10 +8,10 @@ import com.songoda.core.configuration.Config;
 import com.songoda.core.configuration.ConfigSection;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.ultimatefishing.bait.Bait;
+import com.songoda.ultimatefishing.bait.BaitManager;
 import com.songoda.ultimatefishing.commands.*;
-import com.songoda.ultimatefishing.listeners.EntityListeners;
-import com.songoda.ultimatefishing.listeners.FishingListeners;
-import com.songoda.ultimatefishing.listeners.FurnaceListeners;
+import com.songoda.ultimatefishing.listeners.*;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
@@ -21,7 +21,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class UltimateFishing extends SongodaPlugin {
@@ -29,11 +31,13 @@ public class UltimateFishing extends SongodaPlugin {
     private static UltimateFishing INSTANCE;
 
     private final Config rarityConfig = new Config(this, "rarity.yml");
+    private final Config baitConfig = new Config(this, "bait.yml");
 
     private final GuiManager guiManager = new GuiManager(this);
     private LootablesManager lootablesManager;
     private CommandManager commandManager;
     private RarityManager rarityManager;
+    private BaitManager baitManager;
 
     public static UltimateFishing getInstance() {
         return INSTANCE;
@@ -65,6 +69,7 @@ public class UltimateFishing extends SongodaPlugin {
                 .addSubCommands(
                         new CommandSell(this, guiManager),
                         new CommandSellAll(this),
+                        new CommandGive(this),
                         new CommandSettings(this, guiManager),
                         new CommandReload(this)
                 );
@@ -80,8 +85,11 @@ public class UltimateFishing extends SongodaPlugin {
         pluginManager.registerEvents(new FishingListeners(this), this);
         pluginManager.registerEvents(new FurnaceListeners(this), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
+        pluginManager.registerEvents(new InventoryListeners(this), this);
+        pluginManager.registerEvents(new BlockListeners(this), this);
 
         loadRarities();
+        loadBaits();
     }
 
     @Override
@@ -93,6 +101,7 @@ public class UltimateFishing extends SongodaPlugin {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.getLootablesManager().getLootManager().loadLootables();
         this.loadRarities();
+        this.loadBaits();
     }
 
     /*
@@ -102,7 +111,7 @@ public class UltimateFishing extends SongodaPlugin {
         if (!rarityConfig.contains("Rarity")) {
             rarityConfig.createDefaultSection("Rarity",
                     "The different levels of fish rarity.",
-                    "You can rename, replace and add new fish as you wish.")
+                    "You can rename, replace and add new rarities as you wish.")
                     .setDefault("Tiny.Chance", 15,
                             "The chance that a caught fish will be tiny.")
                     .setDefault("Tiny.Color", "9",
@@ -137,6 +146,43 @@ public class UltimateFishing extends SongodaPlugin {
         rarityConfig.setRootNodeSpacing(1).setCommentSpacing(0);
     }
 
+    /*
+     * Insert default fish sizes into config.
+     */
+    private void setupBait() {
+        if (!baitConfig.contains("Bait")) {
+            baitConfig.createDefaultSection("Bait",
+                    "The baits. You can rename, replace and add new baits as you wish.")
+                    .setDefault("Worms.Bonus Chance", 100,
+                            "The added chance (Weight) this bait will add towards the targets.")
+                    .setDefault("Worms.Material", "SUNFLOWER",
+                            "The material that represents this bait as an item.")
+                    .setDefault("Worms.Uses", 3,
+                            "The amount of uses this bait gets.")
+                    .setDefault("Worms.Target", Arrays.asList("TINY", "NORMAL"),
+                            "The added chance this bait will add towards the targets.")
+                    .setDefault("Worms.Color", "9",
+                            "The color used for the name tag.")
+                    .setDefault("Worms.Sell Price", 4.99,
+                            "The price worms will sell for.")
+
+                    .setDefault("Super Worms.Bonus Chance", 25)
+                    .setDefault("Super Worms.Material", "SUNFLOWER")
+                    .setDefault("Super Worms.Uses", 3)
+                    .setDefault("Super Worms.Target", Collections.singletonList("LARGE"))
+                    .setDefault("Super Worms.Color", "c")
+                    .setDefault("Super Worms.Sell Price", 19.99)
+
+                    .setDefault("Ultra Worms.Bonus Chance", 25)
+                    .setDefault("Ultra Worms.Material", "SUNFLOWER")
+                    .setDefault("Ultra Worms.Uses", 3)
+                    .setDefault("Ultra Worms.Target", Collections.singletonList("HUGE"))
+                    .setDefault("Ultra Worms.Color", "5")
+                    .setDefault("Ultra Worms.Sell Price", 49.99);
+        }
+        baitConfig.setRootNodeSpacing(1).setCommentSpacing(0);
+    }
+
     private void loadRarities() {
         //Apply default fish rarity.
         rarityConfig.load();
@@ -161,6 +207,40 @@ public class UltimateFishing extends SongodaPlugin {
         }
     }
 
+    private void loadBaits() {
+        //Apply default baits.
+        baitConfig.load();
+        setupBait();
+        baitConfig.saveChanges();
+        this.baitManager = new BaitManager();
+
+        /*
+         * Register baits into BaitManager from Configuration.
+         */
+        if (baitConfig.isConfigurationSection("Bait")) {
+            for (ConfigSection section : baitConfig.getSections("Bait")) {
+
+                List<Rarity> targets = new ArrayList<>();
+
+                if (section.contains("Target")) {
+                    for (String target : section.getStringList("Target"))
+                        if (rarityManager.isRarity(target))
+                            targets.add(rarityManager.getRarity(target));
+                } else
+                    continue;
+
+                baitManager.addBait(new Bait(
+                        section.getNodeKey(),
+                        section.getString("Color"),
+                        section.getMaterial("Material").getMaterial(),
+                        section.getDouble("Sell Price"),
+                        section.getInt("Uses"),
+                        targets,
+                        section.getDouble("Bonus Chance")));
+            }
+        }
+    }
+
     public LootablesManager getLootablesManager() {
         return lootablesManager;
     }
@@ -176,6 +256,10 @@ public class UltimateFishing extends SongodaPlugin {
 
     public RarityManager getRarityManager() {
         return rarityManager;
+    }
+
+    public BaitManager getBaitManager() {
+        return baitManager;
     }
 
     public static double calculateTotalValue(Inventory inventory) {

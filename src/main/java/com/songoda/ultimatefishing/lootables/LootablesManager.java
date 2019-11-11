@@ -5,22 +5,21 @@ import com.songoda.lootables.Lootables;
 import com.songoda.lootables.loot.*;
 import com.songoda.lootables.loot.objects.EnchantChance;
 import com.songoda.ultimatefishing.UltimateFishing;
+import com.songoda.ultimatefishing.bait.Bait;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.settings.Settings;
 import com.songoda.ultimatefishing.utils.FishUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class LootablesManager {
 
@@ -38,7 +37,7 @@ public class LootablesManager {
         this.lootManager = new LootManager(instance);
     }
 
-    public List<Drop> getDrops(Player player) {
+    public List<Drop> getDrops(Player player, Bait bait) {
         List<Drop> toDrop = new ArrayList<>();
 
         Lootable lootable = lootManager.getRegisteredLootables().get("NORMAL");
@@ -62,20 +61,34 @@ public class LootablesManager {
                 ItemMeta meta = itemStack.getItemMeta();
                 List<String> lore = new ArrayList<>();
 
-                List<Rarity> weightedList = new ArrayList<>();
+                Map<Double, Rarity> rarities = new HashMap<>();
 
-                List<Rarity> rarities = plugin.getRarityManager().getRarities(player);
-                if (rarities.isEmpty()) continue;
-                else if (rarities.size() == 1)
-                    weightedList = rarities;
-                else {
-                    for (Rarity rarity : plugin.getRarityManager().getRarities(player))
-                        for (int i = 0; i < (rarity.getChance() + (rarity.getLureChance() * lure)) * 30; i++)
-                            weightedList.add(rarity);
+                for (Rarity rarity : plugin.getRarityManager().getRarities(player)) {
+                    double weight = rarity.getChance() + (rarity.getLureChance() * lure);
+                    if (bait != null) {
+                        if (bait.getTarget().contains(rarity))
+                            weight += bait.getChanceBonus();
+                        if (bait.getChanceBonus() == 100)
+                            continue;
+                    }
+                    rarities.put(weight, rarity);
                 }
-                int choice = new Random().nextInt(weightedList.size());
-                Rarity rarity = weightedList.get(choice);
 
+                if (rarities.isEmpty()) continue;
+
+                double totalWeight = rarities.keySet().stream().mapToDouble(p -> p).sum();
+
+                Rarity rarity = rarities.entrySet().iterator().next().getValue();
+                if (rarities.size() != 1) {
+                    double random = Math.random() * totalWeight;
+                    for (Map.Entry<Double, Rarity> entry : rarities.entrySet()) {
+                        random -= entry.getKey();
+                        if (random <= 0d) {
+                            rarity = entry.getValue();
+                            break;
+                        }
+                    }
+                }
                 lore.add(ChatColor.translateAlternateColorCodes('&', "&" + rarity.getColor() + rarity.getRarity()));
                 if (meta.hasLore())
                     lore.addAll(meta.getLore());

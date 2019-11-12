@@ -19,6 +19,11 @@ interface:
     title: Sell GUI
     prices: '&6&lSell Prices:'
     sellfor: '&7Sell for &a%price%'
+    accessbaitshop: '&7Access Bait Shop'
+  bait:
+    title: Bait Shop
+    cannotafford: '&cYou cannot afford to buy this.'
+    buyfor: '&7Buy for &a%price%'
 
 # Event Messages
 

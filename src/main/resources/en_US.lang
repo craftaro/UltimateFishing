@@ -17,6 +17,8 @@ object:
 interface:
   sell:
     title: Sell GUI
+    prices: '&6&lSell Prices:'
+    sellfor: '&7Sell for &a%price%'
 
 # Event Messages
 

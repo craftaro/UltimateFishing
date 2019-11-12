@@ -29,6 +29,7 @@ public class InventoryListeners implements Listener {
             ItemStack cursor = event.getCursor();
             ItemStack item = event.getCurrentItem();
             if (cursor.hasItemMeta()
+                    && cursor.getType() != Material.FISHING_ROD
                     && item.getType() == Material.FISHING_ROD
                     && plugin.getBaitManager().getBait(cursor) != null) {
                 Bait bait = plugin.getBaitManager().getBait(cursor);

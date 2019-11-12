@@ -73,6 +73,7 @@ public class UltimateFishing extends SongodaPlugin {
                 .addSubCommands(
                         new CommandSell(this, guiManager),
                         new CommandSellAll(this),
+                        new CommandBaitShop(this, guiManager),
                         new CommandGive(this),
                         new CommandSettings(this, guiManager),
                         new CommandReload(this)
@@ -162,7 +163,7 @@ public class UltimateFishing extends SongodaPlugin {
                     "The baits. You can rename, replace and add new baits as you wish.")
                     .setDefault("Worms.Bonus Chance", 100,
                             "The added chance (Weight) this bait will add towards the targets.")
-                    .setDefault("Worms.Material", "SUNFLOWER",
+                    .setDefault("Worms.Material", "STRING",
                             "The material that represents this bait as an item.")
                     .setDefault("Worms.Uses", 3,
                             "The amount of uses this bait gets.")
@@ -174,14 +175,14 @@ public class UltimateFishing extends SongodaPlugin {
                             "The price worms will sell for.")
 
                     .setDefault("Super Worms.Bonus Chance", 25)
-                    .setDefault("Super Worms.Material", "SUNFLOWER")
+                    .setDefault("Super Worms.Material", "STRING")
                     .setDefault("Super Worms.Uses", 3)
                     .setDefault("Super Worms.Target", Collections.singletonList("LARGE"))
                     .setDefault("Super Worms.Color", "c")
                     .setDefault("Super Worms.Sell Price", 19.99)
 
                     .setDefault("Ultra Worms.Bonus Chance", 25)
-                    .setDefault("Ultra Worms.Material", "SUNFLOWER")
+                    .setDefault("Ultra Worms.Material", "STRING")
                     .setDefault("Ultra Worms.Uses", 3)
                     .setDefault("Ultra Worms.Target", Collections.singletonList("HUGE"))
                     .setDefault("Ultra Worms.Color", "5")

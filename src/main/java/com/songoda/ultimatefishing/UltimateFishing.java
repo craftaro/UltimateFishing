@@ -73,6 +73,7 @@ public class UltimateFishing extends SongodaPlugin {
                 .addSubCommands(
                         new CommandSell(this, guiManager),
                         new CommandSellAll(this),
+                        new CommandBaitShop(this, guiManager),
                         new CommandGive(this),
                         new CommandSettings(this, guiManager),
                         new CommandReload(this)

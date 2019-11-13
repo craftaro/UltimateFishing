@@ -73,7 +73,8 @@ public class FishingListeners implements Listener {
             ItemStack rod = player.getItemInHand();
             if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
                 bait = plugin.getBaitManager().getBait(rod);
-                bait.use(rod);
+                if (bait != null)
+                    bait.use(rod);
             }
 
 

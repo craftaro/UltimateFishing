@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateFishing</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>maven-version-number</version>
+    <version>1.2.4</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateFishing-${project.version}</finalName>
@@ -14,6 +14,28 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.3</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>${project.build.directory}/classes/plugin.yml</file>
+                    <replacements>
+                        <replacement>
+                            <token>maven-version-number</token>
+                            <value>${project.version}</value>
+                        </replacement>
+                    </replacements>
                 </configuration>
             </plugin>
             <plugin>
@@ -38,13 +60,6 @@
                                 </includes>
                             </artifactSet>
                             <filters>
-                                <!-- This filter is primarily for anvil gui right now -->
-                                <!--<filter>
-                                    <artifact>com.songoda:SongodaCore-NMS*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>-->
                                 <filter>
                                     <artifact>*:*</artifact>
                                     <excludes>
@@ -83,8 +98,8 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
+            <artifactId>spigot</artifactId>
+            <version>1.15</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

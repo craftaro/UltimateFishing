@@ -110,7 +110,8 @@ public class FishingListeners implements Listener {
             ItemStack rod = player.getItemInHand();
             if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
                 Bait bait = plugin.getBaitManager().getBait(rod);
-                plugin.getBaitParticleTask().addBait(bait, event.getHook());
+                if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
+                    plugin.getBaitParticleTask().addBait(bait, event.getHook());
             }
 
             double ch = Double.parseDouble(Settings.CRITICAL_CHANCE.getString().replace("%", ""));

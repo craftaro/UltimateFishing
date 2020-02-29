@@ -34,7 +34,7 @@ public class BaitParticleTask extends BukkitRunnable {
         for (Map.Entry<Entity, Bait> entry : new HashMap<>(activeBait).entrySet()) {
             Entity entity = entry.getKey();
             Bait bait = entry.getValue();
-            if (entity == null || entity.isDead() || !entity.isValid()) {
+            if (bait == null || entity == null || entity.isDead() || !entity.isValid()) {
                 activeBait.remove(entity);
                 continue;
             }

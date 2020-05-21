@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateFishing</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.2.6</version>
+    <version>1.2.7</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateFishing-${project.version}</finalName>
@@ -89,6 +89,10 @@
         <repository>
             <id>private</id>
             <url>http://repo.songoda.com/artifactory/private/</url>
+        </repository>
+        <repository>
+            <id>public</id>
+            <url>https://repo.songoda.com/artifactory/public/</url>
         </repository>
         <repository>
             <id>spigot-repo</id>

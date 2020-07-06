@@ -5,10 +5,10 @@ main: com.songoda.ultimatefishing.UltimateFishing
 author: songoda
 api-version: 1.13
 commands:
-  UltimateFishing:
+  uf:
     description: Reloads the configuration file
     default: true
-    aliases: [uf]
+    aliases: [UltimateFishing]
     usage: /ultimatefishing reload
 permissions:
   ultimatefishing.*:

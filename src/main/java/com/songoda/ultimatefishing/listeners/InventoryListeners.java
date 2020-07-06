@@ -24,7 +24,6 @@ public class InventoryListeners implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         if (event.getCurrentItem() == null) return;
-
         if (event.getCursor() != null && event.getCurrentItem() != null) {
             ItemStack cursor = event.getCursor();
             ItemStack item = event.getCurrentItem();
@@ -33,12 +32,14 @@ public class InventoryListeners implements Listener {
                     && item.getType() == Material.FISHING_ROD
                     && plugin.getBaitManager().getBait(cursor) != null) {
                 Bait bait = plugin.getBaitManager().getBait(cursor);
-                if (!bait.applyBait(item)) return;
+                ItemStack rod = bait.applyBait(item);
+                if (rod == null) return;
                 event.setCancelled(true);
 
                 int result = cursor.getAmount() - 1;
                 cursor.setAmount(result);
                 player.setItemOnCursor(result > 0 ? cursor : null);
+                event.setCurrentItem(rod);
             }
         }
     }

@@ -1,9 +1,11 @@
 package com.songoda.ultimatefishing.bait;
 
+import com.songoda.core.nms.NmsManager;
+import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -29,7 +31,9 @@ public class Bait {
     // The bonus percent chance.
     private double chanceBonus;
 
-    public Bait(String bait, String color, Material material, double sellPrice, int uses, List<Rarity> target, double chanceBonus) {
+    private boolean enchanted;
+
+    public Bait(String bait, String color, Material material, double sellPrice, int uses, List<Rarity> target, double chanceBonus, boolean enchanted) {
         this.bait = bait;
         this.color = color;
         this.material = material;
@@ -37,40 +41,52 @@ public class Bait {
         this.uses = uses;
         this.target = target;
         this.chanceBonus = chanceBonus;
+        this.enchanted = enchanted;
     }
 
     public ItemStack asItemStack(int amount) {
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(TextUtils.convertToInvisibleString(bait + ":")
-                + TextUtils.formatText("&" + color)
+        meta.setDisplayName(TextUtils.formatText("&" + color)
                 + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
                 .processPlaceholder("bait", bait).getMessage());
         meta.setLore(Collections.singletonList(UltimateFishing.getInstance().getLocale()
                 .getMessage("object.bait.lore").getMessage()));
         itemStack.setItemMeta(meta);
-        return itemStack;
+
+        if (enchanted)
+            ItemUtils.addGlow(itemStack);
+
+        NBTItem nbtItem = NmsManager.getNbt().of(itemStack);
+        nbtItem.set("bait", bait);
+
+        return nbtItem.finish();
     }
 
     public ItemStack asItemStack() {
         return asItemStack(1);
     }
 
-    public boolean applyBait(ItemStack item) {
+    public ItemStack applyBait(ItemStack item) {
         return applyBait(item, 0, uses);
     }
 
-    public boolean applyBait(ItemStack item, int uses, int max) {
+    public ItemStack applyBait(ItemStack item, int uses, int max) {
         if (item.getItemMeta().hasLore()) {
             Bait bait = UltimateFishing.getInstance().getBaitManager().getBait(item);
-            max = Integer.parseInt(TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":")[2]);
+            NBTItem nbtItem = NmsManager.getNbt().of(item);
+            if (nbtItem.has("max")) {
+                max = nbtItem.getNBTObject("max").asInt();
+            } else {
+                Integer.parseInt(TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":")[2]);
+            }
+
             if (bait == null || !bait.getBait().equals(this.getBait()))
-                return false;
+                return null;
             else
                 max += bait.uses;
         }
-        String baited = TextUtils.convertToInvisibleString(bait + ":" + uses + ":" + max + ":")
-                + UltimateFishing.getInstance().getLocale().getMessage("object.bait.baited")
+        String baited = UltimateFishing.getInstance().getLocale().getMessage("object.bait.baited")
                 .processPlaceholder("bait",
                         TextUtils.formatText("&" + color) + bait)
                 .processPlaceholder("uses", max - uses)
@@ -80,7 +96,13 @@ public class Bait {
         ItemMeta meta = item.getItemMeta();
         meta.setLore(Collections.singletonList(baited));
         item.setItemMeta(meta);
-        return true;
+
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        nbtItem.set("bait", bait);
+        nbtItem.set("uses", uses);
+        nbtItem.set("max", max);
+
+        return nbtItem.finish();
     }
 
     public String getBait() {
@@ -129,8 +151,17 @@ public class Bait {
 
     public void use(ItemStack item) {
         String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
-        int uses = Integer.parseInt(split[1]) + 1;
-        int max = Integer.parseInt(split[2]);
+        int uses;
+        int max;
+
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        if (nbtItem.has("uses")) {
+            uses = nbtItem.getNBTObject("uses").asInt();
+            max = nbtItem.getNBTObject("max").asInt();
+        } else {
+            uses = Integer.parseInt(split[1]) + 1;
+            max = Integer.parseInt(split[2]);
+        }
 
         ItemMeta meta = item.getItemMeta();
         meta.setLore(new ArrayList<>());

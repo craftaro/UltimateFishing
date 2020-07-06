@@ -33,7 +33,7 @@ public class CommandSettings extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/uf settings";
+        return "settings";
     }
 
     @Override

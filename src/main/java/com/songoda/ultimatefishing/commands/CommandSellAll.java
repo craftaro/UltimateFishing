@@ -64,7 +64,7 @@ public class CommandSellAll extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/uf sellall";
+        return "sellall";
     }
 
     @Override

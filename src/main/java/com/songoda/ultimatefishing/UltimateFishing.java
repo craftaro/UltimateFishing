@@ -4,7 +4,6 @@ import com.songoda.core.SongodaCore;
 import com.songoda.core.SongodaPlugin;
 import com.songoda.core.commands.CommandManager;
 import com.songoda.core.compatibility.CompatibleMaterial;
-import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.configuration.Config;
 import com.songoda.core.configuration.ConfigSection;
 import com.songoda.core.gui.GuiManager;
@@ -69,7 +68,7 @@ public class UltimateFishing extends SongodaPlugin {
 
         // Register commands
         this.commandManager = new CommandManager(this);
-        this.commandManager.addCommand(new CommandUltimateFishing(this))
+        this.commandManager.addMainCommand("uf")
                 .addSubCommands(
                         new CommandSell(this, guiManager),
                         new CommandSellAll(this),
@@ -94,7 +93,7 @@ public class UltimateFishing extends SongodaPlugin {
         pluginManager.registerEvents(new BlockListeners(this), this);
 
         // Start tasks
-            this.baitParticleTask = BaitParticleTask.startTask(this);
+        this.baitParticleTask = BaitParticleTask.startTask(this);
 
         loadRarities();
         loadBaits();
@@ -186,6 +185,7 @@ public class UltimateFishing extends SongodaPlugin {
                     .setDefault("Ultra Worms.Uses", 3)
                     .setDefault("Ultra Worms.Target", Collections.singletonList("HUGE"))
                     .setDefault("Ultra Worms.Color", "5")
+                    .setDefault("Ultra Worms.Enchanted", true)
                     .setDefault("Ultra Worms.Sell Price", 49.99);
         }
         baitConfig.setRootNodeSpacing(1).setCommentSpacing(0);
@@ -244,7 +244,8 @@ public class UltimateFishing extends SongodaPlugin {
                         section.getDouble("Sell Price"),
                         section.getInt("Uses"),
                         targets,
-                        section.getDouble("Bonus Chance")));
+                        section.getDouble("Bonus Chance"),
+                        section.getBoolean("Enchanted")));
             }
         }
     }

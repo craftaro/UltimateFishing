@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.commands;
 
 import com.songoda.core.commands.AbstractCommand;
+import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.bait.Bait;
 import org.bukkit.Bukkit;
@@ -50,7 +51,7 @@ public class CommandGive extends AbstractCommand {
 
         instance.getLocale().getMessage("event.bait.given")
                 .processPlaceholder("amount", args[2])
-                .processPlaceholder("bait", "&" + bait.getColor() + bait.getBait())
+                .processPlaceholder("bait", TextUtils.formatText("&" + bait.getColor() + bait.getBait()))
                 .sendPrefixedMessage(sender);
 
         player.getPlayer().getInventory().addItem(bait.asItemStack(Integer.parseInt(args[2])));
@@ -65,7 +66,7 @@ public class CommandGive extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/uf give <player> <bait> <amount>";
+        return "give <player> <bait> <amount>";
     }
 
     @Override

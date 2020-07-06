@@ -33,7 +33,7 @@ public class CommandSell extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "/uf sell";
+        return "sell";
     }
 
     @Override

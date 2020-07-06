@@ -1,5 +1,7 @@
 package com.songoda.ultimatefishing.bait;
 
+import com.songoda.core.nms.NmsManager;
+import com.songoda.core.nms.nbt.NBTItem;
 import com.songoda.core.utils.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -25,9 +27,16 @@ public class BaitManager {
     }
 
     public Bait getBait(ItemStack item) {
-        String name = TextUtils.convertFromInvisibleString(item.getType() == Material.FISHING_ROD
-                ? item.getItemMeta().getLore().get(0)
-                : item.getItemMeta().getDisplayName()).split(":")[0];
+        String name;
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        if (nbtItem.has("bait")) {
+            name = nbtItem.getNBTObject("bait").asString();
+        } else {
+            name = TextUtils.convertFromInvisibleString(item.getType() == Material.FISHING_ROD
+                    ? item.getItemMeta().getLore().get(0)
+                    : item.getItemMeta().getDisplayName()).split(":")[0];
+        }
+
         return getBait(name);
     }
 }

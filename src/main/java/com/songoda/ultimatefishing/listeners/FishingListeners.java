@@ -73,8 +73,14 @@ public class FishingListeners implements Listener {
             ItemStack rod = player.getItemInHand();
             if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
                 bait = plugin.getBaitManager().getBait(rod);
-                if (bait != null)
-                    bait.use(rod);
+                if (bait != null) {
+                    Bait baitFinal = bait;
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        ItemStack item = baitFinal.use(rod);
+                        if (item.getItemMeta().hasLore())
+                            player.setItemInHand(baitFinal.use(rod));
+                    }, 1L);
+                }
             }
 
 

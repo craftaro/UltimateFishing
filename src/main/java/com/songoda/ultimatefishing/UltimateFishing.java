@@ -162,6 +162,8 @@ public class UltimateFishing extends SongodaPlugin {
                     "The baits. You can rename, replace and add new baits as you wish.")
                     .setDefault("Worms.Bonus Chance", 100,
                             "The added chance (Weight) this bait will add towards the targets.")
+                    .setDefault("Ultra Worms.Critical Chance", 10,
+                            "The percent chance be for a cast to become critical.")
                     .setDefault("Worms.Material", "STRING",
                             "The material that represents this bait as an item.")
                     .setDefault("Worms.Uses", 3,
@@ -173,7 +175,8 @@ public class UltimateFishing extends SongodaPlugin {
                     .setDefault("Worms.Sell Price", 4.99,
                             "The price worms will sell for.")
 
-                    .setDefault("Super Worms.Bonus Chance", 25)
+                    .setDefault("Super Worms.Bonus Chance", 15)
+                    .setDefault("Super Worms.Critical Chance", 15)
                     .setDefault("Super Worms.Material", "STRING")
                     .setDefault("Super Worms.Uses", 3)
                     .setDefault("Super Worms.Target", Collections.singletonList("LARGE"))
@@ -181,6 +184,7 @@ public class UltimateFishing extends SongodaPlugin {
                     .setDefault("Super Worms.Sell Price", 19.99)
 
                     .setDefault("Ultra Worms.Bonus Chance", 25)
+                    .setDefault("Ultra Worms.Critical Chance", 20)
                     .setDefault("Ultra Worms.Material", "STRING")
                     .setDefault("Ultra Worms.Uses", 3)
                     .setDefault("Ultra Worms.Target", Collections.singletonList("HUGE"))
@@ -245,7 +249,8 @@ public class UltimateFishing extends SongodaPlugin {
                         section.getInt("Uses"),
                         targets,
                         section.getDouble("Bonus Chance"),
-                        section.getBoolean("Enchanted")));
+                        section.getBoolean("Enchanted"),
+                        section.getInt("Critical Chance")));
             }
         }
     }

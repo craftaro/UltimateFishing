@@ -68,8 +68,6 @@ public class LootablesManager {
                     if (bait != null) {
                         if (bait.getTarget().contains(rarity))
                             weight += bait.getChanceBonus();
-                        if (bait.getChanceBonus() == 100)
-                            continue;
                     }
                     rarities.put(weight, rarity);
                 }

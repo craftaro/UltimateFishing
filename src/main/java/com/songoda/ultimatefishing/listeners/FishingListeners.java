@@ -73,8 +73,14 @@ public class FishingListeners implements Listener {
             ItemStack rod = player.getItemInHand();
             if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
                 bait = plugin.getBaitManager().getBait(rod);
-                if (bait != null)
-                    bait.use(rod);
+                if (bait != null) {
+                    Bait baitFinal = bait;
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        ItemStack item = baitFinal.use(rod);
+                        if (item.getItemMeta().hasLore())
+                            player.setItemInHand(baitFinal.use(rod));
+                    }, 1L);
+                }
             }
 
 
@@ -108,13 +114,13 @@ public class FishingListeners implements Listener {
             }
         } else if (event.getState() == PlayerFishEvent.State.FISHING) {
             ItemStack rod = player.getItemInHand();
+            Bait bait = plugin.getBaitManager().getBait(rod);
             if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
-                Bait bait = plugin.getBaitManager().getBait(rod);
                 if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))
                     plugin.getBaitParticleTask().addBait(bait, event.getHook());
             }
 
-            double ch = Double.parseDouble(Settings.CRITICAL_CHANCE.getString().replace("%", ""));
+            double ch = bait == null ? Settings.CRITICAL_CHANCE.getDouble() : bait.getCriticalChance();
             double rand = Math.random() * 100;
             if (rand - ch < 0 || ch == 100) {
                 if (criticalCooldown.containsKey(player.getUniqueId()) && System.currentTimeMillis() < criticalCooldown.get(player.getUniqueId()))

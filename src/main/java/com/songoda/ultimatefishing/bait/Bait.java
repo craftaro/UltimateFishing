@@ -31,9 +31,11 @@ public class Bait {
     // The bonus percent chance.
     private double chanceBonus;
 
+    private double criticalChance;
+
     private boolean enchanted;
 
-    public Bait(String bait, String color, Material material, double sellPrice, int uses, List<Rarity> target, double chanceBonus, boolean enchanted) {
+    public Bait(String bait, String color, Material material, double sellPrice, int uses, List<Rarity> target, double chanceBonus, boolean enchanted, double criticalChance) {
         this.bait = bait;
         this.color = color;
         this.material = material;
@@ -42,6 +44,7 @@ public class Bait {
         this.target = target;
         this.chanceBonus = chanceBonus;
         this.enchanted = enchanted;
+        this.criticalChance = criticalChance;
     }
 
     public ItemStack asItemStack(int amount) {
@@ -149,14 +152,23 @@ public class Bait {
         this.chanceBonus = chanceBonus;
     }
 
-    public void use(ItemStack item) {
+    public double getCriticalChance() {
+        return criticalChance;
+    }
+
+    public void setCriticalChance(double criticalChance) {
+        this.criticalChance = criticalChance;
+    }
+
+    public ItemStack use(ItemStack item) {
+        if (!item.getItemMeta().hasLore()) return item;
         String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
         int uses;
         int max;
 
         NBTItem nbtItem = NmsManager.getNbt().of(item);
         if (nbtItem.has("uses")) {
-            uses = nbtItem.getNBTObject("uses").asInt();
+            uses = nbtItem.getNBTObject("uses").asInt() + 1;
             max = nbtItem.getNBTObject("max").asInt();
         } else {
             uses = Integer.parseInt(split[1]) + 1;
@@ -168,6 +180,12 @@ public class Bait {
         item.setItemMeta(meta);
 
         if (uses < max)
-            applyBait(item, uses, max);
+            return applyBait(item, uses, max);
+        else {
+            nbtItem.set("bait", "UNSET"); // Not sure why I had to do this.
+            nbtItem.set("uses", 0);
+            nbtItem.set("max", 0);
+            return nbtItem.finish();
+        }
     }
 }

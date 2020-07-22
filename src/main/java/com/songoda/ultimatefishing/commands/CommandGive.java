@@ -52,7 +52,7 @@ public class CommandGive extends AbstractCommand {
         instance.getLocale().getMessage("event.bait.given")
                 .processPlaceholder("amount", args[2])
                 .processPlaceholder("bait", TextUtils.formatText("&" + bait.getColor() + bait.getBait()))
-                .sendPrefixedMessage(sender);
+                .sendPrefixedMessage(player.getPlayer());
 
         player.getPlayer().getInventory().addItem(bait.asItemStack(Integer.parseInt(args[2])));
 

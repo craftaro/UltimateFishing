@@ -5,6 +5,7 @@ import com.songoda.core.configuration.Config;
 import com.songoda.core.configuration.ConfigSetting;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.UltimateFishing;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -15,8 +16,9 @@ public class Settings {
 
     static final Config config = UltimateFishing.getInstance().getCoreConfig();
 
-    public static final ConfigSetting CRITICAL_CHANCE = new ConfigSetting(config, "Main.Critical Cast Chance", "10%",
-            "What should the chance be for a cast to become critical?");
+    public static final ConfigSetting CRITICAL_CHANCE = new ConfigSetting(config, "Main.Default Critical Cast Chance", 5,
+            "What should the percent chance be for a cast to become critical?",
+            "This can be overridden by bait.");
 
     public static final ConfigSetting CRITICAL_COOLDOWN = new ConfigSetting(config, "Main.Critical Cast Cooldown", 30,
             "The amount of time in seconds between critical casts.");

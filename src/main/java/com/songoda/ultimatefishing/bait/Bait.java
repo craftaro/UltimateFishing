@@ -31,9 +31,11 @@ public class Bait {
     // The bonus percent chance.
     private double chanceBonus;
 
+    private double criticalChance;
+
     private boolean enchanted;
 
-    public Bait(String bait, String color, Material material, double sellPrice, int uses, List<Rarity> target, double chanceBonus, boolean enchanted) {
+    public Bait(String bait, String color, Material material, double sellPrice, int uses, List<Rarity> target, double chanceBonus, boolean enchanted, double criticalChance) {
         this.bait = bait;
         this.color = color;
         this.material = material;
@@ -42,6 +44,7 @@ public class Bait {
         this.target = target;
         this.chanceBonus = chanceBonus;
         this.enchanted = enchanted;
+        this.criticalChance = criticalChance;
     }
 
     public ItemStack asItemStack(int amount) {
@@ -147,6 +150,14 @@ public class Bait {
 
     public void setChanceBonus(double chanceBonus) {
         this.chanceBonus = chanceBonus;
+    }
+
+    public double getCriticalChance() {
+        return criticalChance;
+    }
+
+    public void setCriticalChance(double criticalChance) {
+        this.criticalChance = criticalChance;
     }
 
     public ItemStack use(ItemStack item) {

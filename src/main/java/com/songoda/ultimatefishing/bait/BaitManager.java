@@ -32,6 +32,8 @@ public class BaitManager {
         if (nbtItem.has("bait")) {
             name = nbtItem.getNBTObject("bait").asString();
         } else {
+            if (!item.hasItemMeta() || !item.getItemMeta().hasLore())
+                return null;
             name = TextUtils.convertFromInvisibleString(item.getType() == Material.FISHING_ROD
                     ? item.getItemMeta().getLore().get(0)
                     : item.getItemMeta().getDisplayName()).split(":")[0];

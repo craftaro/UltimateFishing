@@ -71,7 +71,11 @@ public class Bait {
     }
 
     public ItemStack applyBait(ItemStack item) {
-        return applyBait(item, 0, uses);
+        int uses = 0;
+        NBTItem nbtItem = NmsManager.getNbt().of(item);
+        if (nbtItem.has("uses"))
+            uses = nbtItem.getNBTObject("uses").asInt();
+        return applyBait(item, uses + this.uses, this.uses);
     }
 
     public ItemStack applyBait(ItemStack item, int uses, int max) {

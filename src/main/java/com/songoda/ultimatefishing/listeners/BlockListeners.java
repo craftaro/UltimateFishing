@@ -1,5 +1,6 @@
 package com.songoda.ultimatefishing.listeners;
 
+import com.songoda.core.compatibility.CompatibleHand;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.utils.FishUtils;
@@ -20,7 +21,7 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
-        if (plugin.getBaitManager().getBait(event.getItemInHand()) != null)
+        if (plugin.getBaitManager().getBait(CompatibleHand.getHand(event).getItem(event.getPlayer())) != null)
             event.setCancelled(true);
     }
 }

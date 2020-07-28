@@ -75,7 +75,7 @@ public class Bait {
         NBTItem nbtItem = NmsManager.getNbt().of(item);
         if (nbtItem.has("uses"))
             uses = nbtItem.getNBTObject("uses").asInt();
-        return applyBait(item, uses, this.uses);
+        return applyBait(item, uses + this.uses, this.uses);
     }
 
     public ItemStack applyBait(ItemStack item, int uses, int max) {

@@ -75,7 +75,7 @@ public class Bait {
         NBTItem nbtItem = NmsManager.getNbt().of(item);
         if (nbtItem.has("uses"))
             uses = nbtItem.getNBTObject("uses").asInt();
-        return applyBait(item, uses + this.uses, this.uses);
+        return applyBait(item, uses, this.uses);
     }
 
     public ItemStack applyBait(ItemStack item, int uses, int max) {
@@ -106,7 +106,7 @@ public class Bait {
 
         NBTItem nbtItem = NmsManager.getNbt().of(item);
         nbtItem.set("bait", bait);
-        nbtItem.set("uses", uses);
+        nbtItem.set("uses", uses); // Uses is the amount of uses the user has made not the amount left.
         nbtItem.set("max", max);
 
         return nbtItem.finish();

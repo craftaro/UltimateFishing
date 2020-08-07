@@ -34,7 +34,7 @@ public class CommandBaitShop extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "sell";
+        return "baitshop";
     }
 
     @Override

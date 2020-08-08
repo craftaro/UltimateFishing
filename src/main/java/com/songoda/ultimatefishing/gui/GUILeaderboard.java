@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,8 +29,7 @@ public class GUILeaderboard extends Gui {
         setRows(6);
         setDefaultItem(null);
 
-        setTitle(plugin.getLocale().getMessage("interface.leaderboard.title")
-                .processPlaceholder("tonotes", player.getName()).getMessage());
+        setTitle(plugin.getLocale().getMessage("interface.leaderboard.title").getMessage());
 
         showPage();
     }
@@ -40,7 +40,9 @@ public class GUILeaderboard extends Gui {
         setActionForRange(0, 53, null);
 
         List<FishingPlayer> fishingPlayers = plugin.getPlayerManager().getPlayers().stream()
-                .sorted(Comparator.comparing(FishingPlayer::getScore)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(FishingPlayer::getScore)).collect(Collectors.toList());
+
+        Collections.reverse(fishingPlayers);
 
         int numUsers = fishingPlayers.size();
         this.pages = (int) Math.max(1, Math.ceil(numUsers / ((double) 28)));

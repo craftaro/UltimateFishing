@@ -151,8 +151,10 @@ public class UltimateFishing extends SongodaPlugin {
             rarityConfig.createDefaultSection("Rarity",
                     "The different levels of fish rarity.",
                     "You can rename, replace and add new rarities as you wish.")
-                    .setDefault("Tiny.Chance", 15,
+                    .setDefault("Tiny.Chance", 5,
                             "The chance that a caught fish will be tiny.")
+                    .setDefault("Tiny.Weight", 25,
+                            "The weight this type will hold in the leaderboard.")
                     .setDefault("Tiny.Color", "9",
                             "The color used for the name tag.")
                     .setDefault("Tiny.Extra Health", -2,
@@ -164,16 +166,19 @@ public class UltimateFishing extends SongodaPlugin {
                             "The effect the lure fishing enchantment would have on the chance.",
                             "This is multiplied per enchantment level.")
                     .setDefault("Normal.Chance", 50)
+                    .setDefault("Normal.Weight", 25)
                     .setDefault("Normal.Color", "7")
                     .setDefault("Normal.Extra Health", 0)
                     .setDefault("Normal.Sell Price", 19.99)
                     .setDefault("Normal.Lure Chance Change", -8)
                     .setDefault("Large.Chance", 25)
+                    .setDefault("Large.Weight", 50)
                     .setDefault("Large.Color", "c")
                     .setDefault("Large.Extra Health", 2)
                     .setDefault("Large.Sell Price", 49.99)
                     .setDefault("Large.Lure Chance Change", 5)
                     .setDefault("Huge.Chance", 10)
+                    .setDefault("Huge.Weight", 100)
                     .setDefault("Huge.Color", "5")
                     .setDefault("Huge.Extra Health", 4)
                     .setDefault("Huge.Sell Price", 99.99)
@@ -243,6 +248,7 @@ public class UltimateFishing extends SongodaPlugin {
                         section.getNodeKey(),
                         section.getString("Color"),
                         section.getDouble("Chance"),
+                        section.getInt("Weight", 100 - (int)section.getDouble("Chance")),
                         section.getInt("Extra Health"),
                         section.getDouble("Sell Price"),
                         section.getBoolean("Broadcast"),

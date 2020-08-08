@@ -32,7 +32,7 @@ public class FishingPlayer {
     public int getScore() {
         int score = 0;
         for (Map.Entry<Rarity, Integer> entry : caught.entrySet())
-            score += (100 - entry.getKey().getChance()) * entry.getValue();
+            score += entry.getKey().getWeight() * entry.getValue();
         return score;
     }
 

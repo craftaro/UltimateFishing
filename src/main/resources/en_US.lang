@@ -20,6 +20,7 @@ interface:
     back: &6Back
   leaderboard:
     title: 'Leaderboard'
+    weight: '&6&lRarity Weight:'
     name: '&7&l%place%: &6&l%name%'
     item: '&7%type%: &6%amount%'
   sell:

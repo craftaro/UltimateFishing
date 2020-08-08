@@ -3,6 +3,7 @@ package com.songoda.ultimatefishing.gui;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
+import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
@@ -10,6 +11,7 @@ import com.songoda.ultimatefishing.player.FishingPlayer;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.settings.Settings;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +40,15 @@ public class GUILeaderboard extends Gui {
         if (inventory != null)
             inventory.clear();
         setActionForRange(0, 53, null);
+
+        // set up prices info (icon only)
+        // TODO: need to add this line to language file
+        setItem(0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
+                plugin.getLocale().getMessage("interface.leaderboard.weight").getMessage(),
+                plugin.getRarityManager().getRarities().stream()
+                        .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + r.getWeight()))
+                        .collect(Collectors.toList())
+        ));
 
         List<FishingPlayer> fishingPlayers = plugin.getPlayerManager().getPlayers().stream()
                 .sorted(Comparator.comparingInt(FishingPlayer::getScore)).collect(Collectors.toList());

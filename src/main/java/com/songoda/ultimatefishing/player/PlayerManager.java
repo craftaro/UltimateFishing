@@ -1,5 +1,6 @@
 package com.songoda.ultimatefishing.player;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -19,5 +20,9 @@ public class PlayerManager {
 
     public void addPlayer(FishingPlayer player) {
         registeredPlayers.put(player.getUniqueId(), player);
+    }
+
+    public void resetPlayer(OfflinePlayer offlinePlayer) {
+        registeredPlayers.remove(offlinePlayer.getUniqueId());
     }
 }

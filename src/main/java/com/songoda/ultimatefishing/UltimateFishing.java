@@ -86,6 +86,7 @@ public class UltimateFishing extends SongodaPlugin {
                         new CommandGive(this),
                         new CommandLeaderboard(this, guiManager),
                         new CommandSettings(this, guiManager),
+                        new CommandResetPlayer(this),
                         new CommandReload(this)
                 );
 

@@ -6,6 +6,7 @@ import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.player.FishingPlayer;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -50,7 +51,7 @@ public class DataManager extends DataManagerAbstract {
         }));
     }
 
-    public void deleteCaught(Player player) {
+    public void deleteCaught(OfflinePlayer player) {
         this.async(() -> this.databaseConnector.connect(connection -> {
             String deleteSpawner = "DELETE FROM " + this.getTablePrefix() + "caught WHERE uuid = ?";
             try (PreparedStatement statement = connection.prepareStatement(deleteSpawner)) {

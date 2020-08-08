@@ -6,10 +6,10 @@ import com.songoda.lootables.loot.*;
 import com.songoda.lootables.loot.objects.EnchantChance;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.bait.Bait;
+import com.songoda.ultimatefishing.player.FishingPlayer;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.settings.Settings;
 import com.songoda.ultimatefishing.utils.FishUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -19,7 +19,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LootablesManager {
 
@@ -92,6 +95,13 @@ public class LootablesManager {
                     lore.addAll(meta.getLore());
                 meta.setLore(lore);
                 itemStack.setItemMeta(meta);
+                FishingPlayer fishingPlayer = plugin.getPlayerManager().getPlayer(player);
+
+                if (fishingPlayer.getCaught(rarity) == 0)
+                    plugin.getDataManager().createCaught(player, rarity, 1);
+                else
+                    plugin.getDataManager().updateCaught(player, rarity, fishingPlayer.getCaught(rarity) + 1);
+                plugin.getPlayerManager().getPlayer(player).addCatch(rarity);
             }
         }
 

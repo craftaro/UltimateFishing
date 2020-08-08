@@ -4,42 +4,42 @@ import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.gui.GUIBaitShop;
-import com.songoda.ultimatefishing.gui.GUISell;
+import com.songoda.ultimatefishing.gui.GUILeaderboard;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class CommandBaitShop extends AbstractCommand {
+public class CommandLeaderboard extends AbstractCommand {
 
     final UltimateFishing instance;
     final GuiManager guiManager;
 
-    public CommandBaitShop(UltimateFishing instance, GuiManager guiManager) {
-        super(true, "baitshop");
+    public CommandLeaderboard(UltimateFishing instance, GuiManager guiManager) {
+        super(true, "leaderboard");
         this.instance = instance;
         this.guiManager = guiManager;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        guiManager.showGUI((Player) sender, new GUIBaitShop(instance));
+        guiManager.showGUI((Player) sender, new GUILeaderboard(instance, (Player) sender));
         return ReturnType.SUCCESS;
     }
 
     @Override
     public String getPermissionNode() {
-        return "ultimatefishing.baitshop";
+        return "ultimatefishing.leaderboard";
     }
 
     @Override
     public String getSyntax() {
-        return "baitshop";
+        return "leaderboard";
     }
 
     @Override
     public String getDescription() {
-        return "Open the bait shop.";
+        return "Open the leaderboard.";
     }
 
     @Override

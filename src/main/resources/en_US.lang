@@ -15,6 +15,13 @@ object:
 # Interface Messages
 
 interface:
+  general:
+    next: &6Next
+    back: &6Back
+  leaderboard:
+    title: 'Leaderboard'
+    name: '&7&l%place%: &6&l%name%'
+    item: '&7%type%: &6%amount%'
   sell:
     title: Sell GUI
     prices: '&6&lSell Prices:'

@@ -100,7 +100,8 @@ public class GUILeaderboard extends Gui {
             setItem(num, GuiUtils.createButtonItem(ItemUtils.getPlayerSkull(player),
                     TextUtils.formatText(plugin.getLocale().getMessage("interface.leaderboard.name")
                             .processPlaceholder("place", place)
-                            .processPlaceholder("name", player.getName()).getMessage()), TextUtils.formatText(lore)));
+                            .processPlaceholder("name", player.getName())
+                            .processPlaceholder("score", fishingPlayer.getScore()).getMessage()), TextUtils.formatText(lore)));
 
             num++;
         }

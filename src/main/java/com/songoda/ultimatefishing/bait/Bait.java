@@ -85,7 +85,9 @@ public class Bait {
             if (nbtItem.has("max")) {
                 max = nbtItem.getNBTObject("max").asInt();
             } else {
-                Integer.parseInt(TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":")[2]);
+                String lore = item.getItemMeta().getLore().get(0);
+                if (lore.contains(":"))
+                    Integer.parseInt(TextUtils.convertFromInvisibleString(lore).split(":")[2]);
             }
 
             if (bait == null || !bait.getBait().equals(this.getBait()))

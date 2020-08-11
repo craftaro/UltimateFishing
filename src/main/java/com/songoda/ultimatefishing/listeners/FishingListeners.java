@@ -39,10 +39,12 @@ public class FishingListeners implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
-        if (plugin.getBaitManager().getBait(player.getItemInHand()) == null
+        boolean isUsingBait = plugin.getBaitManager().getBait(player.getItemInHand()) != null;
+        boolean isCaught = event.getState() == PlayerFishEvent.State.CAUGHT_FISH;
+        if (!isUsingBait && !isCaught
                 || !player.hasPermission("ultimatefishing.use")) return;
 
-        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
+        if (isCaught) {
             Entity oldEntity = event.getCaught();
             oldEntity.remove();
 
@@ -69,6 +71,7 @@ public class FishingListeners implements Listener {
                     afk.put(player.getUniqueId(), new AFKObject(player.getLocation()));
                 }
             }
+            if (!isUsingBait) return;
             Bait bait = null;
 
             ItemStack rod = player.getItemInHand();

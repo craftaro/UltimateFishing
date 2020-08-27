@@ -136,6 +136,10 @@ public class UltimateFishing extends SongodaPlugin {
     }
 
     @Override
+    public void onDataLoad() {
+    }
+
+    @Override
     public void onConfigReload() {
         this.setLocale(Settings.LANGUGE_MODE.getString(), true);
         this.getLootablesManager().getLootManager().loadLootables();

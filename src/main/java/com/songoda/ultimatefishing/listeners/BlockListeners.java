@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BlockListeners implements Listener {
 
@@ -21,7 +22,8 @@ public class BlockListeners implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent event) {
-        if (plugin.getBaitManager().getBait(CompatibleHand.getHand(event).getItem(event.getPlayer())) != null)
+        ItemStack item = CompatibleHand.getHand(event).getItem(event.getPlayer());
+        if (item != null && plugin.getBaitManager().getBait(item) != null)
             event.setCancelled(true);
     }
 }

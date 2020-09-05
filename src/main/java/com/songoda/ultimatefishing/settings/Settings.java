@@ -37,6 +37,15 @@ public class Settings {
 
     public static final ConfigSetting STACKABLE_BAITS = new ConfigSetting(config, "Main.Stackable Baits", true,
             "Should bait stack?");
+    
+    public static final ConfigSetting BAIT_ON_ROD_WITH_DISPLAYNAME = new ConfigSetting(config, "Main.Bait On Rod.Displayname", true,
+            "Should bait be appliable to rods with displayname?");
+    
+    public static final ConfigSetting BAIT_ON_ROD_WITH_LORE = new ConfigSetting(config, "Main.Bait On Rod.Lore", true,
+            "Should bait be appliable to rods with lore?");
+    
+    public static final ConfigSetting BAIT_ON_ROD_WITH_ENCHANTS = new ConfigSetting(config, "Main.Bait On Rod.Enchants", true,
+            "Should bait be appliable to rods with enchantments?");
 
     public static final ConfigSetting ECONOMY_PLUGIN = new ConfigSetting(config, "Main.Economy", EconomyManager.getEconomy() == null ? "Vault" : EconomyManager.getEconomy().getName(),
             "Which economy plugin should be used?",

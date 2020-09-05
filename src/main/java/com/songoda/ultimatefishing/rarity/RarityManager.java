@@ -21,7 +21,8 @@ public class RarityManager {
         if (item == null
                 || !FishUtils.isFish(item)
                 || !item.hasItemMeta()
-                || !item.getItemMeta().hasLore()) return null;
+                || !item.getItemMeta().hasLore()
+                || item.getItemMeta().getLore().isEmpty()) return null;
 
         String line = ChatColor.stripColor(item.getItemMeta().getLore().get(0));
 

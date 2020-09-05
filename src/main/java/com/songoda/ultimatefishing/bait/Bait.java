@@ -6,6 +6,7 @@ import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
+import com.songoda.ultimatefishing.settings.Settings;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,8 +52,8 @@ public class Bait {
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(TextUtils.formatText("&" + color)
-                + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
-                .processPlaceholder("bait", bait).getMessage());
+                            + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
+                        .processPlaceholder("bait", bait).getMessage());
         meta.setLore(Collections.singletonList(UltimateFishing.getInstance().getLocale()
                 .getMessage("object.bait.lore").getMessage()));
         itemStack.setItemMeta(meta);
@@ -71,39 +72,64 @@ public class Bait {
     }
 
     public ItemStack applyBait(ItemStack item) {
+        //check for config settings if rod custom lore, enchants and displayname are allowed
+        if (item.hasItemMeta()
+            && ((!Settings.BAIT_ON_ROD_WITH_DISPLAYNAME.getBoolean() && item.getItemMeta().hasDisplayName() & item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().isEmpty())
+                || (!Settings.BAIT_ON_ROD_WITH_ENCHANTS.getBoolean() && item.getItemMeta().hasEnchants() && !item.getItemMeta().getEnchants().isEmpty())))
+            return null;
+        if (item.hasItemMeta() && !Settings.BAIT_ON_ROD_WITH_LORE.getBoolean() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().isEmpty()) {
+            //check for custom lore 
+            int ignorelines = 0;
+            NBTItem nbtItem = NmsManager.getNbt().of(item);
+            if (nbtItem.has("uses")) {
+                ignorelines = 1;
+            } else if (hasInvisibleString(item)) {
+                ignorelines = 2;
+            }
+            if (item.getItemMeta().getLore().size() > ignorelines)
+                return null;
+        }
+
         int uses = 0;
+        int max = 0;
+
         NBTItem nbtItem = NmsManager.getNbt().of(item);
-        if (nbtItem.has("uses"))
+        if (nbtItem.has("uses")) {
             uses = nbtItem.getNBTObject("uses").asInt();
-        return applyBait(item, uses, this.uses);
+            max = nbtItem.getNBTObject("max").asInt();
+        } else if (hasInvisibleString(item)) {
+            String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
+            uses = Integer.parseInt(split[1]);
+            max = Integer.parseInt(split[2]);
+        }
+        return applyBait(item, uses, max + this.uses);
     }
 
-    public ItemStack applyBait(ItemStack item, int uses, int max) {
-        if (item.getItemMeta().hasLore()) {
-            Bait bait = UltimateFishing.getInstance().getBaitManager().getBait(item);
-            NBTItem nbtItem = NmsManager.getNbt().of(item);
-            if (nbtItem.has("max")) {
-                max = nbtItem.getNBTObject("max").asInt();
-            } else {
-                String lore = item.getItemMeta().getLore().get(0);
-                if (lore.contains(":"))
-                    Integer.parseInt(TextUtils.convertFromInvisibleString(lore).split(":")[2]);
-            }
+    private ItemStack applyBait(ItemStack item, int uses, int max) {
+        Bait currentBait = UltimateFishing.getInstance().getBaitManager().getBait(item);
+        if (currentBait != null && !currentBait.getBait().equals(this.getBait())) //disallow multiple baits on same rod
+            return null;
 
-            if (bait == null || !bait.getBait().equals(this.getBait()))
-                return null;
-            else
-                max += bait.uses;
-        }
+        int originalLoreIndex = 0;
+        NBTItem nbtRod = NmsManager.getNbt().of(item);
+        if (nbtRod.has("max")) {
+            originalLoreIndex = 1; //1st line of lore is bait description
+        } else if (hasInvisibleString(item)) {
+            originalLoreIndex = 2; //line 0 hidden string, line 1 description
+        } //else nothing on rod
+
+        List<String> originalLore = item.hasItemMeta() && item.getItemMeta().hasLore()
+                                    ? item.getItemMeta().getLore().subList(originalLoreIndex, item.getItemMeta().getLore().size())
+                                    : new ArrayList();
         String baited = UltimateFishing.getInstance().getLocale().getMessage("object.bait.baited")
-                .processPlaceholder("bait",
-                        TextUtils.formatText("&" + color) + bait)
+                .processPlaceholder("bait", TextUtils.formatText("&" + color) + bait)
                 .processPlaceholder("uses", max - uses)
                 .processPlaceholder("max", max)
                 .getMessage();
 
         ItemMeta meta = item.getItemMeta();
-        meta.setLore(Collections.singletonList(baited));
+        originalLore.add(0, baited);
+        meta.setLore(originalLore);
         item.setItemMeta(meta);
 
         NBTItem nbtItem = NmsManager.getNbt().of(item);
@@ -167,8 +193,8 @@ public class Bait {
     }
 
     public ItemStack use(ItemStack item) {
-        if (!item.getItemMeta().hasLore()) return item;
-        String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
+        if (!item.getItemMeta().hasLore() || item.getItemMeta().getLore().isEmpty())
+            return item;
         int uses;
         int max;
 
@@ -176,14 +202,13 @@ public class Bait {
         if (nbtItem.has("uses")) {
             uses = nbtItem.getNBTObject("uses").asInt() + 1;
             max = nbtItem.getNBTObject("max").asInt();
-        } else {
+        } else if (hasInvisibleString(item)) {
+            String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
             uses = Integer.parseInt(split[1]) + 1;
             max = Integer.parseInt(split[2]);
+        } else {
+            return item;
         }
-
-        ItemMeta meta = item.getItemMeta();
-        meta.setLore(new ArrayList<>());
-        item.setItemMeta(meta);
 
         if (uses < max)
             return applyBait(item, uses, max);
@@ -193,5 +218,25 @@ public class Bait {
             nbtItem.set("max", 0);
             return nbtItem.finish();
         }
+    }
+
+    private static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean hasInvisibleString(ItemStack item) {
+        int invisibleStringColonIndex;
+        String invisibleString;
+        return item.getItemMeta().hasLore() && !item.getItemMeta().getLore().isEmpty()
+               && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":")) >= 0 //check for first :
+               && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":", invisibleStringColonIndex)) >= 0 //check for 2nd :
+               && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":", invisibleStringColonIndex)) < 0 //check no furhter :, ie only 2 :
+               && isInt((invisibleString = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0))).split(":")[1]) //check uses is int
+               && isInt(invisibleString.split(":")[2]);
     }
 }

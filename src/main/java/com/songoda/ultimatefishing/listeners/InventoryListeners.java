@@ -16,8 +16,8 @@ public class InventoryListeners implements Listener {
 
     private final UltimateFishing plugin;
 
-    public InventoryListeners(UltimateFishing instance) {
-        this.plugin = instance;
+    public InventoryListeners(UltimateFishing plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler

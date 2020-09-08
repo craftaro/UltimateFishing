@@ -13,8 +13,8 @@ public class EntityListeners implements Listener {
 
     private final UltimateFishing plugin;
 
-    public EntityListeners(UltimateFishing instance) {
-        this.plugin = instance;
+    public EntityListeners(UltimateFishing plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

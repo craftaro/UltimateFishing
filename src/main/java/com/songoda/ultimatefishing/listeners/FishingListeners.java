@@ -31,8 +31,8 @@ public class FishingListeners implements Listener {
 
     private final UltimateFishing plugin;
 
-    public FishingListeners(UltimateFishing instance) {
-        this.plugin = instance;
+    public FishingListeners(UltimateFishing plugin) {
+        this.plugin = plugin;
     }
 
     private final Map<UUID, Long> criticalCooldown = new HashMap<>();

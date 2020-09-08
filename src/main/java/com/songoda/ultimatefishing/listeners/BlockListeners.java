@@ -12,8 +12,8 @@ public class BlockListeners implements Listener {
 
     private final UltimateFishing plugin;
 
-    public BlockListeners(UltimateFishing instance) {
-        this.plugin = instance;
+    public BlockListeners(UltimateFishing plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

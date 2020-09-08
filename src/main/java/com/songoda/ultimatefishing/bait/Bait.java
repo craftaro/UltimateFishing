@@ -7,6 +7,7 @@ import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -193,8 +194,7 @@ public class Bait {
     }
 
     public ItemStack use(ItemStack item) {
-        if (!item.getItemMeta().hasLore() || item.getItemMeta().getLore().isEmpty())
-            return item;
+        if (item == null) return null;
         int uses;
         int max;
 

@@ -20,7 +20,12 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class FishingListeners implements Listener {
 
@@ -72,20 +77,11 @@ public class FishingListeners implements Listener {
                 }
             }
             if (!isUsingBait) return;
-            Bait bait = null;
 
             ItemStack rod = player.getItemInHand();
-            if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
-                bait = plugin.getBaitManager().getBait(rod);
-                if (bait != null) {
-                    Bait baitFinal = bait;
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        ItemStack item = baitFinal.use(rod);
-                        if (item.getItemMeta().hasLore())
-                            player.setItemInHand(baitFinal.use(rod));
-                    }, 1L);
-                }
-            }
+            Bait bait = plugin.getBaitManager().getBait(rod);
+            if (bait != null)
+                Bukkit.getScheduler().runTaskLater(plugin, () -> player.setItemInHand(bait.use(rod)), 1L);
 
 
             List<Drop> drops = plugin.getLootablesManager().getDrops(player, bait);

@@ -27,6 +27,7 @@ public class BaitManager {
     }
 
     public Bait getBait(ItemStack item) {
+        if (item == null) return null;
         String name;
         NBTItem nbtItem = NmsManager.getNbt().of(item);
         if (nbtItem.has("bait")) {

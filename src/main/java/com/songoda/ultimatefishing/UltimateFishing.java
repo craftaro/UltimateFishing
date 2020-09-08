@@ -134,14 +134,6 @@ public class UltimateFishing extends SongodaPlugin {
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration());
         this.dataMigrationManager.runMigrations();
-
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            // Load data from DB
-            this.dataManager.getPlayers((players) -> {
-                for (FishingPlayer player : players.values())
-                    playerManager.addPlayer(player);
-            });
-        }, 20L);
     }
 
     @Override
@@ -150,6 +142,11 @@ public class UltimateFishing extends SongodaPlugin {
 
     @Override
     public void onDataLoad() {
+        // Load data from DB
+        this.dataManager.getPlayers((players) -> {
+            for (FishingPlayer player : players.values())
+                playerManager.addPlayer(player);
+        });
     }
 
     @Override

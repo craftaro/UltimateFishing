@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 
 public class CommandGive extends AbstractCommand {
 
-    final UltimateFishing instance;
+    private final UltimateFishing plugin;
 
-    public CommandGive(UltimateFishing instance) {
-        super(false, "give");
-        this.instance = instance;
+    public CommandGive(UltimateFishing plugin) {
+        super(CommandType.CONSOLE_OK, "give");
+        this.plugin = plugin;
     }
 
     @Override
@@ -29,27 +29,27 @@ public class CommandGive extends AbstractCommand {
         OfflinePlayer player = Bukkit.getPlayer(args[0]);
 
         if (player == null) {
-            instance.getLocale().newMessage("&cThat player does not exist or is currently offline.").sendPrefixedMessage(sender);
+            plugin.getLocale().newMessage("&cThat player does not exist or is currently offline.").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
-        Bait bait = instance.getBaitManager().getBait(args[1].replace("_", " "));
+        Bait bait = plugin.getBaitManager().getBait(args[1].replace("_", " "));
 
         if (bait == null) {
-            instance.getLocale().newMessage("&cThe bait &4" + args[1] + "&c does not exist...").sendPrefixedMessage(sender);
+            plugin.getLocale().newMessage("&cThe bait &4" + args[1] + "&c does not exist...").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (!isInt(args[2])) {
-            instance.getLocale().newMessage("&4" + args[2] + "&c is not a number...").sendPrefixedMessage(sender);
+            plugin.getLocale().newMessage("&4" + args[2] + "&c is not a number...").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (sender != player)
-            instance.getLocale().newMessage("&7You gave &6" + player.getName() + " " + args[2] + " &" + bait.getColor() + bait.getBait() + "&7.")
+            plugin.getLocale().newMessage("&7You gave &6" + player.getName() + " " + args[2] + " &" + bait.getColor() + bait.getBait() + "&7.")
                     .sendPrefixedMessage(sender);
 
-        instance.getLocale().getMessage("event.bait.given")
+        plugin.getLocale().getMessage("event.bait.given")
                 .processPlaceholder("amount", args[2])
                 .processPlaceholder("bait", TextUtils.formatText("&" + bait.getColor() + bait.getBait()))
                 .sendPrefixedMessage(player.getPlayer());
@@ -80,7 +80,7 @@ public class CommandGive extends AbstractCommand {
             return Bukkit.getOnlinePlayers().stream().map(HumanEntity::getName).collect(Collectors.toList());
         }
         if (args.length == 2) {
-            return instance.getBaitManager().getBaits().stream().map(b ->
+            return plugin.getBaitManager().getBaits().stream().map(b ->
                     b.getBait().replace(" ", "_")).collect(Collectors.toList());
         }
         if (args.length == 3) {

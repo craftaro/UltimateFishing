@@ -4,7 +4,6 @@ import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.gui.GUIBaitShop;
-import com.songoda.ultimatefishing.gui.GUISell;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -12,18 +11,18 @@ import java.util.List;
 
 public class CommandBaitShop extends AbstractCommand {
 
-    final UltimateFishing instance;
-    final GuiManager guiManager;
+    private final UltimateFishing plugin;
+    private final GuiManager guiManager;
 
-    public CommandBaitShop(UltimateFishing instance, GuiManager guiManager) {
-        super(true, "baitshop");
-        this.instance = instance;
+    public CommandBaitShop(UltimateFishing plugin, GuiManager guiManager) {
+        super(CommandType.PLAYER_ONLY, "baitshop");
+        this.plugin = plugin;
         this.guiManager = guiManager;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        guiManager.showGUI((Player) sender, new GUIBaitShop(instance));
+        guiManager.showGUI((Player) sender, new GUIBaitShop(plugin));
         return ReturnType.SUCCESS;
     }
 

@@ -1,6 +1,5 @@
 package com.songoda.ultimatefishing.listeners;
 
-import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.utils.FishUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,12 +8,6 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class FurnaceListeners implements Listener {
-
-    private final UltimateFishing plugin;
-
-    public FurnaceListeners(UltimateFishing instance) {
-        this.plugin = instance;
-    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBurn(FurnaceSmeltEvent event) {

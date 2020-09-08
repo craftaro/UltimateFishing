@@ -1,13 +1,14 @@
 package com.songoda.ultimatefishing.rarity;
 
 import com.songoda.ultimatefishing.utils.FishUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class RarityManager {
 
@@ -21,7 +22,8 @@ public class RarityManager {
         if (item == null
                 || !FishUtils.isFish(item)
                 || !item.hasItemMeta()
-                || !item.getItemMeta().hasLore()) return null;
+                || !item.getItemMeta().hasLore()
+                || item.getItemMeta().getLore().isEmpty()) return null;
 
         String line = ChatColor.stripColor(item.getItemMeta().getLore().get(0));
 

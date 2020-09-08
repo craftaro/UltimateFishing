@@ -13,10 +13,21 @@ import com.songoda.core.gui.GuiManager;
 import com.songoda.core.hooks.EconomyManager;
 import com.songoda.ultimatefishing.bait.Bait;
 import com.songoda.ultimatefishing.bait.BaitManager;
-import com.songoda.ultimatefishing.commands.*;
+import com.songoda.ultimatefishing.commands.CommandBaitShop;
+import com.songoda.ultimatefishing.commands.CommandGive;
+import com.songoda.ultimatefishing.commands.CommandLeaderboard;
+import com.songoda.ultimatefishing.commands.CommandReload;
+import com.songoda.ultimatefishing.commands.CommandResetPlayer;
+import com.songoda.ultimatefishing.commands.CommandSell;
+import com.songoda.ultimatefishing.commands.CommandSellAll;
+import com.songoda.ultimatefishing.commands.CommandSettings;
 import com.songoda.ultimatefishing.database.DataManager;
 import com.songoda.ultimatefishing.database.migrations._1_InitialMigration;
-import com.songoda.ultimatefishing.listeners.*;
+import com.songoda.ultimatefishing.listeners.BlockListeners;
+import com.songoda.ultimatefishing.listeners.EntityListeners;
+import com.songoda.ultimatefishing.listeners.FishingListeners;
+import com.songoda.ultimatefishing.listeners.FurnaceListeners;
+import com.songoda.ultimatefishing.listeners.InventoryListeners;
 import com.songoda.ultimatefishing.lootables.LootablesManager;
 import com.songoda.ultimatefishing.player.FishingPlayer;
 import com.songoda.ultimatefishing.player.PlayerManager;
@@ -25,12 +36,14 @@ import com.songoda.ultimatefishing.rarity.RarityManager;
 import com.songoda.ultimatefishing.settings.Settings;
 import com.songoda.ultimatefishing.tasks.BaitParticleTask;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class UltimateFishing extends SongodaPlugin {
 
@@ -101,7 +114,7 @@ public class UltimateFishing extends SongodaPlugin {
         guiManager.init();
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new FishingListeners(this), this);
-        pluginManager.registerEvents(new FurnaceListeners(this), this);
+        pluginManager.registerEvents(new FurnaceListeners(), this);
         pluginManager.registerEvents(new EntityListeners(this), this);
         pluginManager.registerEvents(new InventoryListeners(this), this);
         pluginManager.registerEvents(new BlockListeners(this), this);
@@ -121,14 +134,6 @@ public class UltimateFishing extends SongodaPlugin {
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration());
         this.dataMigrationManager.runMigrations();
-
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            // Load data from DB
-            this.dataManager.getPlayers((players) -> {
-                for (FishingPlayer player : players.values())
-                    playerManager.addPlayer(player);
-            });
-        }, 20L);
     }
 
     @Override
@@ -137,6 +142,11 @@ public class UltimateFishing extends SongodaPlugin {
 
     @Override
     public void onDataLoad() {
+        // Load data from DB
+        this.dataManager.getPlayers((players) -> {
+            for (FishingPlayer player : players.values())
+                playerManager.addPlayer(player);
+        });
     }
 
     @Override
@@ -252,7 +262,7 @@ public class UltimateFishing extends SongodaPlugin {
                         section.getNodeKey(),
                         section.getString("Color"),
                         section.getDouble("Chance"),
-                        section.getInt("Weight", 100 - (int)section.getDouble("Chance")),
+                        section.getInt("Weight", 100 - (int) section.getDouble("Chance")),
                         section.getInt("Extra Health"),
                         section.getDouble("Sell Price"),
                         section.getBoolean("Broadcast"),

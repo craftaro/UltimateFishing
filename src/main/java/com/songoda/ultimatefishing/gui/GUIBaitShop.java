@@ -1,6 +1,5 @@
 package com.songoda.ultimatefishing.gui;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
@@ -16,10 +15,7 @@ import java.util.List;
 
 public final class GUIBaitShop extends Gui {
 
-    private final UltimateFishing plugin;
-
     public GUIBaitShop(UltimateFishing plugin) {
-        this.plugin = plugin;
         setTitle(plugin.getLocale().getMessage("interface.bait.title").getMessage());
         List<Bait> baits = plugin.getBaitManager().getBaits();
         setRows(baits.size() > 7 ? 4 : 3);

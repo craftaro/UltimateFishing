@@ -3,7 +3,6 @@ package com.songoda.ultimatefishing.gui;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
-import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
@@ -13,7 +12,6 @@ import com.songoda.ultimatefishing.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class GUILeaderboard extends Gui {
 
     private final UltimateFishing plugin;
 
-    public GUILeaderboard(UltimateFishing plugin, Player player) {
+    public GUILeaderboard(UltimateFishing plugin) {
         this.plugin = plugin;
         setRows(6);
         setDefaultItem(null);
@@ -85,7 +83,7 @@ public class GUILeaderboard extends Gui {
             if (num == 16 || num == 36)
                 num = num + 2;
 
-            place ++;
+            place++;
 
             ArrayList<String> lore = new ArrayList<>();
 

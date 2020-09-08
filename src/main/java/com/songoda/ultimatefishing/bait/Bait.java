@@ -215,7 +215,13 @@ public class Bait {
             nbtItem.set("bait", "UNSET"); // Not sure why I had to do this.
             nbtItem.set("uses", 0);
             nbtItem.set("max", 0);
-            return nbtItem.finish();
+            ItemStack newItem = nbtItem.finish();
+            ItemMeta meta = newItem.getItemMeta();
+            List<String> lore = meta.getLore();
+            lore.remove(0);
+            meta.setLore(lore);
+            newItem.setItemMeta(meta);
+            return newItem;
         }
     }
 

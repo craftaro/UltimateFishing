@@ -8,17 +8,17 @@ import java.util.List;
 
 public class CommandReload extends AbstractCommand {
 
-    final UltimateFishing instance;
+    private final UltimateFishing plugin;
 
-    public CommandReload(UltimateFishing instance) {
-        super(false, "reload");
-        this.instance = instance;
+    public CommandReload(UltimateFishing plugin) {
+        super(CommandType.CONSOLE_OK, "reload");
+        this.plugin = plugin;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        instance.reloadConfig();
-        instance.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
+        plugin.reloadConfig();
+        plugin.getLocale().getMessage("&7Configuration and Language files reloaded.").sendPrefixedMessage(sender);
         return ReturnType.SUCCESS;
     }
 

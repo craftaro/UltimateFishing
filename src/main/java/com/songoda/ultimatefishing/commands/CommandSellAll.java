@@ -13,11 +13,11 @@ import java.util.List;
 
 public class CommandSellAll extends AbstractCommand {
 
-    final UltimateFishing instance;
+    private final UltimateFishing plugin;
 
-    public CommandSellAll(UltimateFishing instance) {
-        super(true, "sellall");
-        this.instance = instance;
+    public CommandSellAll(UltimateFishing plugin) {
+        super(CommandType.PLAYER_ONLY, "sellall");
+        this.plugin = plugin;
     }
 
     @Override
@@ -27,14 +27,14 @@ public class CommandSellAll extends AbstractCommand {
 
         double totalNew = UltimateFishing.calculateTotalValue(player.getInventory());
         if (totalNew == 0) {
-            instance.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
             return ReturnType.SUCCESS;
         }
 
         for (ItemStack itemStack : player.getInventory().getContents()) {
             if (itemStack == null) continue;
 
-            Rarity rarity = instance.getRarityManager().getRarity(itemStack);
+            Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
 
             if (rarity == null) continue;
             player.getInventory().remove(itemStack);
@@ -42,14 +42,14 @@ public class CommandSellAll extends AbstractCommand {
 
         if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
             ItemStack itemStack = player.getInventory().getItemInOffHand();
-            Rarity rarity = instance.getRarityManager().getRarity(itemStack);
+            Rarity rarity = plugin.getRarityManager().getRarity(itemStack);
             if (rarity != null)
                 player.getInventory().setItemInOffHand(null);
         }
 
         EconomyManager.deposit(player, totalNew);
 
-        instance.getLocale().getMessage("event.sell.success")
+        plugin.getLocale().getMessage("event.sell.success")
                 .processPlaceholder("total", EconomyManager.formatEconomy(totalNew))
                 .sendPrefixedMessage(player);
 

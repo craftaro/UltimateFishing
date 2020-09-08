@@ -11,18 +11,18 @@ import java.util.List;
 
 public class CommandSettings extends AbstractCommand {
 
-    final UltimateFishing instance;
-    final GuiManager guiManager;
+    private final UltimateFishing plugin;
+    private final GuiManager guiManager;
 
-    public CommandSettings(UltimateFishing instance, GuiManager guiManager) {
-        super(true, "settings");
-        this.instance = instance;
+    public CommandSettings(UltimateFishing plugin, GuiManager guiManager) {
+        super(CommandType.PLAYER_ONLY, "settings");
+        this.plugin = plugin;
         this.guiManager = guiManager;
     }
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        guiManager.showGUI((Player) sender, new PluginConfigGui(instance));
+        guiManager.showGUI((Player) sender, new PluginConfigGui(plugin));
         return ReturnType.SUCCESS;
     }
 

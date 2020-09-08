@@ -12,7 +12,6 @@ import com.songoda.ultimatefishing.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class GUILeaderboard extends Gui {
 
     private final UltimateFishing plugin;
 
-    public GUILeaderboard(UltimateFishing plugin, Player player) {
+    public GUILeaderboard(UltimateFishing plugin) {
         this.plugin = plugin;
         setRows(6);
         setDefaultItem(null);

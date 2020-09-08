@@ -22,7 +22,7 @@ public class CommandLeaderboard extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        guiManager.showGUI((Player) sender, new GUILeaderboard(plugin, (Player) sender));
+        guiManager.showGUI((Player) sender, new GUILeaderboard(plugin));
         return ReturnType.SUCCESS;
     }
 

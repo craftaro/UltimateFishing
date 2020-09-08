@@ -22,7 +22,7 @@ public class CommandSell extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        guiManager.showGUI((Player) sender, new GUISell(instance, (Player)sender));
+        guiManager.showGUI((Player) sender, new GUISell(instance, (Player) sender));
         return ReturnType.SUCCESS;
     }
 

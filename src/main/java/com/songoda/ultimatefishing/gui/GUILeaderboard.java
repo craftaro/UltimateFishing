@@ -3,7 +3,6 @@ package com.songoda.ultimatefishing.gui;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
-import com.songoda.core.hooks.EconomyManager;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
@@ -85,7 +84,7 @@ public class GUILeaderboard extends Gui {
             if (num == 16 || num == 36)
                 num = num + 2;
 
-            place ++;
+            place++;
 
             ArrayList<String> lore = new ArrayList<>();
 

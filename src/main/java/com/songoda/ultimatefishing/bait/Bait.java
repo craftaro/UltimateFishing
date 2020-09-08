@@ -7,7 +7,6 @@ import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.settings.Settings;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -53,8 +52,8 @@ public class Bait {
         ItemStack itemStack = new ItemStack(material, amount);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(TextUtils.formatText("&" + color)
-                            + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
-                        .processPlaceholder("bait", bait).getMessage());
+                + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
+                .processPlaceholder("bait", bait).getMessage());
         meta.setLore(Collections.singletonList(UltimateFishing.getInstance().getLocale()
                 .getMessage("object.bait.lore").getMessage()));
         itemStack.setItemMeta(meta);
@@ -75,7 +74,7 @@ public class Bait {
     public ItemStack applyBait(ItemStack item) {
         //check for config settings if rod custom lore, enchants and displayname are allowed
         if (item.hasItemMeta()
-            && ((!Settings.BAIT_ON_ROD_WITH_DISPLAYNAME.getBoolean() && item.getItemMeta().hasDisplayName() & item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().isEmpty())
+                && ((!Settings.BAIT_ON_ROD_WITH_DISPLAYNAME.getBoolean() && item.getItemMeta().hasDisplayName() & item.getItemMeta().getDisplayName() != null && !item.getItemMeta().getDisplayName().isEmpty())
                 || (!Settings.BAIT_ON_ROD_WITH_ENCHANTS.getBoolean() && item.getItemMeta().hasEnchants() && !item.getItemMeta().getEnchants().isEmpty())))
             return null;
         if (item.hasItemMeta() && !Settings.BAIT_ON_ROD_WITH_LORE.getBoolean() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().isEmpty()) {
@@ -120,8 +119,8 @@ public class Bait {
         } //else nothing on rod
 
         List<String> originalLore = item.hasItemMeta() && item.getItemMeta().hasLore()
-                                    ? item.getItemMeta().getLore().subList(originalLoreIndex, item.getItemMeta().getLore().size())
-                                    : new ArrayList();
+                ? item.getItemMeta().getLore().subList(originalLoreIndex, item.getItemMeta().getLore().size())
+                : new ArrayList();
         String baited = UltimateFishing.getInstance().getLocale().getMessage("object.bait.baited")
                 .processPlaceholder("bait", TextUtils.formatText("&" + color) + bait)
                 .processPlaceholder("uses", max - uses)
@@ -233,10 +232,10 @@ public class Bait {
         int invisibleStringColonIndex;
         String invisibleString;
         return item.getItemMeta().hasLore() && !item.getItemMeta().getLore().isEmpty()
-               && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":")) >= 0 //check for first :
-               && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":", invisibleStringColonIndex)) >= 0 //check for 2nd :
-               && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":", invisibleStringColonIndex)) < 0 //check no furhter :, ie only 2 :
-               && isInt((invisibleString = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0))).split(":")[1]) //check uses is int
-               && isInt(invisibleString.split(":")[2]);
+                && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":")) >= 0 //check for first :
+                && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":", invisibleStringColonIndex)) >= 0 //check for 2nd :
+                && (invisibleStringColonIndex = item.getItemMeta().getLore().get(0).indexOf(":", invisibleStringColonIndex)) < 0 //check no furhter :, ie only 2 :
+                && isInt((invisibleString = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0))).split(":")[1]) //check uses is int
+                && isInt(invisibleString.split(":")[2]);
     }
 }

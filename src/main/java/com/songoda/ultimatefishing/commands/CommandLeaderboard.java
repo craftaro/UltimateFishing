@@ -3,7 +3,6 @@ package com.songoda.ultimatefishing.commands;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.gui.GuiManager;
 import com.songoda.ultimatefishing.UltimateFishing;
-import com.songoda.ultimatefishing.gui.GUIBaitShop;
 import com.songoda.ultimatefishing.gui.GUILeaderboard;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -1,6 +1,5 @@
 package com.songoda.ultimatefishing.gui;
 
-import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;

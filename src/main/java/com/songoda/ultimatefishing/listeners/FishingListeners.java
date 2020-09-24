@@ -51,7 +51,8 @@ public class FishingListeners implements Listener {
 
         if (isCaught) {
             Entity oldEntity = event.getCaught();
-            oldEntity.remove();
+            if (!isUsingBait)
+                oldEntity.remove();
 
             if (Settings.AFK_CHALLENGES.getBoolean()) {
                 if (afk.containsKey(player.getUniqueId())) {

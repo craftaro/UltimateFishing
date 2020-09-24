@@ -51,7 +51,8 @@ public class FishingListeners implements Listener {
 
         if (isCaught) {
             Entity oldEntity = event.getCaught();
-            oldEntity.remove();
+            if (!Settings.NO_BAIT_NO_RARITY.getBoolean() || isUsingBait)
+                oldEntity.remove();
 
             if (Settings.AFK_CHALLENGES.getBoolean()) {
                 if (afk.containsKey(player.getUniqueId())) {
@@ -76,7 +77,7 @@ public class FishingListeners implements Listener {
                     afk.put(player.getUniqueId(), new AFKObject(player.getLocation()));
                 }
             }
-            if (!isUsingBait) return;
+            if (!isUsingBait && Settings.NO_BAIT_NO_RARITY.getBoolean()) return;
 
             ItemStack rod = player.getItemInHand();
             Bait bait = plugin.getBaitManager().getBait(rod);

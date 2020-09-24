@@ -35,8 +35,8 @@ public class Settings {
     public static final ConfigSetting FISH_RARITY = new ConfigSetting(config, "Main.Fish Rarity", true,
             "Should fish have rarity?");
 
-    public static final ConfigSetting STACKABLE_BAITS = new ConfigSetting(config, "Main.Stackable Baits", true,
-            "Should bait stack?");
+    public static final ConfigSetting NO_BAIT_NO_RARITY = new ConfigSetting(config, "Main.No Bait No Rarity", false,
+            "Should fish caught without bait have no rarity attached to them?");
 
     public static final ConfigSetting BAIT_ON_ROD_WITH_DISPLAYNAME = new ConfigSetting(config, "Main.Bait On Rod.Displayname", true,
             "Should bait be appliable to rods with displayname?");

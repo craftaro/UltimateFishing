@@ -2,6 +2,7 @@ package com.songoda.ultimatefishing.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
@@ -16,12 +17,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class GUISell extends Gui {
+public final class GUISell extends CustomizableGui {
 
     private final UltimateFishing plugin;
     private int task;
 
     public GUISell(UltimateFishing plugin, Player player) {
+        super(plugin, "sell");
         this.plugin = plugin;
         setTitle(plugin.getLocale().getMessage("interface.sell.title").getMessage());
         setRows(6);
@@ -33,9 +35,9 @@ public final class GUISell extends Gui {
         setDefaultItem(glass3);
 
         // decorate corners
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_2", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 1, true, true, glass2);
 
         // open up the center area
         setAcceptsItems(true);
@@ -48,19 +50,19 @@ public final class GUISell extends Gui {
 
         // set up prices info (icon only)
         // TODO: need to add this line to language file
-        setItem(0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
+        setItem("prices", 0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
                 plugin.getLocale().getMessage("interface.sell.prices").getMessage(),
                 plugin.getRarityManager().getRarities().stream()
                         .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + EconomyManager.formatEconomy(r.getSellPrice())))
                         .collect(Collectors.toList())
         ));
 
-        setButton(5, 4, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER,
+        setButton("sellfor", 5, 4, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER,
                 plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", EconomyManager.formatEconomy(0)).getMessage()),
                 (event) -> sellAll(event.player));
 
         if (player.hasPermission("ultimatefishing.baitshop"))
-            setButton(5, 8, GuiUtils.createButtonItem(CompatibleMaterial.STRING,
+            setButton("accessbaitshop", 5, 8, GuiUtils.createButtonItem(CompatibleMaterial.STRING,
                     plugin.getLocale().getMessage("interface.sell.accessbaitshop").getMessage()), (event) -> {
                 guiManager.showGUI(event.player, new GUIBaitShop(plugin));
                 onClose(player);
@@ -76,7 +78,7 @@ public final class GUISell extends Gui {
 
     private void updateSell() {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
-        updateItem(5, 4, plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", EconomyManager.formatEconomy(totalSale)).getMessage());
+        updateItem("sellfor",5, 4, plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", EconomyManager.formatEconomy(totalSale)).getMessage());
     }
 
     private void sellAll(Player player) {

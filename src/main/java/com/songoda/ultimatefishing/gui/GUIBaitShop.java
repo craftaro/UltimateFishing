@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.gui;
 
 import com.songoda.core.compatibility.CompatibleSound;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.hooks.EconomyManager;
@@ -13,9 +14,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public final class GUIBaitShop extends Gui {
+public final class GUIBaitShop extends CustomizableGui {
 
     public GUIBaitShop(UltimateFishing plugin) {
+        super(plugin, "baitshop");
         setTitle(plugin.getLocale().getMessage("interface.bait.title").getMessage());
         List<Bait> baits = plugin.getBaitManager().getBaits();
         setRows(baits.size() > 7 ? 4 : 3);
@@ -26,14 +28,14 @@ public final class GUIBaitShop extends Gui {
         setDefaultItem(null);
 
         // decorate corners
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 2, true, true, glass3);
-        GuiUtils.mirrorFill(this, 0, 3, true, true, glass3);
-        GuiUtils.mirrorFill(this, 0, 4, true, false, glass3);
-        GuiUtils.mirrorFill(this, 1, 0, false, true, glass2);
+        mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_1", 0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 3, true, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 4, true, false, glass3);
+        mirrorFill("mirrorfill_1", 1, 0, false, true, glass2);
         if (baits.size() > 7)
-            GuiUtils.mirrorFill(this, 2, 0, false, true, glass2);
+            mirrorFill("mirrorfill_1", 2, 0, false, true, glass2);
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             int i = 10;

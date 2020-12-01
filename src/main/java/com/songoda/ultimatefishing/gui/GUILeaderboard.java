@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.gui;
 
 import com.songoda.core.compatibility.CompatibleMaterial;
+import com.songoda.core.gui.CustomizableGui;
 import com.songoda.core.gui.Gui;
 import com.songoda.core.gui.GuiUtils;
 import com.songoda.core.utils.ItemUtils;
@@ -20,11 +21,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GUILeaderboard extends Gui {
+public class GUILeaderboard extends CustomizableGui {
 
     private final UltimateFishing plugin;
 
     public GUILeaderboard(UltimateFishing plugin) {
+        super(plugin, "leaderboard");
         this.plugin = plugin;
         setRows(6);
         setDefaultItem(null);
@@ -41,7 +43,7 @@ public class GUILeaderboard extends Gui {
 
         // set up prices info (icon only)
         // TODO: need to add this line to language file
-        setItem(0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
+        setItem("weight", 0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
                 plugin.getLocale().getMessage("interface.leaderboard.weight").getMessage(),
                 plugin.getRarityManager().getRarities().stream()
                         .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + r.getWeight()))
@@ -69,13 +71,13 @@ public class GUILeaderboard extends Gui {
         ItemStack glass3 = GuiUtils.getBorderItem(Settings.GLASS_TYPE_3.getMaterial(CompatibleMaterial.LIGHT_BLUE_STAINED_GLASS_PANE));
 
         // edges will be type 3
-        GuiUtils.mirrorFill(this, 0, 2, true, true, glass3);
-        GuiUtils.mirrorFill(this, 1, 1, true, true, glass3);
+        mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_2", 1, 1, true, true, glass3);
 
         // decorate corners with type 2
-        GuiUtils.mirrorFill(this, 0, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 1, 0, true, true, glass2);
-        GuiUtils.mirrorFill(this, 0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 0, true, true, glass2);
+        mirrorFill("mirrorfill_4", 1, 0, true, true, glass2);
+        mirrorFill("mirrorfill_5", 0, 1, true, true, glass2);
 
         int place = (page - 1) * 28;
         int num = 11;

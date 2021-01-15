@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateFishing</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.4</version>
+    <version>1.4b</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateFishing-${project.version}</finalName>
@@ -86,10 +86,6 @@
         </plugins>
     </build>
     <repositories>
-        <repository>
-            <id>private</id>
-            <url>http://repo.songoda.com/repository/private/</url>
-        </repository>
         <repository>
             <id>public</id>
             <url>https://repo.songoda.com/repository/public/</url>

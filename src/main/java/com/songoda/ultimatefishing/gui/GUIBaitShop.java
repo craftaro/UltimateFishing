@@ -29,13 +29,13 @@ public final class GUIBaitShop extends CustomizableGui {
 
         // decorate corners
         mirrorFill("mirrorfill_1", 0, 0, true, true, glass2);
-        mirrorFill("mirrorfill_1", 0, 1, true, true, glass2);
-        mirrorFill("mirrorfill_1", 0, 2, true, true, glass3);
-        mirrorFill("mirrorfill_1", 0, 3, true, true, glass3);
-        mirrorFill("mirrorfill_1", 0, 4, true, false, glass3);
-        mirrorFill("mirrorfill_1", 1, 0, false, true, glass2);
+        mirrorFill("mirrorfill_2", 0, 1, true, true, glass2);
+        mirrorFill("mirrorfill_3", 0, 2, true, true, glass3);
+        mirrorFill("mirrorfill_4", 0, 3, true, true, glass3);
+        mirrorFill("mirrorfill_5", 0, 4, true, false, glass3);
+        mirrorFill("mirrorfill_6", 1, 0, false, true, glass2);
         if (baits.size() > 7)
-            mirrorFill("mirrorfill_1", 2, 0, false, true, glass2);
+            mirrorFill("mirrorfill_7", 2, 0, false, true, glass2);
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             int i = 10;

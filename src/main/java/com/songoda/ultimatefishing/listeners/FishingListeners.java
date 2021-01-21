@@ -1,5 +1,6 @@
 package com.songoda.ultimatefishing.listeners;
 
+import com.songoda.core.compatibility.CompatibleHand;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -40,11 +42,20 @@ public class FishingListeners implements Listener {
     private final List<UUID> inCritical = new ArrayList<>();
 
     private final Map<UUID, AFKObject> afk = new HashMap<>();
+    private final Map<UUID, CompatibleHand> hands = new HashMap<>();
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onCast(PlayerInteractEvent event) {
+        CompatibleHand hand = CompatibleHand.getHand(event);
+        hands.put(event.getPlayer().getUniqueId(), hand);
+    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
-        boolean isUsingBait = plugin.getBaitManager().getBait(player.getItemInHand()) != null;
+        CompatibleHand hand = hands.get(player.getUniqueId());
+        ItemStack rod = hand.getItem(player);
+        boolean isUsingBait = plugin.getBaitManager().getBait(rod) != null;
         boolean isCaught = event.getState() == PlayerFishEvent.State.CAUGHT_FISH;
         if (!isUsingBait && !isCaught
                 || !player.hasPermission("ultimatefishing.use")) return;
@@ -79,10 +90,9 @@ public class FishingListeners implements Listener {
             }
             if (!isUsingBait && Settings.NO_BAIT_NO_RARITY.getBoolean()) return;
 
-            ItemStack rod = player.getItemInHand();
             Bait bait = plugin.getBaitManager().getBait(rod);
             if (bait != null)
-                Bukkit.getScheduler().runTaskLater(plugin, () -> player.setItemInHand(bait.use(rod)), 1L);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> hand.setItem(player, bait.use(rod)), 1L);
 
 
             List<Drop> drops = plugin.getLootablesManager().getDrops(player, bait);
@@ -114,7 +124,6 @@ public class FishingListeners implements Listener {
                 }
             }
         } else if (event.getState() == PlayerFishEvent.State.FISHING) {
-            ItemStack rod = player.getItemInHand();
             Bait bait = plugin.getBaitManager().getBait(rod);
             if (rod.hasItemMeta() && rod.getItemMeta().hasLore()) {
                 if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13))

@@ -44,22 +44,22 @@ public class LootablesManager {
         this.lootManager = new LootManager(instance);
     }
 
-    public List<Drop> getDrops(Player player, Bait bait) {
+    public List<Drop> getDrops(Player player, ItemStack rod, Bait bait) {
         List<Drop> toDrop = new ArrayList<>();
 
         Lootable lootable = lootManager.getRegisteredLootables().get("NORMAL");
-        int looting = player.getItemInHand().containsEnchantment(Enchantment.LOOT_BONUS_MOBS)
-                ? player.getItemInHand().getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS)
+        int looting = rod.containsEnchantment(Enchantment.LOOT_BONUS_MOBS)
+                ? rod.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS)
                 : 0;
 
-        int lure = player.getItemInHand().containsEnchantment(Enchantment.LURE)
-                ? player.getItemInHand().getEnchantmentLevel(Enchantment.LURE)
+        int lure = rod.containsEnchantment(Enchantment.LURE)
+                ? rod.getEnchantmentLevel(Enchantment.LURE)
                 : 0;
 
         int rerollChance = looting / (looting + 1);
 
         for (Loot loot : lootable.getRegisteredLoot())
-            toDrop.addAll(runLoot(player, loot, rerollChance, looting));
+            toDrop.addAll(runLoot(rod, loot, rerollChance, looting));
 
         if (Settings.FISH_RARITY.getBoolean()) {
             for (Drop drop : toDrop) {
@@ -112,10 +112,10 @@ public class LootablesManager {
         return toDrop;
     }
 
-    private List<Drop> runLoot(Player player, Loot loot, int rerollChance, int looting) {
+    private List<Drop> runLoot(ItemStack rod, Loot loot, int rerollChance, int looting) {
         return lootManager.runLoot(null,
                 false,
-                player.getItemInHand(),
+                rod,
                 EntityType.PLAYER,
                 loot,
                 rerollChance,

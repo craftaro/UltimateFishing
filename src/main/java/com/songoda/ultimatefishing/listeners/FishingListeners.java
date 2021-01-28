@@ -1,6 +1,7 @@
 package com.songoda.ultimatefishing.listeners;
 
 import com.songoda.core.compatibility.CompatibleHand;
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.lootables.loot.Drop;
@@ -18,7 +19,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -42,18 +42,16 @@ public class FishingListeners implements Listener {
     private final List<UUID> inCritical = new ArrayList<>();
 
     private final Map<UUID, AFKObject> afk = new HashMap<>();
-    private final Map<UUID, CompatibleHand> hands = new HashMap<>();
-
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onCast(PlayerInteractEvent event) {
-        CompatibleHand hand = CompatibleHand.getHand(event);
-        hands.put(event.getPlayer().getUniqueId(), hand);
-    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onFish(PlayerFishEvent event) {
         Player player = event.getPlayer();
-        CompatibleHand hand = hands.get(player.getUniqueId());
+
+        CompatibleHand hand = CompatibleHand.MAIN_HAND;
+        if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)
+                && CompatibleMaterial.getMaterial(player.getInventory().getItemInOffHand()) == CompatibleMaterial.FISHING_ROD)
+                hand = CompatibleHand.OFF_HAND;
+
         ItemStack rod = hand.getItem(player);
         boolean isUsingBait = plugin.getBaitManager().getBait(rod) != null;
         boolean isCaught = event.getState() == PlayerFishEvent.State.CAUGHT_FISH;
@@ -91,15 +89,16 @@ public class FishingListeners implements Listener {
             if (!isUsingBait && Settings.NO_BAIT_NO_RARITY.getBoolean()) return;
 
             Bait bait = plugin.getBaitManager().getBait(rod);
+            CompatibleHand finalHand = hand;
             if (bait != null)
-                Bukkit.getScheduler().runTaskLater(plugin, () -> hand.setItem(player, bait.use(rod)), 1L);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> finalHand.setItem(player, bait.use(rod)), 1L);
 
 
-            List<Drop> drops = plugin.getLootablesManager().getDrops(player, bait);
+            List<Drop> drops = plugin.getLootablesManager().getDrops(player,  rod, bait);
 
             if (inCritical.contains(player.getUniqueId())) {
                 for (int i = 0; i < (Settings.CRITICAL_DROP_MULTI.getInt() - 1); i++)
-                    drops.addAll(plugin.getLootablesManager().getDrops(player, bait));
+                    drops.addAll(plugin.getLootablesManager().getDrops(player, rod, bait));
             }
             inCritical.remove(player.getUniqueId());
 

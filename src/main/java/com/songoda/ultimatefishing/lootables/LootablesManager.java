@@ -1,13 +1,14 @@
 package com.songoda.ultimatefishing.lootables;
 
+import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.ServerVersion;
-import com.songoda.lootables.Lootables;
-import com.songoda.lootables.loot.Drop;
-import com.songoda.lootables.loot.Loot;
-import com.songoda.lootables.loot.LootBuilder;
-import com.songoda.lootables.loot.LootManager;
-import com.songoda.lootables.loot.Lootable;
-import com.songoda.lootables.loot.objects.EnchantChance;
+import com.songoda.core.lootables.Lootables;
+import com.songoda.core.lootables.loot.Drop;
+import com.songoda.core.lootables.loot.Loot;
+import com.songoda.core.lootables.loot.LootBuilder;
+import com.songoda.core.lootables.loot.LootManager;
+import com.songoda.core.lootables.loot.Lootable;
+import com.songoda.core.lootables.loot.objects.EnchantChance;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.bait.Bait;
 import com.songoda.ultimatefishing.player.FishingPlayer;
@@ -115,6 +116,7 @@ public class LootablesManager {
     private List<Drop> runLoot(ItemStack rod, Loot loot, int rerollChance, int looting) {
         return lootManager.runLoot(null,
                 false,
+                false,
                 rod,
                 EntityType.PLAYER,
                 loot,
@@ -129,8 +131,8 @@ public class LootablesManager {
         LootBuilder loot = new LootBuilder();
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.COD : Material.valueOf("RAW_FISH"))
-                .setBurnedMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.COOKED_COD : Material.valueOf("COOKED_FISH"))
+                .setMaterial(CompatibleMaterial.COD)
+                .setBurnedMaterial(CompatibleMaterial.COOKED_COD)
                 .setChance(51)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 50.9),
                         new EnchantChance(Enchantment.LUCK, 2, 50.8),
@@ -138,9 +140,8 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.SALMON : Material.valueOf("RAW_FISH"))
-                .setBurnedMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.COOKED_SALMON : Material.valueOf("COOKED_FISH"))
-                .setData(1)
+                .setMaterial(CompatibleMaterial.SALMON)
+                .setBurnedMaterial(CompatibleMaterial.COOKED_SALMON)
                 .setChance(51)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 21.2),
                         new EnchantChance(Enchantment.LUCK, 2, 21.2),
@@ -148,14 +149,12 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.TROPICAL_FISH : Material.valueOf("RAW_FISH"))
-                .setData(2)
+                .setMaterial(CompatibleMaterial.TROPICAL_FISH)
                 .setChance(1.7)
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.PUFFERFISH : Material.valueOf("RAW_FISH"))
-                .setData(3)
+                .setMaterial(CompatibleMaterial.PUFFERFISH)
                 .setChance(11.1)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 11.0),
                         new EnchantChance(Enchantment.LUCK, 2, 11.0),
@@ -163,9 +162,9 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.BOW)
+                .setMaterial(CompatibleMaterial.BOW)
                 .setChance(0.7)
-                .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
+                .addEnchants(new LootBuilder.Tuple("RANDOM", 26))
                 .setDamageMin(10)
                 .setDamageMax(100)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
@@ -174,9 +173,9 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.BOOK)
+                .setMaterial(CompatibleMaterial.BOOK)
                 .setChance(0.7)
-                .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
+                .addEnchants(new LootBuilder.Tuple("RANDOM", 26))
                 .setDamageMin(10)
                 .setDamageMax(100)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
@@ -185,9 +184,9 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.FISHING_ROD)
+                .setMaterial(CompatibleMaterial.FISHING_ROD)
                 .setChance(0.7)
-                .addEnchants(new com.songoda.lootables.utils.Methods.Tuple("RANDOM", 26))
+                .addEnchants(new LootBuilder.Tuple("RANDOM", 26))
                 .setDamageMin(10)
                 .setDamageMax(100)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
@@ -196,7 +195,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.NAME_TAG)
+                .setMaterial(CompatibleMaterial.NAME_TAG)
                 .setChance(0.7)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
                         new EnchantChance(Enchantment.LUCK, 2, 1.3),
@@ -205,7 +204,7 @@ public class LootablesManager {
 
         if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13)) {
             loot.addChildLoot(new LootBuilder()
-                    .setMaterial(Material.NAUTILUS_SHELL)
+                    .setMaterial(CompatibleMaterial.NAUTILUS_SHELL)
                     .setChance(0.7)
                     .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
                             new EnchantChance(Enchantment.LUCK, 2, 1.3),
@@ -214,7 +213,7 @@ public class LootablesManager {
         }
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.SADDLE)
+                .setMaterial(CompatibleMaterial.SADDLE)
                 .setChance(0.7)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
                         new EnchantChance(Enchantment.LUCK, 2, 1.3),
@@ -222,7 +221,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.LILY_PAD : Material.valueOf("WATER_LILY"))
+                .setMaterial(CompatibleMaterial.LILY_PAD)
                 .setChance(0.7)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
                         new EnchantChance(Enchantment.LUCK, 2, 1.3),
@@ -230,7 +229,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.BOWL)
+                .setMaterial(CompatibleMaterial.BOWL)
                 .setChance(1.2)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1),
                         new EnchantChance(Enchantment.LUCK, 2, .7),
@@ -238,7 +237,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.FISHING_ROD)
+                .setMaterial(CompatibleMaterial.FISHING_ROD)
                 .setChance(0.2)
                 .setDamageMin(10)
                 .setDamageMax(100)
@@ -248,7 +247,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.LEATHER)
+                .setMaterial(CompatibleMaterial.LEATHER)
                 .setChance(1.2)
                 .setDamageMin(10)
                 .setDamageMax(100)
@@ -258,7 +257,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.LEATHER_BOOTS)
+                .setMaterial(CompatibleMaterial.LEATHER_BOOTS)
                 .setChance(1.2)
                 .setDamageMin(10)
                 .setDamageMax(100)
@@ -268,7 +267,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.ROTTEN_FLESH)
+                .setMaterial(CompatibleMaterial.ROTTEN_FLESH)
                 .setChance(1.2)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1.0),
                         new EnchantChance(Enchantment.LUCK, 2, .7),
@@ -276,7 +275,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.STICK)
+                .setMaterial(CompatibleMaterial.STICK)
                 .setChance(.6)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, .5),
                         new EnchantChance(Enchantment.LUCK, 2, .4),
@@ -284,7 +283,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.STRING)
+                .setMaterial(CompatibleMaterial.STRING)
                 .setChance(.6)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, .5),
                         new EnchantChance(Enchantment.LUCK, 2, .4),
@@ -292,7 +291,7 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.BONE)
+                .setMaterial(CompatibleMaterial.BONE)
                 .setChance(1.2)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1.0),
                         new EnchantChance(Enchantment.LUCK, 2, .7),
@@ -300,12 +299,12 @@ public class LootablesManager {
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.INK_SAC : Material.valueOf("INK_SACK"))
+                .setMaterial(CompatibleMaterial.INK_SAC)
                 .setChance(.1)
                 .build());
 
         loot.addChildLoot(new LootBuilder()
-                .setMaterial(Material.TRIPWIRE_HOOK)
+                .setMaterial(CompatibleMaterial.TRIPWIRE_HOOK)
                 .setChance(1.2)
                 .addEnchantChances(new EnchantChance(Enchantment.LUCK, 1, 1.0),
                         new EnchantChance(Enchantment.LUCK, 2, .7),
@@ -314,7 +313,7 @@ public class LootablesManager {
 
         lootManager.addLootable(new Lootable("NORMAL", loot.build()));
 
-        lootManager.saveLootables();
+        lootManager.saveLootables(true);
     }
 
     public LootManager getLootManager() {

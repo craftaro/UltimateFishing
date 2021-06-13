@@ -4,7 +4,7 @@ import com.songoda.core.compatibility.CompatibleHand;
 import com.songoda.core.compatibility.CompatibleMaterial;
 import com.songoda.core.compatibility.CompatibleSound;
 import com.songoda.core.compatibility.ServerVersion;
-import com.songoda.lootables.loot.Drop;
+import com.songoda.core.lootables.loot.Drop;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.bait.Bait;
 import com.songoda.ultimatefishing.rarity.Rarity;

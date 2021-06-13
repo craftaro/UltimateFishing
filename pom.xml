@@ -56,7 +56,6 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.songoda:SongodaCore</include>
-                                    <include>com.songoda:Lootables</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -73,10 +72,6 @@
                                 <relocation>
                                     <pattern>com.songoda.core</pattern>
                                     <shadedPattern>${project.groupId}.ultimatefishing.core</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>com.songoda.lootables</pattern>
-                                    <shadedPattern>${project.groupId}.ultimatefishing.lootables</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -107,11 +102,6 @@
             <artifactId>spigot</artifactId>
             <version>1.17</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.songoda</groupId>
-            <artifactId>Lootables</artifactId>
-            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>

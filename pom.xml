@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateFishing</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.4.3</version>
+    <version>1.5.0</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateFishing-${project.version}</finalName>
@@ -99,14 +99,14 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.17</version>
+            <artifactId>spigot-api</artifactId>
+            <version>1.18-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>SongodaCore</artifactId>
-            <version>LATEST</version>
+            <version>2.6.10</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

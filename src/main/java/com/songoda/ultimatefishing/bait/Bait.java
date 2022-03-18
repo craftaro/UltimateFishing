@@ -1,7 +1,6 @@
 package com.songoda.ultimatefishing.bait;
 
-import com.songoda.core.nms.NmsManager;
-import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.songoda.core.utils.ItemUtils;
 import com.songoda.core.utils.TextUtils;
 import com.songoda.ultimatefishing.UltimateFishing;
@@ -61,10 +60,11 @@ public class Bait {
         if (enchanted)
             ItemUtils.addGlow(itemStack);
 
-        NBTItem nbtItem = NmsManager.getNbt().of(itemStack);
-        nbtItem.set("bait", bait);
 
-        return nbtItem.finish();
+        NBTItem nbtItem = new NBTItem(itemStack);
+        nbtItem.setString("bait", bait);
+
+        return nbtItem.getItem();
     }
 
     public ItemStack asItemStack() {
@@ -78,10 +78,10 @@ public class Bait {
                 || (!Settings.BAIT_ON_ROD_WITH_ENCHANTS.getBoolean() && item.getItemMeta().hasEnchants() && !item.getItemMeta().getEnchants().isEmpty())))
             return null;
         if (item.hasItemMeta() && !Settings.BAIT_ON_ROD_WITH_LORE.getBoolean() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().isEmpty()) {
-            //check for custom lore 
+            //check for custom lore
             int ignorelines = 0;
-            NBTItem nbtItem = NmsManager.getNbt().of(item);
-            if (nbtItem.has("uses")) {
+            NBTItem nbtItem = new NBTItem(item);
+            if (nbtItem.hasKey("uses")) {
                 ignorelines = 1;
             } else if (hasInvisibleString(item)) {
                 ignorelines = 2;
@@ -93,10 +93,10 @@ public class Bait {
         int uses = 0;
         int max = 0;
 
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
-        if (nbtItem.has("uses")) {
-            uses = nbtItem.getNBTObject("uses").asInt();
-            max = nbtItem.getNBTObject("max").asInt();
+        NBTItem nbtItem = new NBTItem(item);
+        if (nbtItem.hasKey("uses")) {
+            uses = nbtItem.getInteger("uses");
+            max = nbtItem.getInteger("max");
         } else if (hasInvisibleString(item)) {
             String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
             uses = Integer.parseInt(split[1]);
@@ -111,8 +111,8 @@ public class Bait {
             return null;
 
         int originalLoreIndex = 0;
-        NBTItem nbtRod = NmsManager.getNbt().of(item);
-        if (nbtRod.has("max")) {
+        NBTItem nbtRod = new NBTItem(item);
+        if (nbtRod.hasKey("max")) {
             originalLoreIndex = 1; //1st line of lore is bait description
         } else if (hasInvisibleString(item)) {
             originalLoreIndex = 2; //line 0 hidden string, line 1 description
@@ -120,7 +120,7 @@ public class Bait {
 
         List<String> originalLore = item.hasItemMeta() && item.getItemMeta().hasLore()
                 ? item.getItemMeta().getLore().subList(originalLoreIndex, item.getItemMeta().getLore().size())
-                : new ArrayList();
+                : new ArrayList<>();
         String baited = UltimateFishing.getInstance().getLocale().getMessage("object.bait.baited")
                 .processPlaceholder("bait", TextUtils.formatText("&" + color) + bait)
                 .processPlaceholder("uses", max - uses)
@@ -132,12 +132,12 @@ public class Bait {
         meta.setLore(originalLore);
         item.setItemMeta(meta);
 
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
-        nbtItem.set("bait", bait);
-        nbtItem.set("uses", uses); // Uses is the amount of uses the user has made not the amount left.
-        nbtItem.set("max", max);
+        NBTItem nbtItem = new NBTItem(item);
+        nbtItem.setString("bait", bait);
+        nbtItem.setInteger("uses", uses); // Uses is the amount of uses the user has made not the amount left.
+        nbtItem.setInteger("max", max);
 
-        return nbtItem.finish();
+        return nbtItem.getItem();
     }
 
     public String getBait() {
@@ -197,10 +197,10 @@ public class Bait {
         int uses;
         int max;
 
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
-        if (nbtItem.has("uses")) {
-            uses = nbtItem.getNBTObject("uses").asInt() + 1;
-            max = nbtItem.getNBTObject("max").asInt();
+        NBTItem nbtItem = new NBTItem(item);
+        if (nbtItem.hasKey("uses")) {
+            uses = nbtItem.getInteger("uses") + 1;
+            max = nbtItem.getInteger("max");
         } else if (hasInvisibleString(item)) {
             String[] split = TextUtils.convertFromInvisibleString(item.getItemMeta().getLore().get(0)).split(":");
             uses = Integer.parseInt(split[1]) + 1;
@@ -212,10 +212,10 @@ public class Bait {
         if (uses < max)
             return applyBait(item, uses, max);
         else {
-            nbtItem.set("bait", "UNSET"); // Not sure why I had to do this.
-            nbtItem.set("uses", 0);
-            nbtItem.set("max", 0);
-            ItemStack newItem = nbtItem.finish();
+            nbtItem.setString("bait", "UNSET"); // Not sure why I had to do this.
+            nbtItem.setInteger("uses", 0);
+            nbtItem.setInteger("max", 0);
+            ItemStack newItem = nbtItem.getItem();
             ItemMeta meta = newItem.getItemMeta();
             List<String> lore = meta.getLore();
             lore.remove(0);

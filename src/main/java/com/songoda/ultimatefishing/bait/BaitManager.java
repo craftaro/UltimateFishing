@@ -1,7 +1,6 @@
 package com.songoda.ultimatefishing.bait;
 
-import com.songoda.core.nms.NmsManager;
-import com.songoda.core.nms.nbt.NBTItem;
+import com.songoda.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.songoda.core.utils.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -29,9 +28,9 @@ public class BaitManager {
     public Bait getBait(ItemStack item) {
         if (item == null) return null;
         String name;
-        NBTItem nbtItem = NmsManager.getNbt().of(item);
-        if (nbtItem.has("bait")) {
-            name = nbtItem.getNBTObject("bait").asString();
+        NBTItem nbtItem = new NBTItem(item);
+        if (nbtItem.hasKey("bait")) {
+            name = nbtItem.getString("bait");
         } else {
             if (!item.hasItemMeta() || !item.getItemMeta().hasLore() || item.getItemMeta().getLore().isEmpty())
                 return null;

@@ -78,7 +78,7 @@ public class Bait {
                 || (!Settings.BAIT_ON_ROD_WITH_ENCHANTS.getBoolean() && item.getItemMeta().hasEnchants() && !item.getItemMeta().getEnchants().isEmpty())))
             return null;
         if (item.hasItemMeta() && !Settings.BAIT_ON_ROD_WITH_LORE.getBoolean() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().isEmpty()) {
-            //check for custom lore 
+            //check for custom lore
             int ignorelines = 0;
             NBTItem nbtItem = new NBTItem(item);
             if (nbtItem.hasKey("uses")) {
@@ -120,7 +120,7 @@ public class Bait {
 
         List<String> originalLore = item.hasItemMeta() && item.getItemMeta().hasLore()
                 ? item.getItemMeta().getLore().subList(originalLoreIndex, item.getItemMeta().getLore().size())
-                : new ArrayList();
+                : new ArrayList<>();
         String baited = UltimateFishing.getInstance().getLocale().getMessage("object.bait.baited")
                 .processPlaceholder("bait", TextUtils.formatText("&" + color) + bait)
                 .processPlaceholder("uses", max - uses)

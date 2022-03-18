@@ -42,7 +42,7 @@ event:
   bait:
     given: '&7You were given &6%amount% %bait%&7.'
   sell:
-    success: '&7You successfully sold your fish for a total of &6$%total%&7.'
+    success: '&7You successfully sold your fish for a total of &6%total%&7.'
     fail: '&cNothing in the interface is sellable...'
   catch:
     broadcast: '&6%username% &7just caught a &6%rarity% &7fish!'

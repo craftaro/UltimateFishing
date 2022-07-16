@@ -16,6 +16,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
@@ -38,6 +39,7 @@
                     </replacements>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -96,6 +98,7 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -103,10 +106,11 @@
             <version>1.18-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>SongodaCore</artifactId>
-            <version>2.6.12</version>
+            <version>2.6.13</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

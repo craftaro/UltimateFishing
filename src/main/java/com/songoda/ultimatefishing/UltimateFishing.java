@@ -163,8 +163,8 @@ public class UltimateFishing extends SongodaPlugin {
     private void setupRarity() {
         if (!rarityConfig.contains("Rarity")) {
             rarityConfig.createDefaultSection("Rarity",
-                    "The different levels of fish rarity.",
-                    "You can rename, replace and add new rarities as you wish.")
+                            "The different levels of fish rarity.",
+                            "You can rename, replace and add new rarities as you wish.")
                     .setDefault("Tiny.Chance", 5,
                             "The chance that a caught fish will be tiny.")
                     .setDefault("Tiny.Weight", 25,
@@ -210,7 +210,7 @@ public class UltimateFishing extends SongodaPlugin {
     private void setupBait() {
         if (!baitConfig.contains("Bait")) {
             baitConfig.createDefaultSection("Bait",
-                    "The baits. You can rename, replace and add new baits as you wish.")
+                            "The baits. You can rename, replace and add new baits as you wish.")
                     .setDefault("Worms.Bonus Chance", 100,
                             "The added chance (Weight) this bait will add towards the targets.")
                     .setDefault("Ultra Worms.Critical Chance", 10,
@@ -357,5 +357,12 @@ public class UltimateFishing extends SongodaPlugin {
 
     public DataManager getDataManager() {
         return dataManager;
+    }
+
+    // FIXME: A hotfix for EconomyManager#formatEconomy only working with $ etc.
+    public String formatEconomy(double amount) {
+        return getLocale().getMessage("interface.general.ecoFormat")
+                .processPlaceholder("cost", amount)
+                .getMessage();
     }
 }

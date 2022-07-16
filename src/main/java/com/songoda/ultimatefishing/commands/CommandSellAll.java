@@ -3,6 +3,7 @@ package com.songoda.ultimatefishing.commands;
 import com.songoda.core.commands.AbstractCommand;
 import com.songoda.core.compatibility.ServerVersion;
 import com.songoda.core.hooks.EconomyManager;
+import com.songoda.core.locale.Message;
 import com.songoda.ultimatefishing.UltimateFishing;
 import com.songoda.ultimatefishing.rarity.Rarity;
 import org.bukkit.command.CommandSender;
@@ -50,7 +51,7 @@ public class CommandSellAll extends AbstractCommand {
         EconomyManager.deposit(player, totalNew);
 
         plugin.getLocale().getMessage("event.sell.success")
-                .processPlaceholder("total", EconomyManager.formatEconomy(totalNew))
+                .processPlaceholder("total", plugin.formatEconomy(totalNew))
                 .sendPrefixedMessage(player);
 
         return ReturnType.SUCCESS;

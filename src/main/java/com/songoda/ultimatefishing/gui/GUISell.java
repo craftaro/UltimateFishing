@@ -53,12 +53,12 @@ public final class GUISell extends CustomizableGui {
         setItem("prices", 0, 4, GuiUtils.createButtonItem(CompatibleMaterial.BOOK,
                 plugin.getLocale().getMessage("interface.sell.prices").getMessage(),
                 plugin.getRarityManager().getRarities().stream()
-                        .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + EconomyManager.formatEconomy(r.getSellPrice())))
+                        .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + plugin.formatEconomy(r.getSellPrice())))
                         .collect(Collectors.toList())
         ));
 
         setButton("sellfor", 5, 4, GuiUtils.createButtonItem(CompatibleMaterial.SUNFLOWER,
-                plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", EconomyManager.formatEconomy(0)).getMessage()),
+                plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", plugin.formatEconomy(0)).getMessage()),
                 (event) -> sellAll(event.player));
 
         if (player.hasPermission("ultimatefishing.baitshop"))
@@ -78,7 +78,7 @@ public final class GUISell extends CustomizableGui {
 
     private void updateSell() {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
-        updateItem("sellfor",5, 4, plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", EconomyManager.formatEconomy(totalSale)).getMessage());
+        updateItem("sellfor",5, 4, plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", plugin.formatEconomy(totalSale)).getMessage());
     }
 
     private void sellAll(Player player) {
@@ -105,7 +105,7 @@ public final class GUISell extends CustomizableGui {
             }
         }
         plugin.getLocale().getMessage("event.sell.success")
-                .processPlaceholder("total", EconomyManager.formatEconomy(totalSale))
+                .processPlaceholder("total", plugin.formatEconomy(totalSale))
                 .sendPrefixedMessage(player);
         player.playSound(player.getLocation(), CompatibleSound.ENTITY_VILLAGER_YES.getSound(), 1L, 1L);
 

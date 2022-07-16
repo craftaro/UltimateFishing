@@ -42,7 +42,7 @@ public final class GUIBaitShop extends CustomizableGui {
                 if (getItem(i) == null) {
                     setButton(i, GuiUtils.createButtonItem(bait.asItemStack(),
                             TextUtils.formatText("&" + bait.getColor()) + bait.getBait(),
-                            plugin.getLocale().getMessage("interface.bait.buyfor").processPlaceholder("price", EconomyManager.formatEconomy(bait.getSellPrice())).getMessage()
+                            plugin.getLocale().getMessage("interface.bait.buyfor").processPlaceholder("price", plugin.formatEconomy(bait.getSellPrice())).getMessage()
                     ), (event) -> {
                         if (!EconomyManager.hasBalance(event.player, bait.getSellPrice())) {
                             plugin.getLocale().getMessage("interface.bait.cannotafford").sendPrefixedMessage(event.player);

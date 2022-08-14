@@ -148,6 +148,8 @@ public class UltimateFishing extends SongodaPlugin {
             this.getLogger().severe("Fatal error trying to connect to database. Please make sure all your connection settings are correct and try again. Plugin has been disabled.");
             this.emergencyStop();
         }
+		
+        this.dataManager = new DataManager(this.databaseConnector, this);
         this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
                 new _1_InitialMigration());
         this.dataMigrationManager.runMigrations();

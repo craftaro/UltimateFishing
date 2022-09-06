@@ -2,7 +2,7 @@
     <groupId>com.songoda</groupId>
     <artifactId>UltimateFishing</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.5.2</version>
+    <version>1.6.0</version>
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>UltimateFishing-${project.version}</finalName>
@@ -105,7 +105,7 @@
         <dependency>
             <groupId>com.songoda</groupId>
             <artifactId>SongodaCore</artifactId>
-            <version>2.6.13</version>
+            <version>2.6.16</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

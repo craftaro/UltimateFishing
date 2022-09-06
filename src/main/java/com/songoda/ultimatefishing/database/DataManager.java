@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -25,50 +26,59 @@ public class DataManager extends DataManagerAbstract {
     }
 
     public void updateCaught(Player player, Rarity rarity, int amount) {
-        this.async(() -> this.databaseConnector.connect(connection -> {
-            String updateSpawner = "UPDATE " + this.getTablePrefix() + "caught SET amount = ? WHERE uuid = ? AND rarity = ?";
-            try (PreparedStatement statement = connection.prepareStatement(updateSpawner)) {
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String updateSpawner = "UPDATE " + this.getTablePrefix() + "caught SET amount = ? WHERE uuid = ? AND rarity = ?";
+                PreparedStatement statement = connection.prepareStatement(updateSpawner);
                 statement.setInt(1, amount);
                 statement.setString(2, player.getUniqueId().toString());
                 statement.setString(3, rarity.getRarity());
                 statement.executeUpdate();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        }));
+        });
     }
 
 
     public void createCaught(Player player, Rarity rarity, int amount) {
-        this.async(() -> this.databaseConnector.connect(connection -> {
-
-            String createSpawner = "INSERT INTO " + this.getTablePrefix() + "caught (uuid, rarity, amount) VALUES (?, ?, ?)";
-            try (PreparedStatement statement = connection.prepareStatement(createSpawner)) {
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String createSpawner = "INSERT INTO " + this.getTablePrefix() + "caught (uuid, rarity, amount) VALUES (?, ?, ?)";
+                PreparedStatement statement = connection.prepareStatement(createSpawner);
                 statement.setString(1, player.getUniqueId().toString());
                 statement.setString(2, rarity.getRarity());
                 statement.setInt(3, amount);
                 statement.executeUpdate();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        }));
+        });
     }
 
     public void deleteCaught(OfflinePlayer player) {
-        this.async(() -> this.databaseConnector.connect(connection -> {
-            String deleteSpawner = "DELETE FROM " + this.getTablePrefix() + "caught WHERE uuid = ?";
-            try (PreparedStatement statement = connection.prepareStatement(deleteSpawner)) {
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String deleteSpawner = "DELETE FROM " + this.getTablePrefix() + "caught WHERE uuid = ?";
+                PreparedStatement statement = connection.prepareStatement(deleteSpawner);
                 statement.setString(1, player.getUniqueId().toString());
                 statement.executeUpdate();
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        }));
+        });
     }
 
     public void getPlayers(Consumer<Map<UUID, FishingPlayer>> callback) {
         UltimateFishing plugin = UltimateFishing.getInstance();
-        this.async(() -> this.databaseConnector.connect(connection -> {
-            String selectSpawners = "SELECT * FROM " + this.getTablePrefix() + "caught";
-            RarityManager rarityManager = plugin.getRarityManager();
+        this.runAsync(() -> {
+            try (Connection connection = this.databaseConnector.getConnection()) {
+                String selectSpawners = "SELECT * FROM " + this.getTablePrefix() + "caught";
+                RarityManager rarityManager = plugin.getRarityManager();
 
-            Map<UUID, FishingPlayer> players = new HashMap<>();
+                Map<UUID, FishingPlayer> players = new HashMap<>();
 
-            try (Statement statement = connection.createStatement()) {
+                Statement statement = connection.createStatement();
                 ResultSet result = statement.executeQuery(selectSpawners);
                 while (result.next()) {
                     UUID uuid = UUID.fromString(result.getString("uuid"));
@@ -85,11 +95,11 @@ public class DataManager extends DataManagerAbstract {
 
                     players.get(uuid).addCatch(rarity, amount);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            this.sync(() -> callback.accept(players));
-        }));
+                this.sync(() -> callback.accept(players));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
     }
 }

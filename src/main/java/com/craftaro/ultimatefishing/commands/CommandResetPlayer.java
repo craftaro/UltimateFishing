@@ -2,6 +2,7 @@ package com.craftaro.ultimatefishing.commands;
 
 import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.core.commands.AbstractCommand;
+import com.craftaro.ultimatefishing.utils.DataHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,7 @@ public class CommandResetPlayer extends AbstractCommand {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(args[0]);
 
         plugin.getPlayerManager().resetPlayer(offlinePlayer);
-        plugin.getDataManager().deleteCaught(offlinePlayer);
+        DataHelper.deleteCaught(offlinePlayer);
 
         plugin.getLocale().newMessage("&cPlayer reset successfully.").sendPrefixedMessage(sender);
 

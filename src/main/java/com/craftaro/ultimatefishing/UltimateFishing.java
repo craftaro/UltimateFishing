@@ -1,5 +1,6 @@
 package com.craftaro.ultimatefishing;
 
+import com.craftaro.core.database.DatabaseConnector;
 import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimatefishing.lootables.LootablesManager;
 import com.craftaro.core.SongodaCore;
@@ -7,8 +8,6 @@ import com.craftaro.core.SongodaPlugin;
 import com.craftaro.core.commands.CommandManager;
 import com.craftaro.core.configuration.Config;
 import com.craftaro.core.configuration.ConfigSection;
-import com.craftaro.core.database.DataMigrationManager;
-import com.craftaro.core.database.DatabaseConnector;
 import com.craftaro.core.database.MySQLConnector;
 import com.craftaro.core.database.SQLiteConnector;
 import com.craftaro.core.gui.GuiManager;
@@ -23,7 +22,6 @@ import com.craftaro.ultimatefishing.commands.CommandResetPlayer;
 import com.craftaro.ultimatefishing.commands.CommandSell;
 import com.craftaro.ultimatefishing.commands.CommandSellAll;
 import com.craftaro.ultimatefishing.commands.CommandSettings;
-import com.craftaro.ultimatefishing.database.DataManager;
 import com.craftaro.ultimatefishing.database.migrations._1_InitialMigration;
 import com.craftaro.ultimatefishing.listeners.BlockListeners;
 import com.craftaro.ultimatefishing.listeners.EntityListeners;
@@ -36,6 +34,7 @@ import com.craftaro.ultimatefishing.rarity.Rarity;
 import com.craftaro.ultimatefishing.rarity.RarityManager;
 import com.craftaro.ultimatefishing.settings.Settings;
 import com.craftaro.ultimatefishing.tasks.BaitParticleTask;
+import com.craftaro.ultimatefishing.utils.DataHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -49,15 +48,10 @@ import java.util.List;
 public class UltimateFishing extends SongodaPlugin {
 
     private static UltimateFishing INSTANCE;
-
     private final Config rarityConfig = new Config(this, "rarity.yml");
     private final Config baitConfig = new Config(this, "bait.yml");
 
     private BaitParticleTask baitParticleTask;
-
-    private DatabaseConnector databaseConnector;
-    private DataMigrationManager dataMigrationManager;
-    private DataManager dataManager;
 
     private final GuiManager guiManager = new GuiManager(this);
     private LootablesManager lootablesManager;
@@ -128,31 +122,9 @@ public class UltimateFishing extends SongodaPlugin {
 
 
         // Database stuff, go!
-        try {
-            if (Settings.MYSQL_ENABLED.getBoolean()) {
-                String hostname = Settings.MYSQL_HOSTNAME.getString();
-                int port = Settings.MYSQL_PORT.getInt();
-                String database = Settings.MYSQL_DATABASE.getString();
-                String username = Settings.MYSQL_USERNAME.getString();
-                String password = Settings.MYSQL_PASSWORD.getString();
-                boolean useSSL = Settings.MYSQL_USE_SSL.getBoolean();
-                int poolSize = Settings.MYSQL_POOL_SIZE.getInt();
-
-                this.databaseConnector = new MySQLConnector(this, hostname, port, database, username, password, useSSL, poolSize);
-                this.getLogger().info("Data handler connected using MySQL.");
-            } else {
-                this.databaseConnector = new SQLiteConnector(this);
-                this.getLogger().info("Data handler connected using SQLite.");
-            }
-        } catch (Exception ex) {
-            this.getLogger().severe("Fatal error trying to connect to database. Please make sure all your connection settings are correct and try again. Plugin has been disabled.");
-            this.emergencyStop();
-        }
-		
-        this.dataManager = new DataManager(this.databaseConnector, this);
-        this.dataMigrationManager = new DataMigrationManager(this.databaseConnector, this.dataManager,
-                new _1_InitialMigration());
-        this.dataMigrationManager.runMigrations();
+        initDatabase(Collections.singletonList(
+                new _1_InitialMigration()
+        ));
     }
 
     @Override
@@ -162,7 +134,7 @@ public class UltimateFishing extends SongodaPlugin {
     @Override
     public void onDataLoad() {
         // Load data from DB
-        this.dataManager.getPlayers((players) -> {
+        DataHelper.getPlayers((players) -> {
             for (FishingPlayer player : players.values())
                 playerManager.addPlayer(player);
         });
@@ -364,18 +336,6 @@ public class UltimateFishing extends SongodaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
-    }
-
-    public DatabaseConnector getDatabaseConnector() {
-        return databaseConnector;
-    }
-
-    public DataMigrationManager getDataMigrationManager() {
-        return dataMigrationManager;
-    }
-
-    public DataManager getDataManager() {
-        return dataManager;
     }
 
     // FIXME: A hotfix for EconomyManager#formatEconomy only working with $ etc.

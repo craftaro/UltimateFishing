@@ -14,6 +14,7 @@ import com.craftaro.ultimatefishing.bait.Bait;
 import com.craftaro.ultimatefishing.player.FishingPlayer;
 import com.craftaro.ultimatefishing.rarity.Rarity;
 import com.craftaro.ultimatefishing.settings.Settings;
+import com.craftaro.ultimatefishing.utils.DataHelper;
 import com.craftaro.ultimatefishing.utils.FishUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
@@ -102,9 +103,9 @@ public class LootablesManager {
                 FishingPlayer fishingPlayer = plugin.getPlayerManager().getPlayer(player);
 
                 if (fishingPlayer.getCaught(rarity) == 0)
-                    plugin.getDataManager().createCaught(player, rarity, 1);
+                    DataHelper.createCaught(player, rarity, 1);
                 else
-                    plugin.getDataManager().updateCaught(player, rarity, fishingPlayer.getCaught(rarity) + 1);
+                    DataHelper.updateCaught(player, rarity, fishingPlayer.getCaught(rarity) + 1);
                 plugin.getPlayerManager().getPlayer(player).addCatch(rarity);
             }
         }

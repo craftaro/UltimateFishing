@@ -74,6 +74,7 @@
                                     <excludeDefaults>false</excludeDefaults>
                                     <includes>
                                         <include>**/nms/v*/**</include>
+                                        <include>**/core/third_party/**</include>
                                     </includes>
                                 </filter>
                             </filters>

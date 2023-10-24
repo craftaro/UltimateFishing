@@ -4,6 +4,8 @@ version: maven-version-number
 main: com.craftaro.ultimatefishing.UltimateFishing
 author: Craftaro
 api-version: 1.13
+softdepend:
+  - Vault
 commands:
   uf:
     description: Reloads the configuration file

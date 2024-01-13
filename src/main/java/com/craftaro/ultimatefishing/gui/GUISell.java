@@ -1,7 +1,7 @@
 package com.craftaro.ultimatefishing.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.Gui;

@@ -1,7 +1,8 @@
 package com.craftaro.ultimatefishing;
 
 import com.craftaro.core.database.DatabaseConnector;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.core.dependency.Dependency;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimatefishing.lootables.LootablesManager;
 import com.craftaro.core.SongodaCore;
 import com.craftaro.core.SongodaPlugin;
@@ -43,7 +44,9 @@ import org.bukkit.plugin.PluginManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UltimateFishing extends SongodaPlugin {
 
@@ -62,6 +65,11 @@ public class UltimateFishing extends SongodaPlugin {
 
     public static UltimateFishing getInstance() {
         return INSTANCE;
+    }
+
+    @Override
+    protected Set<Dependency> getDependencies() {
+        return new HashSet<>();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.craftaro.ultimatefishing.gui;
 
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XSound;
+import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
 import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.ultimatefishing.bait.Bait;
 import com.craftaro.core.gui.CustomizableGui;

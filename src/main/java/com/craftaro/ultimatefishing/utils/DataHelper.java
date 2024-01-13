@@ -1,9 +1,9 @@
 package com.craftaro.ultimatefishing.utils;
 
 import com.craftaro.core.database.DataManager;
-import com.craftaro.core.third_party.org.jooq.Record;
-import com.craftaro.core.third_party.org.jooq.Result;
-import com.craftaro.core.third_party.org.jooq.impl.DSL;
+import com.craftaro.third_party.org.jooq.Record;
+import com.craftaro.third_party.org.jooq.Result;
+import com.craftaro.third_party.org.jooq.impl.DSL;
 import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.ultimatefishing.player.FishingPlayer;
 import com.craftaro.ultimatefishing.rarity.Rarity;

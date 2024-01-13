@@ -8,7 +8,7 @@ import com.craftaro.core.lootables.loot.LootBuilder;
 import com.craftaro.core.lootables.loot.LootManager;
 import com.craftaro.core.lootables.loot.Lootable;
 import com.craftaro.core.lootables.loot.objects.EnchantChance;
-import com.craftaro.core.third_party.com.cryptomorin.xseries.XMaterial;
+import com.craftaro.third_party.com.cryptomorin.xseries.XMaterial;
 import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.ultimatefishing.bait.Bait;
 import com.craftaro.ultimatefishing.player.FishingPlayer;

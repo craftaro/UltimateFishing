@@ -25,14 +25,15 @@ public class DataManager extends DataManagerAbstract {
         super(databaseConnector, plugin);
     }
 
-    public void updateCaught(Player player, Rarity rarity, int amount) {
+    public void updateCaught(Player player, Rarity rarity, int amount, int weight) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String updateSpawner = "UPDATE " + this.getTablePrefix() + "caught SET amount = ? WHERE uuid = ? AND rarity = ?";
+                String updateSpawner = "UPDATE " + this.getTablePrefix() + "caught SET amount = ?, weight = ? WHERE uuid = ? AND rarity = ?";
                 PreparedStatement statement = connection.prepareStatement(updateSpawner);
                 statement.setInt(1, amount);
                 statement.setString(2, player.getUniqueId().toString());
                 statement.setString(3, rarity.getRarity());
+                statement.setInt(4, weight);
                 statement.executeUpdate();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -41,14 +42,15 @@ public class DataManager extends DataManagerAbstract {
     }
 
 
-    public void createCaught(Player player, Rarity rarity, int amount) {
+    public void createCaught(Player player, Rarity rarity, int amount, int weight) {
         this.runAsync(() -> {
             try (Connection connection = this.databaseConnector.getConnection()) {
-                String createSpawner = "INSERT INTO " + this.getTablePrefix() + "caught (uuid, rarity, amount) VALUES (?, ?, ?)";
+                String createSpawner = "INSERT INTO " + this.getTablePrefix() + "caught (uuid, rarity, amount, weight) VALUES (?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(createSpawner);
                 statement.setString(1, player.getUniqueId().toString());
                 statement.setString(2, rarity.getRarity());
                 statement.setInt(3, amount);
+                statement.setInt(4, weight);
                 statement.executeUpdate();
             } catch (Exception ex) {
                 ex.printStackTrace();

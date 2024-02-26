@@ -95,6 +95,16 @@ public class LootablesManager {
                         }
                     }
                 }
+                Map<Double, Rarity> rarityMap = new HashMap<>();
+
+                for (Rarity rarity1 : plugin.getRarityManager().getRarities(player)) {
+                    double weight = rarity.getChance() + (rarity.getLureChance() * lure);
+                    if (bait != null) {
+                        if (bait.getTarget().contains(rarity))
+                            weight += bait.getChanceBonus();
+                    }
+                    rarities.put(weight, rarity);
+                }
                 lore.add(ChatColor.translateAlternateColorCodes('&', "&" + rarity.getColor() + rarity.getRarity()));
                 if (meta.hasLore())
                     lore.addAll(meta.getLore());
@@ -103,9 +113,9 @@ public class LootablesManager {
                 FishingPlayer fishingPlayer = plugin.getPlayerManager().getPlayer(player);
 
                 if (fishingPlayer.getCaught(rarity) == 0)
-                    plugin.getDataManager().createCaught(player, rarity, 1);
+                    plugin.getDataManager().createCaught(player, rarity, 1, 1);
                 else
-                    plugin.getDataManager().updateCaught(player, rarity, fishingPlayer.getCaught(rarity) + 1);
+                    plugin.getDataManager().updateCaught(player, rarity, fishingPlayer.getCaught(rarity) + 1, fishingPlayer.getCaught(rarity) + 1);
                 plugin.getPlayerManager().getPlayer(player).addCatch(rarity);
             }
         }

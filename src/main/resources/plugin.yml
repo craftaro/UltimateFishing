@@ -3,7 +3,7 @@ description: UltimateFishing
 version: maven-version-number
 main: com.songoda.ultimatefishing.UltimateFishing
 author: songoda
-api-version: 1.13
+api-version: 1.20
 commands:
   uf:
     description: Reloads the configuration file

@@ -16,8 +16,8 @@ object:
 
 interface:
   general:
-    next: &6Next
-    back: &6Back
+    next: '&6Next'
+    back: '&6Back'
     ecoFormat: '$%cost%'
   leaderboard:
     title: 'Leaderboard'

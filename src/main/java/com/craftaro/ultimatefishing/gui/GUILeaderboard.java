@@ -62,8 +62,8 @@ public class GUILeaderboard extends CustomizableGui {
                 .skip((page - 1) * 28).limit(28).collect(Collectors.toList());
 
         // enable page events
-        setNextPage(0, 1, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("interface.general.next").getMessage()));
-        setPrevPage(0, 3, GuiUtils.createButtonItem(XMaterial.ARROW, plugin.getLocale().getMessage("interface.general.back").getMessage()));
+        setNextPage(0, 1, GuiUtils.createButtonItem(Settings.NEXT_ITEM.getMaterial(), plugin.getLocale().getMessage("interface.general.next").getMessage()));
+        setPrevPage(0, 3, GuiUtils.createButtonItem(Settings.BACK_ITEM.getMaterial(), plugin.getLocale().getMessage("interface.general.back").getMessage()));
         setOnPage((event) -> showPage());
 
         // decorate the edges

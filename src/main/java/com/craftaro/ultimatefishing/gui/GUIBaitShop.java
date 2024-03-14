@@ -1,12 +1,12 @@
 package com.craftaro.ultimatefishing.gui;
 
-import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
-import com.craftaro.ultimatefishing.UltimateFishing;
-import com.craftaro.ultimatefishing.bait.Bait;
 import com.craftaro.core.gui.CustomizableGui;
 import com.craftaro.core.gui.GuiUtils;
 import com.craftaro.core.hooks.EconomyManager;
 import com.craftaro.core.utils.TextUtils;
+import com.craftaro.third_party.com.cryptomorin.xseries.XSound;
+import com.craftaro.ultimatefishing.UltimateFishing;
+import com.craftaro.ultimatefishing.bait.Bait;
 import com.craftaro.ultimatefishing.settings.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public final class GUIBaitShop extends CustomizableGui {
 
-    public GUIBaitShop(UltimateFishing plugin) {
+    public GUIBaitShop(UltimateFishing plugin, Runnable onBack) {
         super(plugin, "baitshop");
         setTitle(plugin.getLocale().getMessage("interface.bait.title").getMessage());
         List<Bait> baits = plugin.getBaitManager().getBaits();
@@ -36,24 +36,27 @@ public final class GUIBaitShop extends CustomizableGui {
         if (baits.size() > 7)
             mirrorFill("mirrorfill_7", 2, 0, false, true, glass2);
 
+        if (onBack != null)
+            setButton(0, GuiUtils.createButtonItem(Settings.BACK_ITEM.getMaterial(), plugin.getLocale().getMessage("interface.general.back").getMessage()), (event) -> onBack.run());
+
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             int i = 10;
             for (Bait bait : baits) {
-                if (getItem(i) == null) {
-                    setButton(i, GuiUtils.createButtonItem(bait.asItemStack(),
-                            TextUtils.formatText("&" + bait.getColor()) + bait.getBait(),
-                            plugin.getLocale().getMessage("interface.bait.buyfor").processPlaceholder("price", plugin.formatEconomy(bait.getSellPrice())).getMessage()
-                    ), (event) -> {
-                        if (!EconomyManager.hasBalance(event.player, bait.getSellPrice())) {
-                            plugin.getLocale().getMessage("interface.bait.cannotafford").sendPrefixedMessage(event.player);
-                            XSound.ENTITY_VILLAGER_NO.play(event.player);
-                            return;
-                        }
-                        XSound.ENTITY_PLAYER_LEVELUP.play(event.player);
-                        EconomyManager.withdrawBalance(event.player, bait.getSellPrice());
-                        event.player.getInventory().addItem(bait.asItemStack());
-                    });
-                }
+                if (getItem(i) != null)
+                    continue;
+                setButton(i, GuiUtils.createButtonItem(bait.asItemStack(),
+                        TextUtils.formatText("&" + bait.getColor()) + bait.getBait(),
+                        plugin.getLocale().getMessage("interface.bait.buyfor").processPlaceholder("price", plugin.formatEconomy(bait.getSellPrice())).getMessage()
+                ), (event) -> {
+                    if (!EconomyManager.hasBalance(event.player, bait.getSellPrice())) {
+                        plugin.getLocale().getMessage("interface.bait.cannotafford").sendPrefixedMessage(event.player);
+                        XSound.ENTITY_VILLAGER_NO.play(event.player);
+                        return;
+                    }
+                    XSound.ENTITY_PLAYER_LEVELUP.play(event.player);
+                    EconomyManager.withdrawBalance(event.player, bait.getSellPrice());
+                    event.player.getInventory().addItem(bait.asItemStack());
+                });
                 i++;
             }
         }, 1L);

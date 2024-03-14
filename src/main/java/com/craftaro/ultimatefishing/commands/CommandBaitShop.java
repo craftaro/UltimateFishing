@@ -22,7 +22,7 @@ public class CommandBaitShop extends AbstractCommand {
 
     @Override
     protected ReturnType runCommand(CommandSender sender, String... args) {
-        guiManager.showGUI((Player) sender, new GUIBaitShop(plugin));
+        guiManager.showGUI((Player) sender, new GUIBaitShop(plugin, null));
         return ReturnType.SUCCESS;
     }
 

@@ -64,7 +64,7 @@ public final class GUISell extends CustomizableGui {
         if (player.hasPermission("ultimatefishing.baitshop"))
             setButton("accessbaitshop", 5, 8, GuiUtils.createButtonItem(XMaterial.STRING,
                     plugin.getLocale().getMessage("interface.sell.accessbaitshop").getMessage()), (event) -> {
-                guiManager.showGUI(event.player, new GUIBaitShop(plugin));
+                guiManager.showGUI(event.player, new GUIBaitShop(plugin, () -> guiManager.showGUI(event.player, this)));
                 onClose(player);
             });
 

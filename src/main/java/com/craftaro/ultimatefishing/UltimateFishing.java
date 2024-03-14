@@ -63,6 +63,8 @@ public class UltimateFishing extends SongodaPlugin {
     private BaitManager baitManager;
     private PlayerManager playerManager;
 
+    private FishingHandler fishingHandler;
+
     public static UltimateFishing getInstance() {
         return INSTANCE;
     }
@@ -127,6 +129,8 @@ public class UltimateFishing extends SongodaPlugin {
 
         loadRarities();
         loadBaits();
+
+        this.fishingHandler = new FishingHandler(this);
 
 
         // Database stuff, go!
@@ -344,6 +348,10 @@ public class UltimateFishing extends SongodaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public FishingHandler getFishingHandler() {
+        return fishingHandler;
     }
 
     // FIXME: A hotfix for EconomyManager#formatEconomy only working with $ etc.

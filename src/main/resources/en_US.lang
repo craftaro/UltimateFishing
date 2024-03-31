@@ -1,11 +1,9 @@
 # General Messages
-
 general:
   nametag:
     prefix: '&8[&6UltimateFishing&8]'
 
 # Object Messages
-
 object:
   bait:
     name: '%bait% &7(bait)'
@@ -13,7 +11,6 @@ object:
     baited: '&7Baited: %bait% &7%uses%/%max%'
 
 # Interface Messages
-
 interface:
   general:
     next: '&6Next'
@@ -25,17 +22,16 @@ interface:
     name: '&7&l%place%: &6&l%name% &7(%score%)'
     item: '&7%type%: &6%amount%'
   sell:
-    title: Sell GUI
+    title: 'Sell GUI'
     prices: '&6&lSell Prices:'
     sellfor: '&7Sell for &a%price%'
     accessbaitshop: '&7Access Bait Shop'
   bait:
-    title: Bait Shop
+    title: 'Bait Shop'
     cannotafford: '&cYou cannot afford to buy this.'
     buyfor: '&7Buy for &a%price%'
 
 # Event Messages
-
 event:
   general:
     nopermission: '&cYou do not have permission to do that.'
@@ -47,3 +43,17 @@ event:
     fail: '&cNothing in the interface is sellable...'
   catch:
     broadcast: '&6%username% &7just caught a &6%rarity% &7fish!'
+
+# Command Messages
+command:
+  sellall:
+    success: '&7You successfully sold all your fish for a total of &6%total%&7.'
+    fail: '&cYou have no fish to sell in your inventory...'
+  give:
+    sender: '&7You gave &6%player% %amount% &%bait%&7.'
+    receiver: '&7You were given &6%amount% %bait%&7.'
+    invalidplayer: '&cThat player does not exist or is currently offline.'
+    invalidbait: '&cThe bait &4%bait%&c does not exist...'
+    invalidamount: '&4%amount%&c is not a valid number...'
+  resetplayer:
+    success: '&cPlayer reset successfully.'

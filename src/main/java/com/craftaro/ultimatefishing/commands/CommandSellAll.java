@@ -4,7 +4,6 @@ import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.core.commands.AbstractCommand;
 import com.craftaro.core.compatibility.ServerVersion;
 import com.craftaro.core.hooks.EconomyManager;
-import com.craftaro.core.locale.Message;
 import com.craftaro.ultimatefishing.rarity.Rarity;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -28,7 +27,7 @@ public class CommandSellAll extends AbstractCommand {
 
         double totalNew = UltimateFishing.calculateTotalValue(player.getInventory());
         if (totalNew == 0) {
-            plugin.getLocale().getMessage("event.sell.fail").sendPrefixedMessage(player);
+            plugin.getLocale().getMessage("command.sellall.fail").sendPrefixedMessage(player);
             return ReturnType.SUCCESS;
         }
 
@@ -50,7 +49,7 @@ public class CommandSellAll extends AbstractCommand {
 
         EconomyManager.deposit(player, totalNew);
 
-        plugin.getLocale().getMessage("event.sell.success")
+        plugin.getLocale().getMessage("command.sellall.success")
                 .processPlaceholder("total", plugin.formatEconomy(totalNew))
                 .sendPrefixedMessage(player);
 

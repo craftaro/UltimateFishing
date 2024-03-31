@@ -29,27 +29,34 @@ public class CommandGive extends AbstractCommand {
         OfflinePlayer player = Bukkit.getPlayer(args[0]);
 
         if (player == null) {
-            plugin.getLocale().newMessage("&cThat player does not exist or is currently offline.").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("command.give.invalidplayer").sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         Bait bait = plugin.getBaitManager().getBait(args[1].replace("_", " "));
 
         if (bait == null) {
-            plugin.getLocale().newMessage("&cThe bait &4" + args[1] + "&c does not exist...").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("command.give.invalidbait")
+                    .processPlaceholder("bait", args[1])
+                    .sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (!isInt(args[2])) {
-            plugin.getLocale().newMessage("&4" + args[2] + "&c is not a number...").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("command.give.invalidamount")
+                    .processPlaceholder("amount", args[2])
+                    .sendPrefixedMessage(sender);
             return ReturnType.FAILURE;
         }
 
         if (sender != player)
-            plugin.getLocale().newMessage("&7You gave &6" + player.getName() + " " + args[2] + " &" + bait.getColor() + bait.getBait() + "&7.")
+            plugin.getLocale().getMessage("command.give.sender")
+                    .processPlaceholder("player", player.getName())
+                    .processPlaceholder("amount", args[2])
+                    .processPlaceholder("bait", TextUtils.formatText("&" + bait.getColor() + bait.getBait()))
                     .sendPrefixedMessage(sender);
 
-        plugin.getLocale().getMessage("event.bait.given")
+        plugin.getLocale().getMessage("command.give.receiver")
                 .processPlaceholder("amount", args[2])
                 .processPlaceholder("bait", TextUtils.formatText("&" + bait.getColor() + bait.getBait()))
                 .sendPrefixedMessage(player.getPlayer());

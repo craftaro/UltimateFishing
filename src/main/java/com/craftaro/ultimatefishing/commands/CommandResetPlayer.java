@@ -27,7 +27,7 @@ public class CommandResetPlayer extends AbstractCommand {
         plugin.getPlayerManager().resetPlayer(offlinePlayer);
         DataHelper.deleteCaught(offlinePlayer);
 
-        plugin.getLocale().newMessage("&cPlayer reset successfully.").sendPrefixedMessage(sender);
+        plugin.getLocale().getMessage("command.resetplayer.success").sendPrefixedMessage(sender);
 
         return ReturnType.SUCCESS;
     }

@@ -44,7 +44,7 @@ public class CommandResetPlayer extends AbstractCommand {
 
     @Override
     public String getSyntax() {
-        return "resetplayer";
+        return "resetplayer <player>";
     }
 
     @Override

@@ -128,6 +128,7 @@ public final class GUISell extends CustomizableGui {
                 ItemStack itemStack = inventory.getItem(col + row * 9);
                 if (itemStack != null && itemStack.getType() != Material.AIR) {
                     returnItem(player, itemStack);
+                    itemStack.setAmount(0);
                 }
             }
         }

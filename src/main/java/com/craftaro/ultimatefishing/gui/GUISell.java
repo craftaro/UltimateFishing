@@ -51,14 +51,14 @@ public final class GUISell extends CustomizableGui {
         // set up prices info (icon only)
         // TODO: need to add this line to language file
         setItem("prices", 0, 4, GuiUtils.createButtonItem(XMaterial.BOOK,
-                plugin.getLocale().getMessage("interface.sell.prices").getMessage(),
+                plugin.getLocale().getMessage("interface.sell.prices").toText(),
                 plugin.getRarityManager().getRarities().stream()
                         .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + plugin.formatEconomy(r.getSellPrice())))
                         .collect(Collectors.toList())
         ));
 
         setButton("sellfor", 5, 4, GuiUtils.createButtonItem(XMaterial.SUNFLOWER,
-                plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", plugin.formatEconomy(0)).getMessage()),
+                plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", plugin.formatEconomy(0)).toText()),
                 (event) -> sellAll(event.player));
 
         if (player.hasPermission("ultimatefishing.baitshop"))
@@ -78,7 +78,7 @@ public final class GUISell extends CustomizableGui {
 
     private void updateSell() {
         double totalSale = UltimateFishing.calculateTotalValue(inventory);
-        updateItem("sellfor",5, 4, plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", plugin.formatEconomy(totalSale)).getMessage());
+        updateItem("sellfor",5, 4, plugin.getLocale().getMessage("interface.sell.sellfor").processPlaceholder("price", plugin.formatEconomy(totalSale)).toText());
     }
 
     private void sellAll(Player player) {
@@ -128,6 +128,7 @@ public final class GUISell extends CustomizableGui {
                 ItemStack itemStack = inventory.getItem(col + row * 9);
                 if (itemStack != null && itemStack.getType() != Material.AIR) {
                     returnItem(player, itemStack);
+                    itemStack.setAmount(0);
                 }
             }
         }

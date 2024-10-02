@@ -123,10 +123,11 @@ public class FishingHandler {
 
                 Rarity rarity = plugin.getRarityManager().getRarity(drop.getItemStack());
                 if (rarity != null && rarity.isBroadcast()) {
-                    Bukkit.broadcastMessage(plugin.getLocale().getMessage("event.catch.broadcast")
-                            .processPlaceholder("username", player.getName())
-                            .processPlaceholder("rarity", "&" + rarity.getColor() + rarity.getRarity())
-                            .getPrefixedMessage());
+                    Bukkit.getOnlinePlayers().forEach(player1 -> {
+                        plugin.getLocale().getMessage("event.catch.broadcast")
+                                .processPlaceholder("username", player.getName())
+                                .processPlaceholder("rarity", "&" + rarity.getColor() + rarity.getRarity()).sendMessage(player1);
+                    });
                 }
 
                 item.setVelocity(getVector(owner, item));

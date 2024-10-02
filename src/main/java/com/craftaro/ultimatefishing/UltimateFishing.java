@@ -358,6 +358,6 @@ public class UltimateFishing extends SongodaPlugin {
     public String formatEconomy(double amount) {
         return getLocale().getMessage("interface.general.ecoFormat")
                 .processPlaceholder("cost", amount)
-                .getMessage();
+                .toText();
     }
 }

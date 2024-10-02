@@ -44,7 +44,7 @@ public class GUILeaderboard extends CustomizableGui {
         // set up prices info (icon only)
         // TODO: need to add this line to language file
         setItem("weight", 0, 4, GuiUtils.createButtonItem(XMaterial.BOOK,
-                plugin.getLocale().getMessage("interface.leaderboard.weight").getMessage(),
+                plugin.getLocale().getMessage("interface.leaderboard.weight").toText(),
                 plugin.getRarityManager().getRarities().stream()
                         .map(r -> ChatColor.translateAlternateColorCodes('&', "&l&" + r.getColor() + r.getRarity() + " &7 - &a" + r.getWeight()))
                         .collect(Collectors.toList())
@@ -92,7 +92,7 @@ public class GUILeaderboard extends CustomizableGui {
             for (Rarity rarity : plugin.getRarityManager().getRarities()) {
                 lore.add(plugin.getLocale().getMessage("interface.leaderboard.item")
                         .processPlaceholder("type", "&" + rarity.getColor() + rarity.getRarity())
-                        .processPlaceholder("amount", fishingPlayer.getCaught(rarity)).getMessage());
+                        .processPlaceholder("amount", fishingPlayer.getCaught(rarity)).toText());
             }
 
             OfflinePlayer player = Bukkit.getOfflinePlayer(fishingPlayer.getUniqueId());
@@ -101,7 +101,7 @@ public class GUILeaderboard extends CustomizableGui {
                     TextUtils.formatText(plugin.getLocale().getMessage("interface.leaderboard.name")
                             .processPlaceholder("place", place)
                             .processPlaceholder("name", player.getName())
-                            .processPlaceholder("score", fishingPlayer.getScore()).getMessage()), TextUtils.formatText(lore)));
+                            .processPlaceholder("score", fishingPlayer.getScore()).toText()), TextUtils.formatText(lore)));
 
             num++;
         }

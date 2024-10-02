@@ -1,5 +1,6 @@
 package com.craftaro.ultimatefishing.bait;
 
+import com.craftaro.core.chat.AdventureUtils;
 import com.craftaro.ultimatefishing.UltimateFishing;
 import com.craftaro.core.third_party.de.tr7zw.nbtapi.NBTItem;
 import com.craftaro.core.utils.ItemUtils;
@@ -49,13 +50,16 @@ public class Bait {
 
     public ItemStack asItemStack(int amount) {
         ItemStack itemStack = new ItemStack(material, amount);
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(TextUtils.formatText("&" + color)
-                + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
-                .processPlaceholder("bait", bait).getMessage());
-        meta.setLore(Collections.singletonList(UltimateFishing.getInstance().getLocale()
-                .getMessage("object.bait.lore").getMessage()));
-        itemStack.setItemMeta(meta);
+//        ItemMeta meta = itemStack.getItemMeta();
+//        meta.setDisplayName(TextUtils.formatText("&" + color)
+//                + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name")
+//                .processPlaceholder("bait", bait).getMessage());
+//        meta.setLore(Collections.singletonList(UltimateFishing.getInstance().getLocale()
+//                .getMessage("object.bait.lore").getMessage()));
+//        itemStack.setItemMeta(meta);
+
+        AdventureUtils.formatItemName(itemStack, "&" + color + UltimateFishing.getInstance().getLocale().getMessage("object.bait.name").processPlaceholder("bait", bait).toText());
+        AdventureUtils.formatItemLore(itemStack, Collections.singletonList(UltimateFishing.getInstance().getLocale().getMessage("object.bait.lore").toText()));
 
         if (enchanted)
             ItemUtils.addGlow(itemStack);
@@ -125,7 +129,7 @@ public class Bait {
                 .processPlaceholder("bait", TextUtils.formatText("&" + color) + bait)
                 .processPlaceholder("uses", max - uses)
                 .processPlaceholder("max", max)
-                .getMessage();
+                .toText();
 
         ItemMeta meta = item.getItemMeta();
         originalLore.add(0, baited);

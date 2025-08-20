@@ -23,6 +23,7 @@ import com.songoda.ultimatefishing.commands.CommandResetPlayer;
 import com.songoda.ultimatefishing.commands.CommandSell;
 import com.songoda.ultimatefishing.commands.CommandSellAll;
 import com.songoda.ultimatefishing.commands.CommandSettings;
+import com.songoda.ultimatefishing.commands.CommandTournament;
 import com.songoda.ultimatefishing.database.migrations._1_InitialMigration;
 import com.songoda.ultimatefishing.listeners.BlockListeners;
 import com.songoda.ultimatefishing.listeners.EntityListeners;
@@ -35,6 +36,7 @@ import com.songoda.ultimatefishing.rarity.Rarity;
 import com.songoda.ultimatefishing.rarity.RarityManager;
 import com.songoda.ultimatefishing.settings.Settings;
 import com.songoda.ultimatefishing.tasks.BaitParticleTask;
+import com.songoda.ultimatefishing.tournament.TournamentManager;
 import com.songoda.ultimatefishing.utils.DataHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
@@ -53,6 +55,7 @@ public class UltimateFishing extends SongodaPlugin {
     private static UltimateFishing INSTANCE;
     private final Config rarityConfig = new Config(this, "rarity.yml");
     private final Config baitConfig = new Config(this, "bait.yml");
+    private final Config tournamentConfig = new Config(this, "tournament.yml");
 
     private BaitParticleTask baitParticleTask;
 
@@ -62,6 +65,7 @@ public class UltimateFishing extends SongodaPlugin {
     private RarityManager rarityManager;
     private BaitManager baitManager;
     private PlayerManager playerManager;
+    private TournamentManager tournamentManager;
 
     private FishingHandler fishingHandler;
 
@@ -105,7 +109,8 @@ public class UltimateFishing extends SongodaPlugin {
                         new CommandLeaderboard(this, guiManager),
                         new CommandSettings(this, guiManager),
                         new CommandResetPlayer(this),
-                        new CommandReload(this)
+                        new CommandReload(this),
+                        new CommandTournament(this)
                 );
 
         this.playerManager = new PlayerManager();
@@ -129,6 +134,7 @@ public class UltimateFishing extends SongodaPlugin {
 
         loadRarities();
         loadBaits();
+        loadTournament();
 
         this.fishingHandler = new FishingHandler(this);
 
@@ -141,6 +147,9 @@ public class UltimateFishing extends SongodaPlugin {
 
     @Override
     public void onPluginDisable() {
+        if (tournamentManager != null) {
+            tournamentManager.shutdown();
+        }
     }
 
     @Override
@@ -158,6 +167,7 @@ public class UltimateFishing extends SongodaPlugin {
         this.getLootablesManager().getLootManager().loadLootables();
         this.loadRarities();
         this.loadBaits();
+        this.loadTournament();
     }
 
     /*
@@ -179,6 +189,8 @@ public class UltimateFishing extends SongodaPlugin {
                             "fish grants.")
                     .setDefault("Tiny.Sell Price", 4.99,
                             "The price tiny fish will sell for.")
+                    .setDefault("Tiny.Tournament Value", 1,
+                            "The tournament points awarded for catching this rarity.")
                     .setDefault("Tiny.Lure Chance Change", -5,
                             "The effect the lure fishing enchantment would have on the chance.",
                             "This is multiplied per enchantment level.")
@@ -187,18 +199,21 @@ public class UltimateFishing extends SongodaPlugin {
                     .setDefault("Normal.Color", "7")
                     .setDefault("Normal.Extra Health", 0)
                     .setDefault("Normal.Sell Price", 19.99)
+                    .setDefault("Normal.Tournament Value", 2)
                     .setDefault("Normal.Lure Chance Change", -8)
                     .setDefault("Large.Chance", 25)
                     .setDefault("Large.Weight", 50)
                     .setDefault("Large.Color", "c")
                     .setDefault("Large.Extra Health", 2)
                     .setDefault("Large.Sell Price", 49.99)
+                    .setDefault("Large.Tournament Value", 3)
                     .setDefault("Large.Lure Chance Change", 5)
                     .setDefault("Huge.Chance", 10)
                     .setDefault("Huge.Weight", 100)
                     .setDefault("Huge.Color", "5")
                     .setDefault("Huge.Extra Health", 4)
                     .setDefault("Huge.Sell Price", 99.99)
+                    .setDefault("Huge.Tournament Value", 5)
                     .setDefault("Huge.Broadcast", true,
                             "Should we broadcast a message to all players when a huge fish",
                             "is caught?")
@@ -269,7 +284,8 @@ public class UltimateFishing extends SongodaPlugin {
                         section.getInt("Extra Health"),
                         section.getDouble("Sell Price"),
                         section.getBoolean("Broadcast"),
-                        section.getDouble("Lure Chance Change")));
+                        section.getDouble("Lure Chance Change"),
+                        section.getInt("Tournament Value", 1)));
             }
         }
     }
@@ -310,6 +326,65 @@ public class UltimateFishing extends SongodaPlugin {
         }
     }
 
+    /*
+     * Insert default tournament settings into config.
+     */
+    private void setupTournament() {
+        if (!tournamentConfig.contains("Tournament")) {
+            tournamentConfig.createDefaultSection("Tournament", 
+                    "Tournament System Configuration")
+                    .setDefault("Enabled", true,
+                            "Should tournaments be enabled?")
+                    .setDefault("Minimum Players", 2,
+                            "Minimum number of players required to start a tournament.")
+                    .setDefault("Default Duration", 300,
+                            "Default tournament duration in seconds (5 minutes = 300 seconds).")
+                    .setDefault("Countdown Duration", 60,
+                            "Duration of the countdown before tournament starts in seconds.")
+                    .setDefault("Auto Start.Enabled", true,
+                            "Should tournaments automatically start periodically?")
+                    .setDefault("Auto Start.Min Interval", 30,
+                            "Minimum time between automatic tournaments in minutes.")
+                    .setDefault("Auto Start.Max Interval", 60,
+                            "Maximum time between automatic tournaments in minutes.")
+                    .setDefault("Rewards.Enabled", true,
+                            "Should tournament winners receive rewards?")
+                    .setDefault("Rewards.First Place.Type", "ECONOMY",
+                            "Reward type for first place: ECONOMY, ITEM, or BOTH")
+                    .setDefault("Rewards.First Place.Economy Amount", 1000.0,
+                            "Economy reward for first place.")
+                    .setDefault("Rewards.First Place.Items", Arrays.asList("DIAMOND:5", "EMERALD:10"),
+                            "Item rewards for first place. Format: MATERIAL:AMOUNT")
+                    .setDefault("Rewards.Second Place.Type", "ECONOMY",
+                            "Reward type for second place: ECONOMY, ITEM, or BOTH")
+                    .setDefault("Rewards.Second Place.Economy Amount", 500.0,
+                            "Economy reward for second place.")
+                    .setDefault("Rewards.Second Place.Items", Arrays.asList("GOLD_INGOT:10"),
+                            "Item rewards for second place. Format: MATERIAL:AMOUNT")
+                    .setDefault("Rewards.Third Place.Type", "ECONOMY",
+                            "Reward type for third place: ECONOMY, ITEM, or BOTH")
+                    .setDefault("Rewards.Third Place.Economy Amount", 250.0,
+                            "Economy reward for third place.")
+                    .setDefault("Rewards.Third Place.Items", Arrays.asList("IRON_INGOT:15"),
+                            "Item rewards for third place. Format: MATERIAL:AMOUNT");
+        }
+        tournamentConfig.setRootNodeSpacing(1).setCommentSpacing(0);
+    }
+
+    private void loadTournament() {
+        //Apply default tournament settings.
+        tournamentConfig.load();
+        setupTournament();
+        tournamentConfig.saveChanges();
+        
+        // Initialize tournament manager with loaded config
+        this.tournamentManager = new TournamentManager(this);
+    }
+
+    public Config getTournamentConfig() {
+        return tournamentConfig;
+    }
+
     public BaitParticleTask getBaitParticleTask() {
         return baitParticleTask;
     }
@@ -324,7 +399,7 @@ public class UltimateFishing extends SongodaPlugin {
 
     @Override
     public List<Config> getExtraConfig() {
-        return Arrays.asList(rarityConfig);
+        return Arrays.asList(rarityConfig, baitConfig, tournamentConfig);
     }
 
     public RarityManager getRarityManager() {
@@ -348,6 +423,10 @@ public class UltimateFishing extends SongodaPlugin {
 
     public PlayerManager getPlayerManager() {
         return playerManager;
+    }
+
+    public TournamentManager getTournamentManager() {
+        return tournamentManager;
     }
 
     public FishingHandler getFishingHandler() {

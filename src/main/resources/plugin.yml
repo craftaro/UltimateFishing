@@ -36,3 +36,12 @@ permissions:
   ultimatefishing.use:
     description: Allows players to catch ultimate fish.
     default: op
+  ultimatefishing.tournament:
+    description: Allows players to use tournament commands
+    default: true
+  ultimatefishing.tournament.start:
+    description: Allows players to start tournaments
+    default: op
+  ultimatefishing.tournament.stop:
+    description: Allows players to stop tournaments
+    default: op

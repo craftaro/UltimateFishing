@@ -122,12 +122,19 @@ public class FishingHandler {
                 Location owner = player.getLocation();
 
                 Rarity rarity = plugin.getRarityManager().getRarity(drop.getItemStack());
-                if (rarity != null && rarity.isBroadcast()) {
-                    Bukkit.getOnlinePlayers().forEach(player1 -> {
-                        plugin.getLocale().getMessage("event.catch.broadcast")
-                                .processPlaceholder("username", player.getName())
-                                .processPlaceholder("rarity", "&" + rarity.getColor() + rarity.getRarity()).sendMessage(player1);
-                    });
+                if (rarity != null) {
+                    if (rarity.isBroadcast()) {
+                        Bukkit.getOnlinePlayers().forEach(player1 -> {
+                            plugin.getLocale().getMessage("event.catch.broadcast")
+                                    .processPlaceholder("username", player.getName())
+                                    .processPlaceholder("rarity", "&" + rarity.getColor() + rarity.getRarity()).sendMessage(player1);
+                        });
+                    }
+                    
+                    // Record catch for tournament
+                    if (plugin.getTournamentManager().hasActiveTournament()) {
+                        plugin.getTournamentManager().recordCatch(player, rarity);
+                    }
                 }
 
                 item.setVelocity(getVector(owner, item));

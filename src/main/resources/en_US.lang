@@ -57,3 +57,13 @@ command:
     invalidamount: '&4%amount%&c is not a valid number...'
   resetplayer:
     success: '&cPlayer reset successfully.'
+
+# Tournament Messages
+tournament:
+  autoentry: '&b&lTOURNAMENT &7» &aYou''ve been automatically entered into the tournament!'
+  catch: '&b&lTOURNAMENT &7» &fYou caught a &b%rarity% &ffish! &7(+%points% points, Total: %total%)'
+  commands:
+    start: '&7/tournament start [name] [duration] &f- Start a tournament'
+    startdesc: '&7Duration: number (seconds) or with suffix: 30s, 5m, 2h, 1d'
+    stop: '&7/tournament stop &f- Stop the current tournament'
+    top: '&7/tournament top &f- View leaderboard'

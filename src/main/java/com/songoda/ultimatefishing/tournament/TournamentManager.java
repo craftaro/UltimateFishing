@@ -43,9 +43,7 @@ public class TournamentManager {
             return false;
         }
         
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            activeTournament.addParticipant(player);
-        }
+        // Players will be automatically added when they catch fish
         
         activeTournament.startCountdown(countdownSeconds);
         return true;
@@ -76,17 +74,6 @@ public class TournamentManager {
         }
     }
     
-    public void addParticipant(Player player) {
-        if (activeTournament != null) {
-            activeTournament.addParticipant(player);
-        }
-    }
-    
-    public void removeParticipant(Player player) {
-        if (activeTournament != null) {
-            activeTournament.removeParticipant(player);
-        }
-    }
     
     private void scheduleNextAutoTournament() {
         if (autoStartTaskId != -1) {

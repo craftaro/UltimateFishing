@@ -54,8 +54,10 @@ public class CommandTournament extends AbstractCommand {
                 if (args.length > 1) {
                     // Try to parse the last argument as duration
                     String lastArg = args[args.length - 1];
-                    try {
-                        duration = Long.parseLong(lastArg);
+                    Long parsedDuration = parseDuration(lastArg);
+                    
+                    if (parsedDuration != null) {
+                        duration = parsedDuration;
                         // If successful, everything except the last argument is the name
                         if (args.length > 2) {
                             StringBuilder nameBuilder = new StringBuilder();
@@ -65,8 +67,8 @@ public class CommandTournament extends AbstractCommand {
                             }
                             name = nameBuilder.toString();
                         }
-                    } catch (NumberFormatException e) {
-                        // If last argument is not a number, all arguments after "start" are the name
+                    } else {
+                        // If last argument is not a valid duration, all arguments after "start" are the name
                         StringBuilder nameBuilder = new StringBuilder();
                         for (int i = 1; i < args.length; i++) {
                             if (i > 1) nameBuilder.append(" ");
@@ -100,56 +102,6 @@ public class CommandTournament extends AbstractCommand {
                 }
                 break;
                 
-            case "join":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage(TextUtils.formatText("&cOnly players can join tournaments!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                Player player = (Player) sender;
-                Tournament tournament = plugin.getTournamentManager().getActiveTournament();
-                
-                if (tournament == null || tournament.getState() == Tournament.TournamentState.ENDED) {
-                    player.sendMessage(TextUtils.formatText("&cNo active tournament to join!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                if (tournament.getState() != Tournament.TournamentState.WAITING && tournament.getState() != Tournament.TournamentState.COUNTDOWN) {
-                    player.sendMessage(TextUtils.formatText("&cThe tournament has already started!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                if (tournament.isParticipant(player.getUniqueId())) {
-                    player.sendMessage(TextUtils.formatText("&cYou're already in the tournament!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                tournament.addParticipant(player);
-                player.sendMessage(TextUtils.formatText("&aYou've joined the tournament!"));
-                break;
-                
-            case "leave":
-                if (!(sender instanceof Player)) {
-                    sender.sendMessage(TextUtils.formatText("&cOnly players can leave tournaments!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                player = (Player) sender;
-                tournament = plugin.getTournamentManager().getActiveTournament();
-                
-                if (tournament == null) {
-                    player.sendMessage(TextUtils.formatText("&cNo active tournament to leave!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                if (!tournament.isParticipant(player.getUniqueId())) {
-                    player.sendMessage(TextUtils.formatText("&cYou're not in the tournament!"));
-                    return ReturnType.SUCCESS;
-                }
-                
-                tournament.removeParticipant(player);
-                player.sendMessage(TextUtils.formatText("&aYou've left the tournament!"));
-                break;
                 
             case "top":
             case "leaderboard":
@@ -174,11 +126,10 @@ public class CommandTournament extends AbstractCommand {
             sender.sendMessage(TextUtils.formatText("&7No active tournament."));
             sender.sendMessage("");
             sender.sendMessage(TextUtils.formatText("&fCommands:"));
-            sender.sendMessage(TextUtils.formatText("&7/tournament start [name] [duration] &f- Start a tournament"));
-            sender.sendMessage(TextUtils.formatText("&7/tournament stop &f- Stop the current tournament"));
-            sender.sendMessage(TextUtils.formatText("&7/tournament join &f- Join a tournament"));
-            sender.sendMessage(TextUtils.formatText("&7/tournament leave &f- Leave the tournament"));
-            sender.sendMessage(TextUtils.formatText("&7/tournament top &f- View leaderboard"));
+            plugin.getLocale().getMessage("tournament.commands.start").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("tournament.commands.startdesc").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("tournament.commands.stop").sendPrefixedMessage(sender);
+            plugin.getLocale().getMessage("tournament.commands.top").sendPrefixedMessage(sender);
         } else {
             sender.sendMessage(TextUtils.formatText("&fTournament: &b" + tournament.getName()));
             sender.sendMessage(TextUtils.formatText("&fStatus: &b" + tournament.getState().toString()));
@@ -238,7 +189,7 @@ public class CommandTournament extends AbstractCommand {
     @Override
     protected List<String> onTab(CommandSender sender, String... args) {
         if (args.length == 1) {
-            return List.of("start", "stop", "join", "leave", "top", "leaderboard");
+            return List.of("start", "stop", "top", "leaderboard");
         }
         return null;
     }
@@ -250,11 +201,44 @@ public class CommandTournament extends AbstractCommand {
     
     @Override
     public String getSyntax() {
-        return "tournament [start/stop/join/leave/top]";
+        return "tournament [start <name> <duration>|stop|top]";
     }
     
     @Override
     public String getDescription() {
         return "Manage and participate in fishing tournaments.";
+    }
+    
+    private Long parseDuration(String durationStr) {
+        if (durationStr == null || durationStr.isEmpty()) {
+            return null;
+        }
+        
+        // Try to parse as plain number (seconds)
+        try {
+            return Long.parseLong(durationStr);
+        } catch (NumberFormatException ignored) {}
+        
+        // Try to parse with time suffix
+        String numPart = durationStr.substring(0, durationStr.length() - 1);
+        char suffix = Character.toLowerCase(durationStr.charAt(durationStr.length() - 1));
+        
+        try {
+            long num = Long.parseLong(numPart);
+            switch (suffix) {
+                case 's': // seconds
+                    return num;
+                case 'm': // minutes
+                    return num * 60;
+                case 'h': // hours
+                    return num * 3600;
+                case 'd': // days
+                    return num * 86400;
+                default:
+                    return null;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

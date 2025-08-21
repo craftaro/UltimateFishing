@@ -80,7 +80,7 @@ public class Tournament {
         startTime = System.currentTimeMillis();
         endTime = startTime + (duration * 1000);
         
-        broadcast("&b&lFISHING TOURNAMENT &7» &fThe tournament has &aSTARTED! &fCatch as many fish as you can!");
+        broadcast("&b&lFISHING TOURNAMENT &7» &fThe tournament has &aSTARTED! &fCatch fish to automatically enter!");
         broadcast("&b&lFISHING TOURNAMENT &7» &fDuration: &b" + (duration / 60) + " minutes");
         
         taskId = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
@@ -158,19 +158,18 @@ public class Tournament {
         int points = rarityPoints.getOrDefault(rarity.getRarity(), 1);
         participant.addCatch(rarity, points);
         
-        player.sendMessage(TextUtils.formatText("&b&lTOURNAMENT &7» &fYou caught a &b" + rarity.getColor() + rarity.getRarity() +
-            " &ffish! &7(+" + points + " points, Total: " + participant.getPoints() + ")"));
-    }
-    
-    public void addParticipant(Player player) {
-        if (state == TournamentState.ACTIVE || state == TournamentState.COUNTDOWN) {
-            participants.putIfAbsent(player.getUniqueId(), new TournamentParticipant(player.getUniqueId()));
+        // Check if this is their first catch (auto-entry)
+        if (participant.getTotalCatches() == 1) {
+            plugin.getLocale().getMessage("tournament.autoentry").sendPrefixedMessage(player);
         }
+        
+        plugin.getLocale().getMessage("tournament.catch")
+            .processPlaceholder("rarity", rarity.getColor() + rarity.getRarity())
+            .processPlaceholder("points", points)
+            .processPlaceholder("total", participant.getPoints())
+            .sendPrefixedMessage(player);
     }
     
-    public void removeParticipant(Player player) {
-        participants.remove(player.getUniqueId());
-    }
     
     private void distributeRewards() {
         if (!plugin.getTournamentConfig().getBoolean("Tournament.Rewards.Enabled")) {
